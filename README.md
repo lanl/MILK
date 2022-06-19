@@ -1,6 +1,8 @@
 # MILK
 MAUD Interface Language Kit (MILK) is a set of Rietveld tools for automated processing of diffraction datasets.
 
+C21035 MAUD Interface Tool Kit (MILK) has been acknowledged by NNSA for open source release.
+
 © 2022. Triad National Security, LLC. All rights reserved.
 This program was produced under U.S. Government contract 89233218CNA000001 for Los Alamos
 National Laboratory (LANL), which is operated by Triad National Security, LLC for the U.S.
