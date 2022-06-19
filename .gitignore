@@ -1,0 +1,12 @@
+*ins
+*err
+*log
+.spyproject
+.DS_Store
+/build/*
+/dist/*
+/MILK.egg-info/*
+*/__pycache__/*
+*/*/__pycache__/*
+*/*/*/__pycache__/*
+/MILK/data/resources/data/*
