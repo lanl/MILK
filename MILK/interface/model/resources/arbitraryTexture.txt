@@ -1,0 +1,6 @@
+#subordinateObject_arbitrary tex
+
+_pd_proc_ls_pref_orient_corr 'arbitrary tex'
+
+
+#end_subordinateObject_arbitrary tex

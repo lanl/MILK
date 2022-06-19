@@ -1,0 +1,1 @@
+#subordinateObject_Isotropic_riet_sizestrain_sym_model 'Isotropic'_riet_par_cryst_size 1000.0 #positive #min 50.0 #max 5000.0_riet_par_rs_microstrain 6.0E-4 #positive #min 0.0 #max 0.005#end_subordinateObject_Isotropic

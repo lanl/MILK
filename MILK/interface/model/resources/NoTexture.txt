@@ -1,0 +1,6 @@
+#subordinateObject_none tex
+
+_pd_proc_ls_pref_orient_corr 'none tex'
+
+
+#end_subordinateObject_none tex
