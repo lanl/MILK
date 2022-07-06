@@ -67,7 +67,7 @@ def get_url(url, maud_download):
     request.urlretrieve(url, maud_download)
 
 
-if __name__ == "main":
+if __name__ == "__main__":
     if "linux" in sys.platform:
         # linux
         url = "http://nanoair.dii.unitn.it:8080/static/linux64_openjdk/Maud.tar.gz"
