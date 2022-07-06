@@ -7,8 +7,6 @@ channels:
 dependencies:
   - pip=22.1.2
   - python=3.8
-
-  # for MILK
   - tqdm=4.64.0
   - prettytable=3.3.0
 

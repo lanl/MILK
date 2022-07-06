@@ -16,5 +16,6 @@ setup(name='MILK',
       author_email='dansavage@lanl.gov',
       license='BSD 3',
       packages=find_packages(),
+      scripts=["bin/config_maud"],
       install_requires=[],
       zip_safe=False)
