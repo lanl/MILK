@@ -44,6 +44,7 @@ def gunzip(source_filepath, dest_filepath, block_size=65536):
 
 
 def mac_install(maud_prefix):
+    ### Hybrid bash / python installation of MAUD ###
     url = "http://nanoair.dii.unitn.it:8080/static/macosx64/Maud.dmg.gz"
     maud_download = os.path.join(maud_prefix, os.path.basename(url))
     get_url(url, maud_download)
@@ -63,6 +64,24 @@ def mac_install(maud_prefix):
     f.close()
 
 
+def linux_install(maud_prefix):
+    ### Hybrid bash / python installation of MAUD ###
+    url = "http://nanoair.dii.unitn.it:8080/static/linux64_openjdk/Maud.tar.gz"
+    maud_download = os.path.join(maud_prefix, os.path.basename(url))
+    get_url(url, maud_download)
+    tar = tarfile.open(maud_download, "r:gz")
+    tar.extractall(path=maud_prefix)
+    tar.close()
+    subprocess.call(["rm", maud_download])
+    env_act = os.path.join(conda_prefix, "etc/conda/activate.d")
+    subprocess.call(["mkdir", "-p", env_act])
+    env_act_post = os.path.join(env_act, "post.sh")
+    f = open(env_act_post, "w")
+    subprocess.call(
+        "echo export PATH=${PATH}:${CONDA_PREFIX}/maud/Maud".split(), stdout=f)
+    f.close()
+
+
 def get_url(url, maud_download):
     request.urlretrieve(url, maud_download)
 
@@ -70,7 +89,7 @@ def get_url(url, maud_download):
 if __name__ == "__main__":
     if "linux" in sys.platform:
         # linux
-        url = "http://nanoair.dii.unitn.it:8080/static/linux64_openjdk/Maud.tar.gz"
+        linux_install(maud_prefix)
     elif "darwin" in sys.platform:
         # OS X
         mac_install(maud_prefix)
