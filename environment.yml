@@ -12,4 +12,4 @@ dependencies:
 
   # pip packages
   - pip:
-    - git+https://github.com/lanl/MILK.git@f9f7257
+    - git+https://github.com/lanl/MILK.git@8576c1ca343b12a0e28d60c8bca6e0b21160e80b
