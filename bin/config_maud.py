@@ -42,8 +42,7 @@ def write_lines(fname, lines):
     """Write a list of lines to a file."""
     with open(fname, 'w') as f:
         for line in lines:
-            f.write(line)
-            f.write('\n')
+            f.write(line+'\n')
 
 
 def main():
