@@ -5,96 +5,51 @@ Created on Tue Jul  5 11:11:33 2022
 
 @author: danielsavage
 """
-import zipfile
 import os
-import shutil
 import sys
-import subprocess
-import tarfile
-import gzip
-from urllib import request
-
+import argparse
 
 conda_prefix = os.getenv('CONDA_PREFIX')
 
-maud_prefix = os.path.join(conda_prefix, 'maud')
-if os.path.exists(maud_prefix):
-    shutil.rmtree(maud_prefix)
-os.makedirs(maud_prefix)
+
+def bash_install(maud_path):
+    """Configure conda environment initializers to have MAUD_PATH."""
+    fname_act = os.path.join(conda_prefix, "etc/conda/activate.d")
+    os.makedirs(fname_act, exist_ok=True)
+    lines = ['#!/bin/bash', '', 'export MAUD_PATH='+maud_path]
+    write_lines(os.path.join(fname_act, "env_vars.sh"), lines)
+
+    fname_deact = os.path.join(conda_prefix, "etc/conda/deactivate.d")
+    os.makedirs(fname_deact, exist_ok=True)
+    lines = ['#!/bin/bash', '', 'unset MAUD_PATH']
+    write_lines(os.path.join(fname_deact, "env_vars.sh"), lines)
 
 
-# with zipfile.ZipFile(maud_download, 'r') as zip_ref:
-#     zip_ref.extractall(maud_prefix)
+def write_lines(fname, lines):
+    """Write a list of lines to a file."""
+    with open(fname, 'w') as f:
+        for line in lines:
+            f.write(line)
+            f.write('\n')
 
 
-# tar = tarfile.open(maud_download, "r:gz")
-# tar.extractall()
-# tar.close()
+def main():
+    """Get user supplied MAUD path and add to conda milk env."""
+    parser = argparse.ArgumentParser(
+        description="Install MAUD to path from installation path given by user.")
+    parser.add_argument("-p", "--maud_path", type=str, default=None,
+                        help="Full path to MAUD installation.")
+    args = parser.parse_args()
 
+    if "linux" in sys.platform or "darwin" in sys.platform:
+        bash_install(args.maud_path)
 
-def gunzip(source_filepath, dest_filepath, block_size=65536):
-    with gzip.open(source_filepath, 'rb') as s_file, \
-            open(dest_filepath, 'wb') as d_file:
-        while True:
-            block = s_file.read(block_size)
-            if not block:
-                break
-            else:
-                d_file.write(block)
+    elif "win" in sys.platform:
+        raise OSError("Windows not supported yet automated MAUD installation")
 
-
-def mac_install(maud_prefix):
-    ### Hybrid bash / python installation of MAUD ###
-    url = "http://nanoair.dii.unitn.it:8080/static/macosx64/Maud.dmg.gz"
-    maud_download = os.path.join(maud_prefix, os.path.basename(url))
-    get_url(url, maud_download)
-    maud_dmg = os.path.join(maud_prefix, 'maud.dmg')
-    gunzip(maud_download, maud_dmg)
-    subprocess.call(["hdiutil", "attach", maud_dmg])
-    subprocess.call(["cp", "-R", "/Volumes/maud/Maud.app", maud_prefix])
-    subprocess.call(["hdiutil", "unmount", "/Volumes/maud/Maud.app"])
-    subprocess.call(["rm", maud_dmg])
-    subprocess.call(["rm", maud_download])
-    env_act = os.path.join(conda_prefix, "etc/conda/activate.d")
-    subprocess.call(["mkdir", "-p", env_act])
-    env_act_post = os.path.join(env_act, "post.sh")
-    f = open(env_act_post, "w")
-    subprocess.call(
-        "echo export PATH=${PATH}:${CONDA_PREFIX}/maud/Maud.app/Contents/MacOS".split(), stdout=f)
-    f.close()
-
-
-def linux_install(maud_prefix):
-    ### Hybrid bash / python installation of MAUD ###
-    url = "http://nanoair.dii.unitn.it:8080/static/linux64_openjdk/Maud.tar.gz"
-    maud_download = os.path.join(maud_prefix, os.path.basename(url))
-    get_url(url, maud_download)
-    tar = tarfile.open(maud_download, "r:gz")
-    tar.extractall(path=maud_prefix)
-    tar.close()
-    subprocess.call(["rm", maud_download])
-    env_act = os.path.join(conda_prefix, "etc/conda/activate.d")
-    subprocess.call(["mkdir", "-p", env_act])
-    env_act_post = os.path.join(env_act, "post.sh")
-    f = open(env_act_post, "w")
-    subprocess.call(
-        "echo export PATH=${PATH}:${CONDA_PREFIX}/maud/Maud".split(), stdout=f)
-    f.close()
-
-
-def get_url(url, maud_download):
-    request.urlretrieve(url, maud_download)
+    else:
+        raise OSError("Unsupported OS for automated MAUD installation")
 
 
 if __name__ == "__main__":
-    if "linux" in sys.platform:
-        # linux
-        linux_install(maud_prefix)
-    elif "darwin" in sys.platform:
-        # OS X
-        mac_install(maud_prefix)
-    elif "win" in sys.platform:
-        # Windows...
-        url = "http://nanoair.dii.unitn.it:8080/static/windows64_openjdk/Maud.zip"
-    else:
-        raise OSError("Unsupported OS for automated MAUD installation")
+    main()
