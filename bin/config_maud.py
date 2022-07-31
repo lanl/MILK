@@ -25,6 +25,19 @@ def bash_install(maud_path):
     write_lines(os.path.join(fname_deact, "env_vars.sh"), lines)
 
 
+def bat_install(maud_path):
+    """Configure conda environment initializers to have MAUD_PATH."""
+    fname_act = os.path.join(conda_prefix, "etc/conda/activate.d")
+    os.makedirs(fname_act, exist_ok=True)
+    lines = [f"set MAUD_PATH='{maud_path}'"]
+    write_lines(os.path.join(fname_act, "env_vars.sh"), lines)
+
+    fname_deact = os.path.join(conda_prefix, "etc/conda/deactivate.d")
+    os.makedirs(fname_deact, exist_ok=True)
+    lines = ["set MAUD_PATH="]
+    write_lines(os.path.join(fname_deact, "env_vars.sh"), lines)
+
+
 def write_lines(fname, lines):
     """Write a list of lines to a file."""
     with open(fname, 'w') as f:
@@ -45,7 +58,8 @@ def main():
         bash_install(args.maud_path)
 
     elif "win" in sys.platform:
-        raise OSError("Windows not supported yet automated MAUD installation")
+        # TODO Verify the windows installation works
+        bat_install(args.maud_path)
 
     else:
         raise OSError("Unsupported OS for automated MAUD installation")
