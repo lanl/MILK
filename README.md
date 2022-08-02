@@ -19,7 +19,7 @@ More details can be found in documentation.
 Installation and requirements
 =============================
 
-MILK requires MAUD 2.93 and python requirements are packaged in the pip install
+MILK requires MAUD 2.994 and python requirements are packaged in the pip install
 
 To install:
 1. install anaconda or miniconda
