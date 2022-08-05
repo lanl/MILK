@@ -14,28 +14,25 @@ MAUD Interface Language Kit (MILK) is a set of Rietveld tools for automated proc
 * refinement summary 
 * output formated for cinema_debye_scherrer 
 
-More details can be found in documentation.
+More details and tutorials can be found in the [wiki](https://github.com/lanl/MILK/wiki).
 
 Installation and requirements
 =============================
 
-MILK requires MAUD 2.994 and python requirements are packaged in the pip install
+MILK requires the current MAUD experimental build adue to feature development and java support. Only OSX is currently compiled by Luca. Python requirements are packaged in the conda environement.yml.
 
 To install:
 1. install anaconda or miniconda
-2. create a conda virtual environement and install the yml dependencies from github
-```
+2. Clone the MILK repository locally
+3. To install MILK locally in terminal navigate to the repository and run
+```bash
 conda env create -f environment.yml
 
 ```
-4. install repository and dependencies from github using pip 
+5. To install your MAUD path to your conda environment run
+```bash
+config_maud.py -p /path/to/maud/application/Maud.app
 ```
-python -m pip3 install git+https://github.com/lanl/MILK.git@handle
-```
-2. install anaconda or miniconda
-3. build the conda environment
-4. install MILK in the environment
-
 
 Contributing
 ============
