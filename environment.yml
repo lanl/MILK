@@ -1,15 +1,16 @@
-name: milk2
+name: milk
 
 channels:
-  - conda-forge
   - defaults
 
 dependencies:
-  - pip=22.1.2
-  - python=3.8
   - tqdm=4.64.0
+  - pip=22.1.2
   - prettytable=3.3.0
+  - python=3.8
+  - spyder=5.2.2
+  - pandas
 
   # pip packages
   - pip:
-    - git+https://github.com/lanl/MILK.git
+    - -e ./
