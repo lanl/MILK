@@ -19,11 +19,13 @@ def qpa(path='QPA'):
     unzip_download(dpath, path)
 
 
-def maudbatch(path='Maudbatch'):
-    """Download the Maudbatch phase analysis example from MAUD website."""
-    url = "http://nanoair.dii.unitn.it:8080/static/tutorial/batch.zip"
-    dpath = download_example(url, path, os.path.basename(url))
-    unzip_download(dpath, path)
+def maudbatch(path='maudbatch'):
+    """MAUD batch analysis example updated for newer versions of MAUD."""
+    # url = "http://nanoair.dii.unitn.it:8080/static/tutorial/batch.zip"
+    # dpath = download_example(url, path, os.path.basename(url))
+    # unzip_download(dpath, path)
+    fn = os.path.join(os.path.dirname(__file__), '../../examples/maudbatch')
+    shutil.copytree(fn, os.path.join(os.getcwd(), path))
 
 
 def hippo_texture(path='HIPPO/texture'):
