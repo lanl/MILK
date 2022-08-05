@@ -2,7 +2,8 @@ name: milk
 
 channels:
   - defaults
-
+  - conda-forge
+  
 dependencies:
   - tqdm=4.64.0
   - pip=22.1.2
