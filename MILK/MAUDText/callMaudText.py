@@ -18,7 +18,7 @@ import tqdm
 import csv
 from prettytable import (PrettyTable, from_csv)
 
-maud_path = os.getenv('MAUD_PATH')
+maud_path_global = os.getenv('MAUD_PATH')
 
 
 def resource_file_path(filename):
@@ -48,7 +48,9 @@ def get_arguments(argsin):
                         help='folders to run job in relative to work_dir /e.g. /run(wild)/preshock where (wild) is replaced by the wild and/or wild_range combined lists. wild need not be used')
     parser.add_argument('--nMAUD', '-i', type=int,
                         help='Specify the maximum number of MAUD instance to run at the same time')
-    parser.add_argument('--maud_path', '-mp', required=True,
+    parser.add_argument('--maud_path', '-mp', required=False,
+                        help='Specify the full path to the maud directory')
+    parser.add_argument('--java_opt', '-jo', required=False,
                         help='Specify the full path to the maud directory')
     parser.add_argument('--clean_old_step_data', '-cd',
                         help='Specify whether older step data should be removed')
@@ -63,6 +65,11 @@ def get_arguments(argsin):
     else:
         args = parser.parse_args(argsin.split(' '))
 
+    if args.maud_path is None or args.maud_path == '':
+        args.maud_path = maud_path_global
+
+    if args.java_opt is None or args.java_opt == '':
+        args.java_opt = ''
     return args
 
 
@@ -109,31 +116,31 @@ def build_paths(args):
     return ins, results, simple_results, refinement_id
 
 
-def run_MAUD(maud_path, ins_paths):
+def run_MAUD(maud_path, java_opt, ins_paths):
 
     # This may be modified once general paths are filled out
     if "linux" in sys.platform:
         # linux
         java = os.path.join(maud_path, 'jdk/bin/java')
         lib = os.path.join(maud_path, 'lib/*')
-        opts = f'-mx8196M -cp "{lib}"'
+        opts = f'{java_opt} -cp "{lib}"'
 
     elif "darwin" in sys.platform:
         # OS X
         java = os.path.join(maud_path, 'Contents/PlugIns/Home/bin/java')
         lib = os.path.join(maud_path, 'Contents/Java/*')
-        opts = f'-mx8196M -cp "{lib}"'
+        opts = f'-{java_opt} --enable-preview -cp "{lib}"'
 
     elif "win" in sys.platform:
         # Windows...
         raise NotImplementedError("Windows commandline call is not implemented yet.")
         java = os.path.join(maud_path, '/jdk/bin/java')
         lib = os.path.join(maud_path, 'lib/*')
-        opts = "-mx8196M --add-opens java.base/java.net=ALL-UNNAMED -cp {lib}"
+        opts = "{java_opt} --add-opens java.base/java.net=ALL-UNNAMED -cp {lib}"
 
     command = f'{java} {opts} com.radiographema.MaudText -file {ins_paths}'
 
-    p = sub.Popen(command, stdin=sub.PIPE, stdout=sub.PIPE, stderr=sub.PIPE)
+    p = sub.Popen(command, shell=True, stdin=sub.PIPE, stdout=sub.PIPE, stderr=sub.PIPE)
 
     # Write outputs to files
     out, err = p.communicate()
@@ -235,7 +242,7 @@ def main(argsin):
         pool = Pool(os.cpu_count())
 
     out = list(
-        tqdm.tqdm(pool.imap(partial(run_MAUD, args.maud_path), paths[0]), total=len(paths[0])))
+        tqdm.tqdm(pool.imap(partial(run_MAUD, args.maud_path, args.java_opt), paths[0]), total=len(paths[0])))
 
     # Backup the files
     print('')
