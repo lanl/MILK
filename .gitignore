@@ -12,3 +12,5 @@
 /examples/QPA/*
 /examples/HIPPO/texture/data/*
 /examples/Synchrotron/sequential_refinement/data/*
+/examples/Synchrotron/sequential_refinement/run*/*
+
