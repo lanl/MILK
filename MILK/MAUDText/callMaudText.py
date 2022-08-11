@@ -56,6 +56,8 @@ def get_arguments(argsin):
                         help='Specify whether older step data should be removed')
     parser.add_argument('--cur_step', '-cs', required=True,
                         help='Specify the current step counter')
+    parser.add_argument('--simple_call', '-sc', default='False',
+                        help='Supress printout to terminal and file export')
     parser.add_argument('--riet_append_result_to', '-results',
                         help='Results are parameters specified by autotrace e.g. results.csv')
     parser.add_argument('--riet_append_simple_result_to', '-simple_results',
@@ -116,7 +118,7 @@ def build_paths(args):
     return ins, results, simple_results, refinement_id
 
 
-def run_MAUD(maud_path, java_opt, ins_paths):
+def run_MAUD(maud_path, java_opt, simple_call, ins_paths):
 
     # This may be modified once general paths are filled out
     if "linux" in sys.platform:
@@ -142,22 +144,23 @@ def run_MAUD(maud_path, java_opt, ins_paths):
 
     p = sub.Popen(command, shell=True, stdin=sub.PIPE, stdout=sub.PIPE, stderr=sub.PIPE)
 
-    # Write outputs to files
     out, err = p.communicate()
-    out = out.splitlines()
-    err = err.splitlines()
-    fID = open(ins_paths[:-4]+'.log', "w")
-    for line in out:
-        fID.write('%s\n' % line)
-        # if 'Unable to open file' in line:
-        #   print(line)
+    if not simple_call:
+        # Write outputs to files
+        out = out.splitlines()
+        err = err.splitlines()
+        fID = open(ins_paths[:-4]+'.log', "w")
+        for line in out:
+            fID.write('%s\n' % line)
+            # if 'Unable to open file' in line:
+            #   print(line)
 
-    fID.close()
+        fID.close()
 
-    fID = open(ins_paths[:-4]+'.err', "w")
-    for line in err:
-        fID.write('%s\n' % line)
-    fID.close()
+        fID = open(ins_paths[:-4]+'.err', "w")
+        for line in err:
+            fID.write('%s\n' % line)
+        fID.close()
 
     return 0
 
@@ -207,6 +210,20 @@ def main(argsin):
     args = get_arguments(argsin)
     paths = build_paths(args)
 
+    if args.simple_call == 'True':
+        print('Starting MAUD refinement for step '+args.cur_step)
+        if args.nMAUD != None:
+            if args.nMAUD > os.cpu_count():
+                pool = Pool(os.cpu_count())
+            else:
+                pool = Pool(args.nMAUD)
+        else:
+            pool = Pool(os.cpu_count())
+        out = pool.map(partial(run_MAUD, args.maud_path,
+                               args.java_opt,
+                               args.simple_call), paths[0])
+        return
+
     print('')
     print('Starting MAUD refinement for step '+args.cur_step)
     print('=========================')
@@ -242,7 +259,12 @@ def main(argsin):
         pool = Pool(os.cpu_count())
 
     out = list(
-        tqdm.tqdm(pool.imap(partial(run_MAUD, args.maud_path, args.java_opt), paths[0]), total=len(paths[0])))
+        tqdm.tqdm(pool.imap(partial(run_MAUD,
+                                    args.maud_path,
+                                    args.java_opt,
+                                    args.simple_call),
+                            paths[0]),
+                  total=len(paths[0])))
 
     # Backup the files
     print('')
