@@ -211,7 +211,6 @@ def main(argsin):
     paths = build_paths(args)
 
     if args.simple_call == 'True':
-        print('Starting MAUD refinement for step '+args.cur_step)
         if args.nMAUD != None:
             if args.nMAUD > os.cpu_count():
                 pool = Pool(os.cpu_count())
