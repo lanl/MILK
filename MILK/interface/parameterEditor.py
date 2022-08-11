@@ -351,6 +351,51 @@ class editor(arguments):
         if run:
             self.value = main(self.args)
 
+    def get_err(self, key, loopid=None, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, sub_dir=None, wild=None, wild_range=None):
+        '''
+        get parameter value err in .par file
+        Required Inputs: 
+            keys     (str): Background, Intensity,ODFRefine,MicroStrain,CrystSize, DetPosX, DetPosY, DetPosDist, Biso, or userdefined (e.g. _riet_par_spec_displac_x)
+        Optional inputs:
+            loopid   (str): a zero based integer specifying a parameter location in a loop variable. By default all loop values are changed
+            sobj     (str): one or more subordinate objects to include in the scope of operation
+            nsobj    (str): one or more subordinate objects to exclude in the scope of operation
+            run     (bool): specifies whether to apply changes to parameter files
+            ifile    (str): input parameter file 
+            dir      (str): working work_dir
+
+        Outputs: 
+            Updates editor arguments and applies changes to parameter files if run=True(default)
+        '''
+        if work_dir != None:
+            self.work_dir = work_dir
+        if ifile != None:
+            self.ifile = ifile
+        if ofile != None:
+            self.ofile = ofile
+        if run_dirs != None:
+            self.run_dirs = run_dirs
+        if sub_dir != None:
+            self.sub_dir = sub_dir
+        if wild != None:
+            self.wild = wild
+        if wild_range != None:
+            self.wild_range = wild_range
+        self.key1 = key
+        self.key2 = None
+        self.task = 'get_err'
+        self.sobj1 = sobj
+        self.sobj2 = None
+        self.nsobj1 = nsobj
+        self.nsobj2 = None
+        self.value = None
+        self.loopid = loopid
+
+        # combine the arguments and run if applicable
+        self.parse_arguments()
+        if run:
+            self.value = main(self.args)
+
     def fix_all(self, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, sub_dir=None, wild=None, wild_range=None):
         '''
         fix all parameters in .par file
@@ -1019,6 +1064,30 @@ def get_val(lines, index, isloop, indloop, loopid):
     return value
 
 
+def get_err(lines, index, isloop, indloop, loopid):
+    err = []
+    for i, ind in enumerate(index):
+        if isloop[i]:
+            offset = 0
+            if str(indloop[i]) == loopid or loopid == 'None':
+                tmp = lines[ind].lstrip(' ')
+                tmp = tmp.split(' ')[offset]
+                if '(' in tmp:
+                    err.append(tmp.split('(')[1].split(')')[0])
+                else:
+                    err.append('0.0')
+        else:
+            offset = 1
+            tmp = lines[ind].lstrip(' ')
+            tmp = tmp.split(' ')[offset]
+            if '(' in tmp:
+                err.append(tmp.split('(')[1].split(')')[0])
+            else:
+                err.append('0.0')
+
+    return err
+
+
 def fix_parameter(lines, index, isloop, indloop, loopid):
     nlineMod = 0
     for i in range(0, len(index)):
@@ -1424,6 +1493,8 @@ def main(argsin):
             tmp = untrack_all(lines)
         elif args.task == 'get_val':
             return get_val(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
+        elif args.task == 'get_err':
+            return get_err(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
         else:
             raise NameError('key is not implemented')
 
