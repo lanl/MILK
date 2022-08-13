@@ -146,7 +146,7 @@ def run_MAUD(maud_path, java_opt, simple_call, ins_paths):
     p = sub.Popen(command, shell=True, stdin=sub.PIPE, stdout=sub.PIPE, stderr=sub.PIPE)
 
     out, err = p.communicate()
-    if not simple_call:
+    if simple_call == 'False':
         # Write outputs to files
         out = out.splitlines()
         err = err.splitlines()
