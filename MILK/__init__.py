@@ -12,6 +12,7 @@ from MILK.interface.model import (texture, sizeStrain)
 from MILK.MAUDText import maud
 from MILK.MAUDText.callMaudText import resource_file_path
 from MILK.environment.initilize import load_json
+from MILK import utilities
 import os
 import sys
 
