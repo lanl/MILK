@@ -188,6 +188,8 @@ class arguments:
             self.clean_old_step_data = 'False'
         if self.cur_step != None:
             args = args+'--cur_step '+str(self.cur_step)+' '
+        if self.simple_call != None and self.simple_call:
+            args = args+'--simple_call True'+' '
         if self.riet_append_simple_result_to != None:
             args = args+'--riet_append_simple_result_to '+self.riet_append_simple_result_to+' '
         if self.riet_append_result_to != None:
@@ -204,7 +206,8 @@ class maudText(arguments):
     def refinement(self, itr=None, wizard_index=None, ifile=None, ofile=None, sub_dir=None,
                    wild=None, wild_range=None, work_dir=None, verboseins=None,
                    verbosecompute=None, n_maud=None, run=True, import_phases=False,
-                   import_lcls=False, export_PFs=False, export_plots=False, inc_step=True):
+                   import_lcls=False, export_PFs=False, export_plots=False, inc_step=True,
+                   simple_call=False):
         '''
         untracking all parameter outputs and stops there value from being printed in summary document after a refinement unless basic parameter
         Optional inputs:
@@ -245,6 +248,7 @@ class maudText(arguments):
         self.import_lcls = import_lcls
         self.export_PFs = export_PFs
         self.export_plots = export_plots
+        self.simple_call = simple_call
 
         # parse
         self.parse_arguments_ins()

@@ -11,6 +11,8 @@ dependencies:
   - python=3.8
   - spyder=5.2.2
   - pandas
+  - pydantic
+  - seaborn
 
   # pip packages
   - pip:

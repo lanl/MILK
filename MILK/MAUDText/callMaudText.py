@@ -17,6 +17,7 @@ import sys
 import tqdm
 import csv
 from prettytable import (PrettyTable, from_csv)
+import errno
 
 maud_path_global = os.getenv('MAUD_PATH')
 
@@ -56,6 +57,8 @@ def get_arguments(argsin):
                         help='Specify whether older step data should be removed')
     parser.add_argument('--cur_step', '-cs', required=True,
                         help='Specify the current step counter')
+    parser.add_argument('--simple_call', '-sc', default='False',
+                        help='Supress printout to terminal and file export')
     parser.add_argument('--riet_append_result_to', '-results',
                         help='Results are parameters specified by autotrace e.g. results.csv')
     parser.add_argument('--riet_append_simple_result_to', '-simple_results',
@@ -116,7 +119,7 @@ def build_paths(args):
     return ins, results, simple_results, refinement_id
 
 
-def run_MAUD(maud_path, java_opt, ins_paths):
+def run_MAUD(maud_path, java_opt, simple_call, ins_paths):
 
     # This may be modified once general paths are filled out
     if "linux" in sys.platform:
@@ -142,24 +145,102 @@ def run_MAUD(maud_path, java_opt, ins_paths):
 
     p = sub.Popen(command, shell=True, stdin=sub.PIPE, stdout=sub.PIPE, stderr=sub.PIPE)
 
-    # Write outputs to files
     out, err = p.communicate()
-    out = out.splitlines()
-    err = err.splitlines()
-    fID = open(ins_paths[:-4]+'.log', "w")
-    for line in out:
-        fID.write('%s\n' % line)
-        # if 'Unable to open file' in line:
-        #   print(line)
+    if not simple_call:
+        # Write outputs to files
+        out = out.splitlines()
+        err = err.splitlines()
+        fID = open(ins_paths[:-4]+'.log', "w")
+        for line in out:
+            fID.write('%s\n' % line)
+            # if 'Unable to open file' in line:
+            #   print(line)
 
-    fID.close()
+        fID.close()
 
-    fID = open(ins_paths[:-4]+'.err', "w")
-    for line in err:
-        fID.write('%s\n' % line)
-    fID.close()
+        fID = open(ins_paths[:-4]+'.err', "w")
+        for line in err:
+            fID.write('%s\n' % line)
+        fID.close()
 
     return 0
+
+
+def manage_step_dirs(path: str,
+                     step: int,
+                     riet_analysis_file: str):
+    """
+    Manage the step folders if applicable.
+
+    Parameters
+    ----------
+    path : str
+        Working directory.
+    step : int
+        Argument overrides the cur_step unless None
+
+    """
+    def del_step_dir_ge(path: str, max_step: int, last_step: int):
+        """Remove Step directories >= step."""
+        for step in range(max_step, last_step):
+            os.rmdir(get_step_dir(path, step))
+
+    def get_cur_step(path: str, step: int):
+        """Get current step."""
+        if step is None:
+            step = get_last_step(path) + 1
+
+        return step
+
+    def get_last_step(path):
+        """Get the last step in the directory."""
+        steps = [name for name in os.listdir(path) if os.path.isdir(
+            os.path.join(path, name)) and 'Step' in name]
+
+        last_step = [0]
+        for step in steps:
+            last_step.append(int(step.split('Step')[-1]))
+
+        return max(last_step)
+
+    def get_step_dir(path, step):
+        """Compute the Step directory path."""
+        return os.path.join(path, 'Step' + str(step))
+
+    # Get current step and folder
+    cur_step = get_cur_step(path, step)
+    cur_path = get_step_dir(path, cur_step)
+
+    # Get last step and folder
+    last_step = get_last_step(path)
+    if last_step < 1:
+        # if not last step then use working directory
+        last_path = path
+    else:
+        last_path = get_step_dir(path, last_step)
+
+    # cleanup_step_folders
+    del_step_dir_ge(path, cur_step, last_step)
+
+    # Make fresh step folder
+    os.makedirs(cur_path)
+
+    # Copy riet_analysis_file to current folder
+    riet_last_path = os.path.join(last_path, riet_analysis_file)
+    if not os.path.exists(riet_last_path):
+        riet_last_path = os.path.join(path, riet_analysis_file)
+        if not os.path.exists(riet_last_path):
+            raise FileNotFoundError(errno.ENOENT,
+                                    os.strerror(errno.ENOENT),
+                                    riet_analysis_file)
+
+    riet_cur_path = os.path.join(cur_path, riet_analysis_file)
+    try:
+        shutil.copyfile(riet_last_path, riet_cur_path)
+    except IOError as e:
+        print("Unable to copy file. %s" % e)
+
+    return cur_path
 
 
 def scrap_results(scrapeFileName, resultFileName, refinement_id):
@@ -207,6 +288,19 @@ def main(argsin):
     args = get_arguments(argsin)
     paths = build_paths(args)
 
+    if args.simple_call == 'True':
+        if args.nMAUD != None:
+            if args.nMAUD > os.cpu_count():
+                pool = Pool(os.cpu_count())
+            else:
+                pool = Pool(args.nMAUD)
+        else:
+            pool = Pool(os.cpu_count())
+        out = pool.map(partial(run_MAUD, args.maud_path,
+                               args.java_opt,
+                               args.simple_call), paths[0])
+        return
+
     print('')
     print('Starting MAUD refinement for step '+args.cur_step)
     print('=========================')
@@ -242,7 +336,15 @@ def main(argsin):
         pool = Pool(os.cpu_count())
 
     out = list(
-        tqdm.tqdm(pool.imap(partial(run_MAUD, args.maud_path, args.java_opt), paths[0]), total=len(paths[0])))
+        tqdm.tqdm(
+            pool.imap(partial(run_MAUD,
+                              args.maud_path,
+                              args.java_opt,
+                              args.simple_call),
+                      paths[0]),
+            total=len(paths[0])
+        )
+    )
 
     # Backup the files
     print('')
