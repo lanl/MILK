@@ -123,7 +123,7 @@ class arguments:
         if self.maud_export_pole_figures != None and self.maud_export_pole_figures != '' and self.export_PFs:
             args = args+'--maud_export_pole_figures '+self.maud_export_pole_figures+' '
         if self.maud_remove_all_datafiles != None and self.import_lcls:
-            args = args+'--maud_remove_all_datafiles '+self.maud_remove_all_datafiles+' '
+            args = args+'--maud_remove_all_datafiles '+f"{self.maud_remove_all_datafiles}"+' '
         if self.riet_append_simple_result_to != None:
             args = args+'--riet_append_simple_result_to '+self.riet_append_simple_result_to+' '
         if self.riet_append_result_to != None:
@@ -205,7 +205,7 @@ class maudText(arguments):
 
     def refinement(self, itr=None, wizard_index=None, ifile=None, ofile=None, sub_dir=None,
                    wild=None, wild_range=None, work_dir=None, verboseins=None,
-                   verbosecompute=None, n_maud=None, run=True, import_phases=False,
+                   verbosecompute=None, n_maud=None, run=True, export_ins=True, import_phases=False,
                    import_lcls=False, export_PFs=False, export_plots=False, inc_step=True,
                    simple_call=False):
         '''
@@ -253,7 +253,8 @@ class maudText(arguments):
         # parse
         self.parse_arguments_ins()
         self.parse_arguments_compute()
-        generateIns.main(self.args_ins)
+        if export_ins:
+            generateIns.main(self.args_ins)
         if run:
             callMaudText.main(self.args_compute)
             if inc_step:
