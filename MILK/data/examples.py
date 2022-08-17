@@ -36,7 +36,7 @@ def hippo_texture(path='HIPPO/texture'):
 
 def sequential_refinement(path='synchrotron/sequential_refinement'):
     """Synchrotron three sequential refinement example."""
-    fn = os.path.join(os.path.dirname(__file__), '../../examples/synchrotron/sequential_refinement')
+    fn = os.path.join(os.path.dirname(__file__), '../../examples/Synchrotron/sequential_refinement')
     shutil.copytree(fn, os.path.join(os.getcwd(), path))
 
 
