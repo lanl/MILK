@@ -14,3 +14,4 @@
 /examples/Synchrotron/sequential_refinement/data/*
 /examples/Synchrotron/sequential_refinement/run*/*
 *.csv
+examples/Synchrotron/sequential_refinement/groupDatasets.txt
