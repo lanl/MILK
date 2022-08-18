@@ -20,7 +20,7 @@ from prettytable import (PrettyTable, from_csv)
 import errno
 
 maud_path_global = os.getenv('MAUD_PATH')
-
+maud_path_global = maud_path_global.strip("'")
 
 def resource_file_path(filename):
     for d in sys.path:
@@ -136,10 +136,10 @@ def run_MAUD(maud_path, java_opt, simple_call, ins_paths):
 
     elif "win" in sys.platform:
         # Windows...
-        raise NotImplementedError("Windows commandline call is not implemented yet.")
-        java = os.path.join(maud_path, '/jdk/bin/java')
-        lib = os.path.join(maud_path, 'lib/*')
-        opts = "-{java_opt}  --enable-preview --add-opens java.base/java.net=ALL-UNNAMED -cp {lib}"
+        #raise NotImplementedError("Windows commandline call is not implemented yet.")
+        java = os.path.join(maud_path, 'jdk\\bin\\java')
+        lib = os.path.join(maud_path, 'lib\\*')
+        opts = f"-{java_opt}  --enable-preview --add-opens java.base/java.net=ALL-UNNAMED -cp \"{lib}\""
 
     command = f'{java} {opts} com.radiographema.MaudText -file {ins_paths}'
 
