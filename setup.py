@@ -9,7 +9,7 @@ Created on Mon Mar  8 17:05:49 2021
 from setuptools import setup
 from setuptools import find_packages
 setup(name='MILK',
-      version='0.1',
+      version='0.2',
       description='MAUD Interface Tool Kit',
       url='https://github.com/lanl/MILK.git',
       author='Daniel Savage',
