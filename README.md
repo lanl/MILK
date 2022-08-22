@@ -3,7 +3,6 @@ MILK
 ![](https://img.shields.io/github/languages/top/lanl/MILK)&nbsp;
 ![](https://img.shields.io/github/v/release/lanl/MILK)&nbsp;
 ![](https://img.shields.io/github/repo-size/lanl/MILK)&nbsp;
-[![Github Downloads (total)](https://img.shields.io/github/downloads/lanl/MILK/total.svg)]()&nbsp;
 ![](https://img.shields.io/github/contributors/lanl/MILK)&nbsp;
 
 MAUD Interface Language Kit (MILK) is a set of Rietveld tools for automated processing of diffraction datasets. It's main features are:
@@ -33,6 +32,7 @@ conda env create -f environment.yml
 ```bash
 config_maud.py -p /path/to/maud/application/Maud.app
 ```
+In the case you are on linux or windows, you just specify the Maud folder without the .app
 
 Contributing
 ============
