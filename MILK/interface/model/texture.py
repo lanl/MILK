@@ -127,7 +127,7 @@ def get_arguments(argsin):
 def insert_tex(lines,index,args):
 
     if args.key=='Arbitrary':
-        fname='ArbitraryTexture.txt'
+        fname='arbitraryTexture.txt'
     elif args.key=='None':
         fname='NoTexture.txt'
     elif args.key=='EWIMV':
