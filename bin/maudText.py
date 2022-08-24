@@ -18,9 +18,9 @@ def main():
     parser.add_argument("-f", "--file", type=str, required=True,
                         help="Ins filename and relative path.")
     parser.add_argument("-p", "--maud_path", type=str, default=None,
-                        help="Ins filename and relative path.")
-    parser.add_argument("-j", "--java_opt", type=str, default="Xmx8G",
-                        help="Ins filename and relative path.")
+                        help="Path to MAUD installation if different than MAUD_PATH in environement.")
+    parser.add_argument("-j", "--java_opt", type=str, default="mx8G",
+                        help="Java commandline options.")
     args = parser.parse_args()
 
     if args.maud_path is None:
@@ -29,6 +29,7 @@ def main():
     MILK.MAUDText.callMaudText.run_MAUD(
         args.maud_path,
         args.java_opt,
+        'True',
         args.file
     )
 
