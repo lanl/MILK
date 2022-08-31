@@ -73,7 +73,7 @@ class arguments:
         self.maud_LCLS2_Cspad0_original_image = config["ins"]["LCLS2_Cspad0_original_image"]
         self.maud_LCLS2_Cspad0_dark_image = config["ins"]["LCLS2_Cspad0_dark_image"]
         self.maud_output_plot2D_filename = config["ins"]["output_plot2D_filename"]
-        self.maud_output_summed_data_filename = config["ins"]["output_summed_data_filename"]
+        self.maud_output_diff_data_filename = config["ins"]["output_summed_data_filename"]
         self.maud_output_plot_filename = config["ins"]["maud_output_plot_filename"]
         self.maud_export_pole_figures_filename = config["ins"]["output_PF_filename"]
         self.maud_export_pole_figures = config["ins"]["output_PF"]
@@ -114,8 +114,8 @@ class arguments:
             args = args+'--maud_LCLS2_Cspad0_dark_image '+self.maud_LCLS2_Cspad0_dark_image+' '
         if self.maud_output_plot2D_filename != None and self.maud_output_plot2D_filename != '' and self.export_plots:
             args = args+'--maud_output_plot2D_filename '+self.maud_output_plot2D_filename+' '
-        if self.maud_output_summed_data_filename is not None and self.maud_output_summed_data_filename != '':
-            args = args+'--maud_output_summed_data_filename '+self.maud_output_summed_data_filename + ' '
+        if self.maud_output_diff_data_filename is not None and self.maud_output_diff_data_filename != '':
+            args = args+'--maud_output_diff_data_filename '+self.maud_output_diff_data_filename + ' '
         if self.maud_output_plot_filename is not None and self.maud_output_plot_filename != '' and self.export_plots:
             args = args+'--maud_output_plot_filename '+self.maud_output_plot_filename + ' '
         if self.maud_export_pole_figures_filename != None and self.maud_export_pole_figures_filename != '' and self.export_PFs:

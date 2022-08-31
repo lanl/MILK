@@ -23,7 +23,7 @@ def maud_ins_dictionary():
          'maud_LCLS2_Cspad0_dark_image': '',
          'maud_output_plot_filename': '',
          'maud_output_plot2D_filename': '',
-         'maud_output_summed_data_filename': '',
+         'maud_output_diff_data_filename': '',
          'maud_export_pole_figures_filename': '',
          'maud_export_pole_figures': '',
          'riet_append_simple_result_to': '',
@@ -255,7 +255,7 @@ def get_arguments(argsin):
                         help='specify path and prefix to store 1D spectra fit images')
     parser.add_argument('--maud_output_plot2D_filename', '-plot2d',
                         help='specify path and prefix to store 2D spectra fit images')
-    parser.add_argument('--maud_output_summed_data_filename', '-export_all',
+    parser.add_argument('--maud_output_diff_data_filename', '-export_all',
                         help='specify path and prefix to store all spectra in')
     parser.add_argument('--maud_import_phase', '-ip', nargs='+',
                         help='specify full or relative path to cif phase file(s)')
