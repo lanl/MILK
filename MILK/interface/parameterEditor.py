@@ -495,6 +495,51 @@ class editor(arguments):
 
     def un_ref(self):
         print('un_ref is currently unimplemented')
+ 
+    def add_datafile_bk_par(self, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, sub_dir=None, wild=None, wild_range=None):
+        '''
+        add individual datafile background parameter.
+        Optional inputs: 
+            sobj     (str): one or more subordinate objects to include in the scope of operation
+            nsobj    (str): one or more subordinate objects to exclude in the scope of operation
+            run     (bool): specifies whether to apply changes to parameter files
+            ifile    (str): input parameter file 
+            dir      (str): working work_dir
+
+        Outputs: 
+            Updates editor arguments and applies changes to parameter files if run=True(default)
+        '''
+        if work_dir != None:
+            self.work_dir = work_dir
+        if ifile != None:
+            self.ifile = ifile
+        if ofile != None:
+            self.ofile = ofile
+        if run_dirs != None:
+            self.run_dirs = run_dirs
+        if sub_dir != None:
+            self.sub_dir = sub_dir
+        if wild != None:
+            self.wild = wild
+        if wild_range != None:
+            self.wild_range = wild_range
+        self.key1 = 'Background'
+        self.key2 = None
+        self.task = 'add_datafile_bk_par'
+        self.sobj1 = sobj
+        self.sobj2 = None
+        self.nsobj1 = nsobj
+        self.nsobj2 = None
+        self.value = None
+        self.loopid = None
+
+        # combine the arguments and run if applicable
+        self.parse_arguments()
+        if run:
+            main(self.args)
+
+        # Prevent reinitialization
+        self.ifile = self.ofile
 
     def add(self, key, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, sub_dir=None, wild=None, wild_range=None):
         '''
@@ -1385,6 +1430,73 @@ def getStats(linesMod, nlinesMod, ifile, key):
     print(str(nlinesMod)+' lines were changed')
     print(str(nfree)+' parameters are free')
 
+def add_datafile_background_keys(lines,d,sobj,nsobj):
+    
+    lines_to_insert=[
+        '\n',
+        'loop_\n',
+        f'{d["Background"]}\n',
+        '0 #min -10000.0 #max 10000.0\n'
+        ]
+    
+    #Clean sobj filtering
+    if nsobj[0] is None or nsobj[0] == "None":
+        nsobj=[]
+    if sobj[0] is None or sobj[0] == "None":
+        sobj=[]
+
+    #Get index to insert lines if no background already there for datafile
+    insert_index=[]
+    insert_index_exists=[]
+    is_datafile=[]
+    sobj_cur=[]
+    sobj_index=[]
+
+    for i, line in enumerate(lines):
+        # keep track of the subordinate objects
+        if 'subordinateObject' in line:
+            if 'end' in line:
+                is_datafile.pop()
+                sobj_cur.pop()
+            else:
+                is_datafile.append(False)     
+                sobj_cur.append(line.partition('subordinateObject')[2])
+                              
+        if "_riet_meas_datafile_compute" in line and is_datafile!=[]:
+            sub_text = ''.join(sobj_cur)
+            if all(x not in sub_text for x in nsobj) and all(x in sub_text for x in sobj):               
+                #Get potential index to insert lines_to_insert 
+                ind = i + 1
+                line = lines[ind]
+                while bool(line.strip()):
+                    ind = ind+1
+                    line = lines[ind]
+               
+                is_datafile[-1]=True   
+                insert_index.append(ind)
+
+
+        if d["Background"] in line and is_datafile[-1]:
+            #Update the index to the end of the background loop              
+            ind = i + 1
+            line = lines[ind]
+            while bool(line.strip()):
+                ind = ind+1
+                line = lines[ind]
+            insert_index_exists.append(ind)
+            insert_index[-1]=ind
+
+    #Insert background loop where missing
+    nlines=0
+    for index in reversed(insert_index):
+        if index in insert_index_exists:
+            nlines+=1
+            lines.insert(index,lines_to_insert[-1])
+        else:
+            for line in reversed(lines_to_insert):
+                nlines+=1
+                lines.insert(index,line)
+    return lines,nlines
 
 def main(argsin):
     # Get arguments from user
@@ -1411,95 +1523,98 @@ def main(argsin):
             else:
                 keyword = key
 
-            tmp = search_list(lines, keyword, d)
-            index.append(tmp[0])
-            sobj_index.append(tmp[1])
-            isloop_index.append(tmp[2])
-            indloop_index.append(tmp[3])
-            endloop_index.append(tmp[4])
-
-            # Filter keyword by subordinate object
-            if args.sobj[i][0] == 'First':
-                index[i] = [index[i][0]]
-                isloop_index[i] = [isloop_index[i][0]]
-                indloop_index[i] = [indloop_index[i][0]]
-                endloop_index[i] = [endloop_index[i][0]]
+            if args.task=='add_datafile_bk_par':
+               linesMod,nlinesMod = add_datafile_background_keys(lines,d,args.sobj[i],args.nsobj[i])
             else:
-                if args.sobj[i][0] != None and args.sobj[i][0] != 'None':
-                    indextmp = []
-                    isloop_indextmp = []
-                    indloop_indextmp = []
-                    endloop_indextmp = []
-                    sobj_indextmp = []
-                    for j in range(0, len(index[i])):
-                        sobjs = ''.join(sobj_index[i][j])
-                        if all(x in sobjs for x in args.sobj[i]):
-                            # print(sobjs)
-                            indextmp.append(index[i][j])
-                            isloop_indextmp.append(isloop_index[i][j])
-                            indloop_indextmp.append(indloop_index[i][j])
-                            endloop_indextmp.append(endloop_index[i][j])
-                            sobj_indextmp.append(sobj_index[i][j])
-                    index[i] = indextmp
-                    isloop_index[i] = isloop_indextmp
-                    indloop_index[i] = indloop_indextmp
-                    endloop_index[i] = endloop_indextmp
-                    sobj_index[i] = sobj_indextmp
-                if args.nsobj[i][0] != None and args.nsobj[i][0] != 'None':
-                    indextmp = []
-                    isloop_indextmp = []
-                    indloop_indextmp = []
-                    endloop_indextmp = []
-                    for j in range(0, len(index[i])):
-                        sobjs = ''.join(sobj_index[i][j])
-                        if all(x not in sobjs for x in args.nsobj[i]):
-                            # print(sobjs)
-                            indextmp.append(index[i][j])
-                            isloop_indextmp.append(isloop_index[i][j])
-                            indloop_indextmp.append(indloop_index[i][j])
-                            endloop_indextmp.append(endloop_index[i][j])
-                    index[i] = indextmp
-                    isloop_index[i] = isloop_indextmp
-                    indloop_index[i] = indloop_indextmp
-                    endloop_index[i] = endloop_indextmp
+                tmp = search_list(lines, keyword, d)
+                index.append(tmp[0])
+                sobj_index.append(tmp[1])
+                isloop_index.append(tmp[2])
+                indloop_index.append(tmp[3])
+                endloop_index.append(tmp[4])
 
-        lines = lines
+                # Filter keyword by subordinate object
+                if args.sobj[i][0] == 'First':
+                    index[i] = [index[i][0]]
+                    isloop_index[i] = [isloop_index[i][0]]
+                    indloop_index[i] = [indloop_index[i][0]]
+                    endloop_index[i] = [endloop_index[i][0]]
+                else:
+                    if args.sobj[i][0] != None and args.sobj[i][0] != 'None':
+                        indextmp = []
+                        isloop_indextmp = []
+                        indloop_indextmp = []
+                        endloop_indextmp = []
+                        sobj_indextmp = []
+                        for j in range(0, len(index[i])):
+                            sobjs = ''.join(sobj_index[i][j])
+                            if all(x in sobjs for x in args.sobj[i]):
+                                # print(sobjs)
+                                indextmp.append(index[i][j])
+                                isloop_indextmp.append(isloop_index[i][j])
+                                indloop_indextmp.append(indloop_index[i][j])
+                                endloop_indextmp.append(endloop_index[i][j])
+                                sobj_indextmp.append(sobj_index[i][j])
+                        index[i] = indextmp
+                        isloop_index[i] = isloop_indextmp
+                        indloop_index[i] = indloop_indextmp
+                        endloop_index[i] = endloop_indextmp
+                        sobj_index[i] = sobj_indextmp
+                    if args.nsobj[i][0] != None and args.nsobj[i][0] != 'None':
+                        indextmp = []
+                        isloop_indextmp = []
+                        indloop_indextmp = []
+                        endloop_indextmp = []
+                        for j in range(0, len(index[i])):
+                            sobjs = ''.join(sobj_index[i][j])
+                            if all(x not in sobjs for x in args.nsobj[i]):
+                                # print(sobjs)
+                                indextmp.append(index[i][j])
+                                isloop_indextmp.append(isloop_index[i][j])
+                                indloop_indextmp.append(indloop_index[i][j])
+                                endloop_indextmp.append(endloop_index[i][j])
+                        index[i] = indextmp
+                        isloop_index[i] = isloop_indextmp
+                        indloop_index[i] = indloop_indextmp
+                        endloop_index[i] = endloop_indextmp
 
-        # Apply the specified task
-        if args.task == 'free_par':
-            tmp = free_parameter(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
-        elif args.task == 'fix_par':
-            tmp = fix_parameter(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
-        elif args.task == 'set_par':
-            tmp = set_par(lines, args.value, index[0],
-                          isloop_index[0], indloop_index[0], args.loopid)
-        elif args.task == 'fix_all':
-            tmp = fix_all(lines)
-        elif args.task == 'reset_odf':
-            tmp = reset_odf(lines, index[0])
-        elif args.task == 'ref_par':
-            tmp = ref_par(lines, index, args.value, isloop_index, indloop_index, args.loopid)
-        elif args.task == 'add_par':
-            tmp = add_par(lines, index[0], endloop_index[0])
-        elif args.task == 'rem_par':
-            tmp = rem_par(lines, index[0], endloop_index[0])
-        elif args.task == 'un_ref_par':
-            raise NameError('key is not implemented')
-        elif args.task == 'track_par':
-            tmp = track_par(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
-        elif args.task == 'untrack_par':
-            tmp = untrack_par(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
-        elif args.task == 'untrack_all':
-            tmp = untrack_all(lines)
-        elif args.task == 'get_val':
-            return get_val(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
-        elif args.task == 'get_err':
-            return get_err(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
-        else:
-            raise NameError('key is not implemented')
+                lines = lines
 
-        linesMod = tmp[0]
-        nlinesMod = tmp[1]
+                # Apply the specified task
+                if args.task == 'free_par':
+                    tmp = free_parameter(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
+                elif args.task == 'fix_par':
+                    tmp = fix_parameter(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
+                elif args.task == 'set_par':
+                    tmp = set_par(lines, args.value, index[0],
+                                isloop_index[0], indloop_index[0], args.loopid)
+                elif args.task == 'fix_all':
+                    tmp = fix_all(lines)
+                elif args.task == 'reset_odf':
+                    tmp = reset_odf(lines, index[0])
+                elif args.task == 'ref_par':
+                    tmp = ref_par(lines, index, args.value, isloop_index, indloop_index, args.loopid)
+                elif args.task == 'add_par':
+                    tmp = add_par(lines, index[0], endloop_index[0])
+                elif args.task == 'rem_par':
+                    tmp = rem_par(lines, index[0], endloop_index[0])
+                elif args.task == 'un_ref_par':
+                    raise NameError('key is not implemented')
+                elif args.task == 'track_par':
+                    tmp = track_par(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
+                elif args.task == 'untrack_par':
+                    tmp = untrack_par(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
+                elif args.task == 'untrack_all':
+                    tmp = untrack_all(lines)
+                elif args.task == 'get_val':
+                    return get_val(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
+                elif args.task == 'get_err':
+                    return get_err(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
+                else:
+                    raise NameError('key is not implemented')
+
+                linesMod = tmp[0]
+                nlinesMod = tmp[1]
 
         # write back the par
         write_par(linesMod, args.ofile[ind])
