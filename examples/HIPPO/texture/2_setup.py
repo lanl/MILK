@@ -14,7 +14,7 @@ def free_bank_parameters(keyname, editor, hippo):
         detector = hippo["detectors"][detid]
         for i in range(bankRange[0], bankRange[1]):
             if i+1 not in hippo["banks_remove"]:
-                editor.free(key=keyname, sobj='Bank'+str(detector), loopid=str(i))
+                editor.free(key=keyname, sobj=f'{hippo["bank_prefix"]}{detector}', loopid=str(i))
     return editor
 
 
@@ -22,7 +22,7 @@ def fix_bank_parameters(keyname, editor, hippo):
     for detid, bankRange in enumerate(hippo["banks"]):
         detector = hippo["detectors"][detid]
         for i in range(bankRange[0], bankRange[1]):
-            editor.fix(key=keyname, sobj='Bank'+str(detector), loopid=str(i))
+            editor.fix(key=keyname, sobj=f'{hippo["bank_prefix"]}{detector}', loopid=str(i))
     return editor
 
 
@@ -67,23 +67,23 @@ if __name__ == '__main__':
     for i, dspacing in enumerate(hippo["dspacing"]):
         editor.set_val(key='_pd_proc_2theta_range_min',
                        value=str(dspacing[0]),
-                       sobj=str(hippo["detectors"][i]))
+                       sobj=f'{hippo["bank_prefix"]}{hippo["detectors"][i]}')
         editor.set_val(key='_pd_proc_2theta_range_max',
                        value=str(dspacing[1]),
-                       sobj=str(hippo["detectors"][i]))
+                       sobj=f'{hippo["bank_prefix"]}{hippo["detectors"][i]}')
 
     # Fix one difc to break lattice parameter correlation
     #===================================================#
     editor.get_val(key='_instrument_bank_difc',
                    loopid='0',
-                   sobj=f'Bank{hippo["detectors"][0]} {hippo["rot_names"][0]}',
+                   sobj=f'{hippo["bank_prefix"]}{hippo["detectors"][0]} {hippo["rot_names"][0]}',
                    nsobj='90.0')
 
     editor.ref(key1='_instrument_bank_difc',
                key2='_pd_spec_size_radius_y',
                value=f'{editor.value[0]} 0 100000',
                loopid='0',
-               sobj1=f'Bank{hippo["detectors"][0]} {hippo["rot_names"][0]}',
+               sobj1=f'{hippo["bank_prefix"]}{hippo["detectors"][0]} {hippo["rot_names"][0]}',
                nsobj1='90.0')
 
     # Use MAUD to load the phase and refine the intensity scaling
