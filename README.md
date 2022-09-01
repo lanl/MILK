@@ -18,20 +18,28 @@ More details and tutorials can be found in the [wiki](https://github.com/lanl/MI
 Installation and requirements
 =============================
 
-MILK requires the current MAUD experimental build adue to feature development and java support. Only OSX is currently compiled by Luca. Python requirements are packaged in the conda environement.yml.
+MILK requires the most recent MAUD release which is currently hosted in the Dropbox MAUD folder. Python requirements are packaged in the conda environement.yml.
 
 To install:
 1. install anaconda or miniconda
-2. Clone the MILK repository locally
+2. Clone the MILK repository locally.
+
+```bash
+git clone https://github.com/lanl/MILK.git
+```
+
 3. To install MILK locally in terminal navigate to the repository and run
 ```bash
 conda env create -f environment.yml
-
 ```
-5. To install your MAUD path to your conda environment run
+By editing environment.yml, the name of the conda environment can be changed from the default "milk" to e.g. "milk_test" or so.
+
+4. To install your MAUD path to your conda environment run
 ```bash
 config_maud.py -p /path/to/maud/application/Maud.app
 ```
+MILK uses the bash key $MAUD_PATH if it is defined unless a path is specified in the milk.json file.
+
 In the case you are on linux or windows, you just specify the Maud folder without the .app
 
 Contributing
