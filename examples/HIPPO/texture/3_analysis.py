@@ -42,13 +42,11 @@ if __name__ == '__main__':
     phases = ['Iron - alpha', 'Iron - gamma']
     # Set the parameters to a reasonable estimates
     #===================================================#
+    editor.set_val(key='Biso', sobj='First', value='0.6')
+    editor.ref(key1='Biso', key2='Biso', value='0 1 100000', sobj1='First',nsobj2='First')
     for i, phase in enumerate(phases):
-        if i > 0:
-            editor.ref(key1='Biso', key2='Biso', value='0 1 100000', sobj1=phases[0], sobj2=phase)
-        else:
-            editor.set_val(key='Biso', sobj=phase, value='0.6')
-        editor.set_val(key='MicroStrain', sobj=phase, value='0.002')
-        editor.set_val(key='CrystSize', sobj=phase, value='500')
+        editor.set_val(key='MicroStrain', sobj=phase, value='0.001')
+        editor.set_val(key='CrystSize', sobj=phase, value='1000')
         editor.set_val(key='_pd_phase_atom_', loopid=f'{i}', value='0.5')
 
     # Refinement Step2: refine intensity and Background
