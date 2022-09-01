@@ -67,15 +67,15 @@ if __name__ == '__main__':
     # Refinement Step4: Previous + difc
     #===================================================#
     editor.fix(key='_cell_length_a')
+    editor.free(key='MicroStrain')
+    editor.free(key='CrystSize')
     editor = free_bank_parameters('_instrument_bank_difc', editor, hippo)  # Refine Difc
     maudText.refinement(itr='3', ifile=editor.ifile)
 
     # Refinement Step5: Previous + peak broadening
     #===================================================#
     editor.free(key='_cell_length_a')
-    editor.free(key='MicroStrain')
-    editor.free(key='CrystSize')
-    maudText.refinement(itr='5', export_plots=True, ifile=editor.ifile)
+    maudText.refinement(itr='3', export_plots=True, ifile=editor.ifile)
 
     # Refinement Step6: Add EWIMV texture model and refine phase fractions
     #===================================================#
