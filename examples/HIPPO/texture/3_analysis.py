@@ -43,7 +43,7 @@ if __name__ == '__main__':
     # Set the parameters to a reasonable estimates
     #===================================================#
     editor.set_val(key='Biso', sobj='First', value='0.6')
-    editor.ref(key1='Biso', key2='Biso', value='0 1 100000', sobj1='First',nsobj2='First')
+    editor.ref(key1='Biso', key2='Biso', value='0 1 100000', nsobj1='First',sobj2='First')
     for i, phase in enumerate(phases):
         editor.set_val(key='MicroStrain', sobj=phase, value='0.001')
         editor.set_val(key='CrystSize', sobj=phase, value='1000')
