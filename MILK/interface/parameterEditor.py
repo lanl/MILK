@@ -1208,6 +1208,7 @@ def untrack_par(lines, index, isloop, indloop, loopid):
 def ref_par(lines, index, value, isloop, indloop, loopid):
     nlineMod = 0
     # Add loop support here
+    assert len(index) == 2, 'Both parts of the reference were not passed in.'
     assert len(
         index[1]) == 1, 'Your second argument specified multiple lines. Only one line can be referenced at a time!'
     for ind in index[1]:
@@ -1540,6 +1541,12 @@ def main(argsin):
                     indloop_index[i] = [indloop_index[i][0]]
                     endloop_index[i] = [endloop_index[i][0]]
                 else:
+                    if args.nsobj[i][0] == 'First':
+                        index[i]=index[i][1:]
+                        isloop_index[i]=isloop_index[i][1:]
+                        indloop_index[i]=indloop_index[i][1:]
+                        endloop_index[i]=endloop_index[i][1:]
+                        
                     if args.sobj[i][0] != None and args.sobj[i][0] != 'None':
                         indextmp = []
                         isloop_indextmp = []
@@ -1578,43 +1585,43 @@ def main(argsin):
                         indloop_index[i] = indloop_indextmp
                         endloop_index[i] = endloop_indextmp
 
-                lines = lines
+        lines = lines
 
-                # Apply the specified task
-                if args.task == 'free_par':
-                    tmp = free_parameter(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
-                elif args.task == 'fix_par':
-                    tmp = fix_parameter(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
-                elif args.task == 'set_par':
-                    tmp = set_par(lines, args.value, index[0],
-                                isloop_index[0], indloop_index[0], args.loopid)
-                elif args.task == 'fix_all':
-                    tmp = fix_all(lines)
-                elif args.task == 'reset_odf':
-                    tmp = reset_odf(lines, index[0])
-                elif args.task == 'ref_par':
-                    tmp = ref_par(lines, index, args.value, isloop_index, indloop_index, args.loopid)
-                elif args.task == 'add_par':
-                    tmp = add_par(lines, index[0], endloop_index[0])
-                elif args.task == 'rem_par':
-                    tmp = rem_par(lines, index[0], endloop_index[0])
-                elif args.task == 'un_ref_par':
-                    raise NameError('key is not implemented')
-                elif args.task == 'track_par':
-                    tmp = track_par(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
-                elif args.task == 'untrack_par':
-                    tmp = untrack_par(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
-                elif args.task == 'untrack_all':
-                    tmp = untrack_all(lines)
-                elif args.task == 'get_val':
-                    return get_val(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
-                elif args.task == 'get_err':
-                    return get_err(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
-                else:
-                    raise NameError('key is not implemented')
+        # Apply the specified task
+        if args.task == 'free_par':
+            tmp = free_parameter(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
+        elif args.task == 'fix_par':
+            tmp = fix_parameter(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
+        elif args.task == 'set_par':
+            tmp = set_par(lines, args.value, index[0],
+                        isloop_index[0], indloop_index[0], args.loopid)
+        elif args.task == 'fix_all':
+            tmp = fix_all(lines)
+        elif args.task == 'reset_odf':
+            tmp = reset_odf(lines, index[0])
+        elif args.task == 'ref_par':
+            tmp = ref_par(lines, index, args.value, isloop_index, indloop_index, args.loopid)
+        elif args.task == 'add_par':
+            tmp = add_par(lines, index[0], endloop_index[0])
+        elif args.task == 'rem_par':
+            tmp = rem_par(lines, index[0], endloop_index[0])
+        elif args.task == 'un_ref_par':
+            raise NameError('key is not implemented')
+        elif args.task == 'track_par':
+            tmp = track_par(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
+        elif args.task == 'untrack_par':
+            tmp = untrack_par(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
+        elif args.task == 'untrack_all':
+            tmp = untrack_all(lines)
+        elif args.task == 'get_val':
+            return get_val(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
+        elif args.task == 'get_err':
+            return get_err(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
+        else:
+            raise NameError('key is not implemented')
 
-                linesMod = tmp[0]
-                nlinesMod = tmp[1]
+        linesMod = tmp[0]
+        nlinesMod = tmp[1]
 
         # write back the par
         write_par(linesMod, args.ofile[ind])
