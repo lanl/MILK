@@ -350,27 +350,29 @@ def main(argsin):
     print('')
     print('Archiving step data')
     for path in paths[0]:
-
         # Try making the step folder
         wdir, filename = os.path.split(path)
-        stepdir = os.path.join(wdir, 'steps')
-        if not os.path.isdir(stepdir):
-            os.makedirs(stepdir, exist_ok=True)
-            list_of_gda = glob.glob(os.path.join(wdir, '*.gda'))
-            for gda in list_of_gda:
-                wdir, gdaname = os.path.split(gda)
-                shutil.copy(gda, os.path.join(stepdir, gdaname))
-            list_of_esg = glob.glob(os.path.join(wdir, '*.esg'))
-            for esg in list_of_esg:
-                wdir, esgname = os.path.split(esg)
-                shutil.copy(esg, os.path.join(stepdir, esgname))
-        # Copy know files
-        shutil.copy(os.path.join(
-            wdir, filename[:-4]+'.log'), os.path.join(stepdir, filename[:-4]+args.cur_step.zfill(2)+'.log'))
-        shutil.copy(os.path.join(
-            wdir, filename[:-4]+'.err'), os.path.join(stepdir, filename[:-4]+args.cur_step.zfill(2)+'.err'))
-        shutil.copy(os.path.join(wdir, filename), os.path.join(
-            stepdir, filename[:-4]+args.cur_step.zfill(2)+'.ins'))
+        stepdir = os.path.join(wdir, f"steps_{args.cur_step}")
+        for step_fname in glob.glob(os.path.join(wdir, "steps_*")):
+            step_number = int(step_fname.split("_")[-1])
+            if os.path.isdir(step_fname) and step_number >=int(args.cur_step):
+                shutil.rmtree(step_fname)
+        os.makedirs(stepdir, exist_ok=False)
+
+        exts = ['png','xpc','cif','err','ins','log']
+        for ext in exts:
+            list_of_ext = glob.glob(os.path.join(wdir, f'*.{ext}'))
+            for file in list_of_ext:
+                wdir, filename = os.path.split(file)
+                shutil.move(file, os.path.join(stepdir, filename))
+
+        exts = ['esg','gda','chi']
+        for ext in exts:
+            list_of_ext = glob.glob(os.path.join(wdir, f'*.{ext}'))
+            for file in list_of_ext:
+                wdir, filename = os.path.split(file)
+                shutil.copy(file, os.path.join(stepdir, filename))
+
         # Get latest .par
         # * means all if need specific format then *.csv
         list_of_pars = glob.glob(os.path.join(wdir, '*.par'))
