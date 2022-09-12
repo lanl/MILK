@@ -306,6 +306,51 @@ class editor(arguments):
         # Prevent reinitialization
         self.ifile = self.ofile
 
+
+    def get_phases(self, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, sub_dir=None, wild=None, wild_range=None):
+        '''
+        get the phase names in .par file
+        Required Inputs: 
+        Optional inputs:
+            sobj     (str): one or more subordinate objects to include in the scope of operation
+            nsobj    (str): one or more subordinate objects to exclude in the scope of operation
+            run     (bool): specifies whether to apply changes to parameter files
+            ifile    (str): input parameter file 
+            dir      (str): working work_dir
+
+        Outputs: 
+            Updates editor arguments and populates editor.value
+        '''
+        if work_dir != None:
+            self.work_dir = work_dir
+        if ifile != None:
+            self.ifile = ifile
+        if ofile != None:
+            self.ofile = ofile
+        if run_dirs != None:
+            self.run_dirs = run_dirs
+        if sub_dir != None:
+            self.sub_dir = sub_dir
+        if wild != None:
+            self.wild = wild
+        if wild_range != None:
+            self.wild_range = wild_range
+        self.key1 = '_pd_phase_name'
+        self.key2 = None
+        self.task = 'get_phases'
+        self.sobj1 = sobj
+        self.sobj2 = None
+        self.nsobj1 = nsobj
+        self.nsobj2 = None
+        self.value = None
+        self.loopid = None
+
+        # combine the arguments and run if applicable
+        self.parse_arguments()
+        if run:
+            self.value = main(self.args)
+
+
     def get_val(self, key, loopid=None, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, sub_dir=None, wild=None, wild_range=None):
         '''
         get parameter value in .par file
@@ -1108,6 +1153,14 @@ def get_val(lines, index, isloop, indloop, loopid):
 
     return value
 
+def get_phases(lines, index):
+    value = []
+    for i, ind in enumerate(index):
+        tmp = lines[ind].replace("_pd_phase_name ","").replace("'","").strip()
+        value.append(tmp)
+
+    return value
+
 
 def get_err(lines, index, isloop, indloop, loopid):
     err = []
@@ -1613,6 +1666,8 @@ def main(argsin):
             tmp = untrack_par(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
         elif args.task == 'untrack_all':
             tmp = untrack_all(lines)
+        elif args.task == 'get_phases':
+            return get_phases(lines, index[0])
         elif args.task == 'get_val':
             return get_val(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
         elif args.task == 'get_err':
