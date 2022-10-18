@@ -7,6 +7,7 @@ Created on Wed Jan 20 13:43:23 2021
 """
 
 from MILK.data import (generateGroup, prepareData, examples, lcls)
+from MILK.cinema import cinema
 from MILK.interface import (parameterEditor, addPhase)
 from MILK.interface.model import (texture, sizeStrain)
 from MILK.MAUDText import maud

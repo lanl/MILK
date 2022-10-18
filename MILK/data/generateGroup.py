@@ -8,7 +8,7 @@ Created on Thu Dec 24 14:38:43 2020
 import os
 import argparse
 from . import prepareData
-
+import pandas as pd
 
 class group:
     def __init__(self):
@@ -20,8 +20,9 @@ class group:
         self.ext = None
         self.args = None
         self.data_fnames = None
+        self.overwrite = False
 
-    def parseConfig(self, config, dataset, data_fnames=None, run_dirs=None, ifile=None, ofile=None, data_dir=None, ext=None, filename='groupDatasets.txt'):
+    def parseConfig(self, config, dataset, data_fnames=None, run_dirs=None, ifile=None, ofile=None, data_dir=None, ext=None, filename='dataset.csv'):
 
         if run_dirs is None:
             self.run_dirs = config["folders"]["run_dirs"]
@@ -54,19 +55,25 @@ class group:
             self.ext = ext
 
         self.filename = filename
+        self.nruns = len(self.data_fnames)
 
-    def writeDataset(self, zfilnum=3):
+    def buildDataset(self, zfilnum=3):
+        self.dataset = {"run":[],"data_dir":[],"folder":[],"ifile":[],"ofile":[],"data_files":[]}
+        for i, data_files in enumerate(self.data_fnames):
+            folder = self.run_dirs.replace('(wild)', str(i).zfill(zfilnum))
+            self.dataset["run"].append(True)
+            self.dataset["data_dir"].append(self.data_dir)
+            self.dataset["folder"].append(folder)
+            self.dataset["ifile"].append(self.ifile)
+            self.dataset["ofile"].append(self.ofile)
+            self.dataset["data_files"].append(data_files)
+
+    def writeDataset(self):
         """Write dataset file for editing"""
-        fname = os.path.abspath(self.filename)
-        with open(fname, "w") as f:
-            # write cif loop header
-            f.write('DataDir RunDir template.par output.par dataset1 dataset2 datasets3...\n')
-            for i, data_fname in enumerate(self.data_fnames):
-                folder = self.run_dirs.replace('(wild)', str(i).zfill(zfilnum))
-                f.write(f"{self.data_dir} {folder} {self.ifile} {self.ofile} ")
-                for file in data_fname:
-                    f.write(f"{file} ")
-                f.write('\n')
+        if not os.path.isfile(self.filename) or self.overwrite:
+            df = pd.DataFrame.from_dict(self.dataset, orient='index').transpose()
+            df.to_csv(self.filename, index=False)
 
-    def prepareData(self):
-        prepareData.main('-fn '+self.filename)
+    def prepareData(self,keep_intensity=True):
+        prepareData.main(filename = self.filename,keep_intensity=keep_intensity)
+            

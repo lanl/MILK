@@ -1,25 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Dec 21 14:46:33 2020
 
-@author: danielsavage
-"""
-import argparse
-import os
 import shutil
-
+import pandas as pd
+from pathlib import Path
 
 def read_file(ifile):
     with open(ifile) as f:
         lines = f.readlines()
     return lines
 
-
 def write_file(lines, ofile):
     with open(ofile, 'w') as f:
         f.writelines("%s\n" % line.strip() for line in lines)
-
 
 def remove_intensity(lines):
     indStart = []
@@ -38,11 +31,10 @@ def remove_intensity(lines):
 
     return lines
 
-
 def swap_datasets(lines, datasets):
+    #Assume that all dataset files have the same extension
+    ext = Path(datasets[0]).suffix
 
-    # Get the extension of the datasets we are swapping in
-    ext = "."+datasets[0].split('.')[-1]
     # Find a list of datasets already in the template
     datasetsold = []
     datasetInd = []
@@ -68,73 +60,37 @@ def swap_datasets(lines, datasets):
         lines[ind] = line
     return lines
 
+def split_list_of_str(listofstr):
+    tmp  = listofstr.replace('[','')
+    tmp  = tmp.replace(']','')
+    tmp  = tmp.replace('\'','')
+    return tmp.split(' ')
 
-def get_arguments(argsin):
-    # Parse user arguments
-    welcome = "This is a program for batch preperation of data and MAUD datasets\
-               for .gda, .esg, or other extensions where the data frame can be\
-               read into a template."
+def main(filename: str = "dataset.csv", work_dir: Path = Path.cwd(), keep_intensity: bool = True):
+    df = pd.read_csv(filename)
+    db = df.to_dict(orient='list')
 
-    parser = argparse.ArgumentParser(description=welcome)
-    parser.add_argument('--dir', '-d',
-                        help='Relative path to directory to apply modifications to')
-    parser.add_argument('--filename', '-fn', required=True,
-                        help='Define input file defining datasets e.g groupGDA.txt ')
-    parser.add_argument('--keepInt', '-r', default=False,
-                        help='Specify whether the intensity should be kept in the parameter file (default: False)')
-    if argsin == []:
-        args = parser.parse_args()
-    else:
-        args = parser.parse_args(argsin.split(' '))
+    # Make directory specified by path (if doesn't exist) and copy in the data files
+    for data_files_tmp,data_dir,folder,ifile,ofile in zip(db["data_files"],db["data_dir"],db["folder"],db["ifile"],db["ofile"]):
+        data_files = split_list_of_str(data_files_tmp)
 
-    # Set the working directory
-    if args.dir == None:
-        args.dir = os.getcwd()
-    else:
-        args.dir = os.path.join(os.getcwd(), args.dir)
+        target_dir = work_dir / folder
+        target_dir.mkdir(parents=True,exist_ok=True)
+        for file in data_files:
+            shutil.copyfile(Path(data_dir) / file, target_dir / file)
 
-    if not isinstance(args.filename, list):
-        args.filename = [args.filename]
+        # Readin the template file
+        linesTfile = read_file(ifile)
 
-    return args
+        # Remove intensity data if appropriate
+        if not keep_intensity:
+            linesTfile = remove_intensity(linesTfile)
 
+        # detect the current dataset names and replace with new dataset names
+        linesTfile = swap_datasets(linesTfile, data_files)
 
-def main(argsin):
-    # Get arguments from user
-    args = get_arguments(argsin)
-
-    for ind in range(0, len(args.filename)):
-        linesIfile = read_file(args.filename[ind])
-
-        # trim empty lines
-        for ind2 in range(1, len(linesIfile)):
-            lineIfile = linesIfile[ind2].strip()
-            if lineIfile != '':
-                lineIfile = lineIfile.split(' ')
-                DataDir = lineIfile[0]
-                RunDir = lineIfile[1]
-                tfile = os.path.join(args.dir, lineIfile[2])
-                ofile = os.path.join(args.dir, RunDir, lineIfile[3])
-                datasets = lineIfile[4:]
-
-            # Make directory specified by path (if doesn't exist) and copy in the data files
-            for data in datasets:
-                os.makedirs(os.path.join(args.dir, RunDir), exist_ok=True)
-                shutil.copyfile(os.path.join(DataDir, data), os.path.join(args.dir, RunDir, data))
-
-            # Readin the template file
-            linesTfile = read_file(tfile)
-
-            # Remove intensity data if appropriate
-            if not args.keepInt:
-                linesTfile = remove_intensity(linesTfile)
-
-            # detect the current dataset names and replace with new dataset names
-            linesTfile = swap_datasets(linesTfile, datasets)
-
-            # Write the parameter file to the directory
-            write_file(linesTfile, ofile)
-
+        # Write the parameter file to the directory
+        write_file(linesTfile, target_dir / ofile)
 
 if __name__ == '__main__':
-    main([])
+    main()

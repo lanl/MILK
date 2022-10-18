@@ -8,13 +8,12 @@ Created on Wed Oct  7 15:54:04 2020
 import argparse
 import os
 from .model import (texture, sizeStrain)
-
+from pathlib import Path
 
 class arguments:
     def __init__(self):
         self.work_dir = None
         self.run_dirs = None
-        self.sub_dir = None
         self.wild = None
         self.wild_range = None
         self.key1 = None
@@ -30,8 +29,11 @@ class arguments:
         self.loopid = None
         self.args = None
         self.verbose = None
-
-    def parseConfig(self, config, ifile=None, ofile=None, work_dir=None, run_dirs=None, sub_dir=None, wild=None, wild_range=None, verbose=None):
+        self.lines = None
+        self.max_search_hits = None
+        self.reverse_search = None
+        
+    def parseConfig(self, config, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None, verbose=None):
 
         if work_dir == None:
             if config["folders"]["work_dir"] == '':
@@ -56,12 +58,6 @@ class arguments:
         else:
             self.run_dirs = run_dirs
 
-        if sub_dir == None:
-            self.sub_dir = config["folders"]["sub_dir"]
-            if self.sub_dir == '':
-                self.sub_dir = None
-        else:
-            self.sub_dir = sub_dir
 
         if wild == None:
             self.wild = config["folders"]["wild"]
@@ -77,6 +73,14 @@ class arguments:
             self.verbose = config["ins"]["verbose"]
         else:
             self.verbose = verbose
+
+        #Purge wild_range
+        wilds = self.wild
+        if wild_range != [[]]:
+            for wild_range in self.wild_range:
+                wilds+=list(range(wild_range[0],wild_range[1]+1))
+        self.wild = list(set(wilds))
+        self.wild_range = [[]]
 
     def parse_arguments(self):
         args = ''
@@ -106,8 +110,6 @@ class arguments:
             args = args+'--work_dir '+self.work_dir+' '
         if self.run_dirs != None:
             args = args+'--run_dir '+self.run_dirs+' '
-        if self.sub_dir != None:
-            args = args+'--sub_dir '+self.sub_dir+' '
         if self.wild != None and self.wild != []:
             args = args+'--wild '
             for wild in self.wild:
@@ -118,6 +120,10 @@ class arguments:
                 args = args+str(wild_range[0])+' '+str(wild_range[1])+' '
         if self.verbose != None:
             args = args+'--verbose '+str(self.verbose)+' '
+        if self.reverse_search != None:
+            args = args+'--reverse_search '+str(self.reverse_search)+' '
+        if self.max_search_hits != None:
+            args = args+'--max_search_hits '+str(self.max_search_hits)+' '
 
         # trim at the end
         self.args = args[0:-1]
@@ -139,8 +145,6 @@ class arguments:
             args = args+'--work_dir '+self.work_dir+' '
         if self.run_dirs != None:
             args = args+'--run_dir '+self.run_dirs+' '
-        if self.sub_dir != None:
-            args = args+'--sub_dir '+self.sub_dir+' '
         if self.wild != None and self.wild != []:
             args = args+'--wild '
             for wild in self.wild:
@@ -158,7 +162,18 @@ class editor(arguments):
     def __init__(self):
         super().__init__()
 
-    def free(self, key, loopid=None, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, sub_dir=None, wild=None, wild_range=None):
+    def read_par(self):
+        file = Path(self.ifile)
+        assert file.is_file(), f"Parameter file <{file}> is not found on the absolute or relative path of the file"
+        with open(self.ifile) as f:
+            self.lines = f.readlines()
+
+    def write_par(self):
+        assert self.lines is not None, 'trying to write uninitialized lines'
+        with open(self.ofile, 'w') as f:
+            f.writelines("%s\n" % line.strip() for line in self.lines)
+
+    def free(self, key, loopid=None, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None,use_stored_par=False):
         '''
         free parameters in .par file
         Required Inputs: 
@@ -183,13 +198,17 @@ class editor(arguments):
             self.ofile = ofile
         if run_dirs != None:
             self.run_dirs = run_dirs
-        if sub_dir != None:
-            self.sub_dir = sub_dir
+
         if wild != None:
             self.wild = wild
         if wild_range != None:
             self.wild_range = wild_range
-
+        if use_stored_par:
+            if self.lines is None:
+                self.read_par()
+            lines = self.lines
+        else:
+            lines = None
         self.key1 = key
         self.key2 = None
         self.task = 'free_par'
@@ -203,12 +222,12 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            main(self.args)
+            main(self.args,lines,not use_stored_par)
 
         # Prevent reinitialization
         self.ifile = self.ofile
 
-    def fix(self, key, loopid=None, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, sub_dir=None, wild=None, wild_range=None):
+    def fix(self, key, loopid=None, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None,use_stored_par=False):
         '''
         fix parameters in .par file
         Required Inputs: 
@@ -233,12 +252,17 @@ class editor(arguments):
             self.ofile = ofile
         if run_dirs != None:
             self.run_dirs = run_dirs
-        if sub_dir != None:
-            self.sub_dir = sub_dir
+
         if wild != None:
             self.wild = wild
         if wild_range != None:
             self.wild_range = wild_range
+        if use_stored_par:
+            if self.lines is None:
+                self.read_par()
+            lines = self.lines
+        else:
+            lines = None
         self.key1 = key
         self.key2 = None
         self.task = 'fix_par'
@@ -252,12 +276,12 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            main(self.args)
+            main(self.args,lines,not use_stored_par)
 
         # Prevent reinitialization
         self.ifile = self.ofile
 
-    def set_val(self, key, value, loopid=None, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, sub_dir=None, wild=None, wild_range=None):
+    def set_val(self, key, value, loopid=None, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None,use_stored_par=False):
         '''
         set parameter to a value in .par file
         Required Inputs: 
@@ -282,12 +306,17 @@ class editor(arguments):
             self.ofile = ofile
         if run_dirs != None:
             self.run_dirs = run_dirs
-        if sub_dir != None:
-            self.sub_dir = sub_dir
+
         if wild != None:
             self.wild = wild
         if wild_range != None:
             self.wild_range = wild_range
+        if use_stored_par:
+            if self.lines is None:
+                self.read_par()
+            lines = self.lines
+        else:
+            lines = None
         self.key1 = key
         self.key2 = None
         self.task = 'set_par'
@@ -301,13 +330,12 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            main(self.args)
+            main(self.args,lines,not use_stored_par)
 
         # Prevent reinitialization
         self.ifile = self.ofile
 
-
-    def get_phases(self, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, sub_dir=None, wild=None, wild_range=None):
+    def get_phases(self, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None,use_stored_par=False):
         '''
         get the phase names in .par file
         Required Inputs: 
@@ -329,12 +357,17 @@ class editor(arguments):
             self.ofile = ofile
         if run_dirs != None:
             self.run_dirs = run_dirs
-        if sub_dir != None:
-            self.sub_dir = sub_dir
+
         if wild != None:
             self.wild = wild
         if wild_range != None:
             self.wild_range = wild_range
+        if use_stored_par:
+            if self.lines is None:
+                self.read_par()
+            lines = self.lines
+        else:
+            lines = None
         self.key1 = '_pd_phase_name'
         self.key2 = None
         self.task = 'get_phases'
@@ -348,10 +381,9 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            self.value = main(self.args)
+            self.value = main(self.args,lines,False)
 
-
-    def get_val(self, key, loopid=None, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, sub_dir=None, wild=None, wild_range=None):
+    def get_val(self, key, loopid=None, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None,use_stored_par=False):
         '''
         get parameter value in .par file
         Required Inputs: 
@@ -375,12 +407,18 @@ class editor(arguments):
             self.ofile = ofile
         if run_dirs != None:
             self.run_dirs = run_dirs
-        if sub_dir != None:
-            self.sub_dir = sub_dir
+
         if wild != None:
             self.wild = wild
         if wild_range != None:
             self.wild_range = wild_range
+        if use_stored_par:
+            if self.lines is None:
+                self.read_par()
+            lines = self.lines
+        else:
+            lines = None
+
         self.key1 = key
         self.key2 = None
         self.task = 'get_val'
@@ -393,10 +431,11 @@ class editor(arguments):
 
         # combine the arguments and run if applicable
         self.parse_arguments()
-        if run:
-            self.value = main(self.args)
 
-    def get_err(self, key, loopid=None, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, sub_dir=None, wild=None, wild_range=None):
+        if run:
+            self.value = main(self.args,lines,False)
+
+    def get_err(self, key, loopid=None, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None,use_stored_par=False):
         '''
         get parameter value err in .par file
         Required Inputs: 
@@ -420,12 +459,18 @@ class editor(arguments):
             self.ofile = ofile
         if run_dirs != None:
             self.run_dirs = run_dirs
-        if sub_dir != None:
-            self.sub_dir = sub_dir
+
         if wild != None:
             self.wild = wild
         if wild_range != None:
             self.wild_range = wild_range
+        if use_stored_par:
+            if self.lines is None:
+                self.read_par()
+            lines = self.lines
+        else:
+            lines = None
+        
         self.key1 = key
         self.key2 = None
         self.task = 'get_err'
@@ -439,9 +484,9 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            self.value = main(self.args)
+            self.value = main(self.args,lines,False)
 
-    def fix_all(self, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, sub_dir=None, wild=None, wild_range=None):
+    def fix_all(self, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None,use_stored_par=False):
         '''
         fix all parameters in .par file
         Optional inputs: 
@@ -462,12 +507,17 @@ class editor(arguments):
             self.ofile = ofile
         if run_dirs != None:
             self.run_dirs = run_dirs
-        if sub_dir != None:
-            self.sub_dir = sub_dir
+
         if wild != None:
             self.wild = wild
         if wild_range != None:
             self.wild_range = wild_range
+        if use_stored_par:
+            if self.lines is None:
+                self.read_par()
+            lines = self.lines
+        else:
+            lines = None
         self.key1 = 'blah'
         self.key2 = None
         self.task = 'fix_all'
@@ -481,12 +531,12 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            main(self.args)
+            main(self.args,lines,not use_stored_par)
 
         # Prevent reinitialization
         self.ifile = self.ofile
 
-    def ref(self, key1, key2, value, loopid=None, sobj1='None', sobj2='None', nsobj1='None', nsobj2='None', run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, sub_dir=None, wild=None, wild_range=None):
+    def ref(self, key1, key2, value, loopid=None, sobj1='None', sobj2='None', nsobj1='None', nsobj2='None', run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None,use_stored_par=False):
         '''
         set parameter to an equation with another parameter value in it
         Required Inputs: 
@@ -514,12 +564,17 @@ class editor(arguments):
             self.ofile = ofile
         if run_dirs != None:
             self.run_dirs = run_dirs
-        if sub_dir != None:
-            self.sub_dir = sub_dir
+
         if wild != None:
             self.wild = wild
         if wild_range != None:
             self.wild_range = wild_range
+        if use_stored_par:
+            if self.lines is None:
+                self.read_par()
+            lines = self.lines
+        else:
+            lines = None
         self.key1 = key1
         self.key2 = key2
         self.task = 'ref_par'
@@ -533,7 +588,7 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            main(self.args)
+            main(self.args,lines,not use_stored_par)
 
         # Prevent reinitialization
         self.ifile = self.ofile
@@ -541,7 +596,7 @@ class editor(arguments):
     def un_ref(self):
         print('un_ref is currently unimplemented')
  
-    def add_datafile_bk_par(self, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, sub_dir=None, wild=None, wild_range=None):
+    def add_datafile_bk_par(self, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None,use_stored_par=False):
         '''
         add individual datafile background parameter.
         Optional inputs: 
@@ -562,12 +617,17 @@ class editor(arguments):
             self.ofile = ofile
         if run_dirs != None:
             self.run_dirs = run_dirs
-        if sub_dir != None:
-            self.sub_dir = sub_dir
+
         if wild != None:
             self.wild = wild
         if wild_range != None:
             self.wild_range = wild_range
+        if use_stored_par:
+            if self.lines is None:
+                self.read_par()
+            lines = self.lines
+        else:
+            lines = None
         self.key1 = 'Background'
         self.key2 = None
         self.task = 'add_datafile_bk_par'
@@ -581,12 +641,12 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            main(self.args)
+            main(self.args,lines,not use_stored_par)
 
         # Prevent reinitialization
         self.ifile = self.ofile
 
-    def add(self, key, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, sub_dir=None, wild=None, wild_range=None):
+    def add_loop_par(self, key, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None,use_stored_par=False):
         '''
         add parameters to a loop variable. Should probably only be used with background to my knowledge
         Required Inputs: 
@@ -609,12 +669,17 @@ class editor(arguments):
             self.ofile = ofile
         if run_dirs != None:
             self.run_dirs = run_dirs
-        if sub_dir != None:
-            self.sub_dir = sub_dir
+
         if wild != None:
             self.wild = wild
         if wild_range != None:
             self.wild_range = wild_range
+        if use_stored_par:
+            if self.lines is None:
+                self.read_par()
+            lines = self.lines
+        else:
+            lines = None
         self.key1 = key
         self.key2 = None
         self.task = 'add_par'
@@ -628,12 +693,12 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            main(self.args)
+            main(self.args,lines,not use_stored_par)
 
         # Prevent reinitialization
         self.ifile = self.ofile
 
-    def rem(self, key, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, sub_dir=None, wild=None, wild_range=None):
+    def rem_loop_par(self, key, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None,use_stored_par=False):
         '''
         remove parameters in a loop variable. Should probably only be used with background
         Required Inputs: 
@@ -656,12 +721,17 @@ class editor(arguments):
             self.ofile = ofile
         if run_dirs != None:
             self.run_dirs = run_dirs
-        if sub_dir != None:
-            self.sub_dir = sub_dir
+
         if wild != None:
             self.wild = wild
         if wild_range != None:
             self.wild_range = wild_range
+        if use_stored_par:
+            if self.lines is None:
+                self.read_par()
+            lines = self.lines
+        else:
+            lines = None
         self.key1 = key
         self.key2 = None
         self.task = 'rem_par'
@@ -675,12 +745,12 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            main(self.args)
+            main(self.args,lines,not use_stored_par)
 
         # Prevent reinitialization
         self.ifile = self.ofile
 
-    def reset_odf(self, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, sub_dir=None, wild=None, wild_range=None):
+    def reset_odf(self, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None,use_stored_par=False):
         '''
         reset the ODF 
 
@@ -702,12 +772,17 @@ class editor(arguments):
             self.ofile = ofile
         if run_dirs != None:
             self.run_dirs = run_dirs
-        if sub_dir != None:
-            self.sub_dir = sub_dir
+
         if wild != None:
             self.wild = wild
         if wild_range != None:
             self.wild_range = wild_range
+        if use_stored_par:
+            if self.lines is None:
+                self.read_par()
+            lines = self.lines
+        else:
+            lines = None
         self.key1 = 'ODFValues'
         self.key2 = None
         self.task = 'reset_odf'
@@ -721,12 +796,12 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            main(self.args)
+            main(self.args,lines,not use_stored_par)
 
         # Prevent reinitialization
         self.ifile = self.ofile
 
-    def track(self, key, loopid=None, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, sub_dir=None, wild=None, wild_range=None):
+    def track(self, key, loopid=None, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None,use_stored_par=False):
         '''
         tracking a parameter outputs its value to the summary document after a refinement
         Required Inputs: 
@@ -750,12 +825,17 @@ class editor(arguments):
             self.ofile = ofile
         if run_dirs != None:
             self.run_dirs = run_dirs
-        if sub_dir != None:
-            self.sub_dir = sub_dir
+
         if wild != None:
             self.wild = wild
         if wild_range != None:
             self.wild_range = wild_range
+        if use_stored_par:
+            if self.lines is None:
+                self.read_par()
+            lines = self.lines
+        else:
+            lines = None
         self.key1 = key
         self.key2 = None
         self.task = 'track_par'
@@ -769,12 +849,12 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            main(self.args)
+            main(self.args,lines,not use_stored_par)
 
         # Prevent reinitialization
         self.ifile = self.ofile
 
-    def untrack(self, key, loopid=None, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, sub_dir=None, wild=None, wild_range=None):
+    def untrack(self, key, loopid=None, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None,use_stored_par=False):
         '''
         untracking a parameter outputs stops its value from being printed in summary document after a refinement unless basic parameter
         Required Inputs: 
@@ -798,12 +878,17 @@ class editor(arguments):
             self.ofile = ofile
         if run_dirs != None:
             self.run_dirs = run_dirs
-        if sub_dir != None:
-            self.sub_dir = sub_dir
+
         if wild != None:
             self.wild = wild
         if wild_range != None:
             self.wild_range = wild_range
+        if use_stored_par:
+            if self.lines is None:
+                self.read_par()
+            lines = self.lines
+        else:
+            lines = None
         self.key1 = key
         self.key2 = None
         self.task = 'untrack_par'
@@ -817,12 +902,12 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            main(self.args)
+            main(self.args,lines,not use_stored_par)
 
         # Prevent reinitialization
         self.ifile = self.ofile
 
-    def untrack_all(self, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, sub_dir=None, wild=None, wild_range=None):
+    def untrack_all(self, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None,use_stored_par=False):
         '''
         untracking all parameter outputs and stops there value from being printed in summary document after a refinement unless basic parameter
         Optional inputs:
@@ -844,12 +929,17 @@ class editor(arguments):
             self.ofile = ofile
         if run_dirs != None:
             self.run_dirs = run_dirs
-        if sub_dir != None:
-            self.sub_dir = sub_dir
+
         if wild != None:
             self.wild = wild
         if wild_range != None:
             self.wild_range = wild_range
+        if use_stored_par:
+            if self.lines is None:
+                self.read_par()
+            lines = self.lines
+        else:
+            lines = None
         self.key1 = None
         self.key2 = None
         self.task = 'untrack_all'
@@ -863,12 +953,12 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            main(self.args)
+            main(self.args,lines,not use_stored_par)
 
         # Prevent reinitialization
         self.ifile = self.ofile
 
-    def texture(self, key=None, sobj=None, ifile=None, ofile=None, work_dir=None, run_dirs=None, sub_dir=None, wild=None, wild_range=None, run=True):
+    def texture(self, key=None, sobj=None, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None, run=True):
         '''
               texture inserts a MAUD texture model into all phases or to particular phase using sobj
               key options: None, Arbitrary, EWIMV
@@ -884,8 +974,7 @@ class editor(arguments):
             self.ofile = ofile
         if run_dirs != None:
             self.run_dirs = run_dirs
-        if sub_dir != None:
-            self.sub_dir = sub_dir
+
         if wild != None:
             self.wild = wild
         if wild_range != None:
@@ -904,7 +993,7 @@ class editor(arguments):
         # Prevent reinitialization
         self.ifile = self.ofile
 
-    def size_strain(self, key=None, sobj=None, ifile=None, ofile=None, work_dir=None, run_dirs=None, sub_dir=None, wild=None, wild_range=None, run=True):
+    def size_strain(self, key=None, sobj=None, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None, run=True):
         '''
               size_strain inserts a MAUD size-strain model into all phases or to particular phase using sobj
               key options: Isotropic, Anisotropic)
@@ -920,8 +1009,7 @@ class editor(arguments):
             self.ofile = ofile
         if run_dirs != None:
             self.run_dirs = run_dirs
-        if sub_dir != None:
-            self.sub_dir = sub_dir
+
         if wild != None:
             self.wild = wild
         if wild_range != None:
@@ -940,7 +1028,7 @@ class editor(arguments):
         # Prevent reinitialization
         self.ifile = self.ofile
 
-    def summary(self, ifile=None, work_dir=None, run_dirs=None, sub_dir=None, wild=None, wild_range=None):
+    def summary(self, ifile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None):
         if ifile == None:
             ifile = self.ifile
         # Set the working work_dir
@@ -948,10 +1036,6 @@ class editor(arguments):
             work_dir = self.work_dir
         elif work_dir == None:
             work_dir = os.getcwd()
-        if sub_dir == None:
-            sub_dir = self.sub_dir
-            if not bool(sub_dir):
-                sub_dir = ''
         if run_dirs == None:
             run_dirs = self.run_dirs
 
@@ -974,7 +1058,7 @@ class editor(arguments):
 
         # Build input file paths
         ifiles = []
-        tmp = os.path.join(work_dir, run_dirs, sub_dir, ifile)
+        tmp = os.path.join(work_dir, run_dirs, ifile)
         for wild in wilds:
             ifiles.append(tmp.replace('(wild)', str(wild).zfill(3)))
 
@@ -1021,7 +1105,7 @@ def write_par(lines, ofile):
         f.writelines("%s\n" % line.strip() for line in lines)
 
 
-def search_list(lines, keyword, d):
+def search_list_reverse(lines, keyword, d, max_hit=1e6):
     index = []
     isloop = []
     indloop = []
@@ -1029,9 +1113,70 @@ def search_list(lines, keyword, d):
     sobj = []
     sobj_cur = []
 
-    for i in range(0, len(lines)):
-        line = lines[i]
+    hits = 1
+    sobj_cur = ["test"]
+    lines = list(reversed(lines))
+    llines = len(lines)
+    for i,line in enumerate(lines):
+    
+        # keep track of the subordinate objects
+        if 'subordinateObject' in line:
+            if 'end' not in line:
+                sobj_cur.pop()
+            else:
+                sobj_cur.append(line.partition('subordinateObject')[2])
 
+        if keyword in line:
+            # handle loop variables (e.g. background polynomial)
+            if 'loop_' not in lines[i+1]:
+                index.append(llines-i-1)
+                sobj.append(sobj_cur[:])
+                isloop.append(False)
+                endloop.append(False)
+                indloop.append(-1)
+            elif keyword != d['ODFValues']:
+                ind = i-1
+                line = lines[ind]
+                indlooploc = 0
+                while bool(line.strip()):
+                    index.append(ind)
+                    sobj.append(sobj_cur[:])
+                    indloop.append(indlooploc)
+                    isloop.append(True)
+                    endloop.append(False)
+                    ind = ind-1
+                    indlooploc = indlooploc+1
+                    line = lines[ind]
+                endloop[-1] = True
+            else:
+                ind = i-1
+                line = lines[ind]
+                while '#end_custom_object_odf' not in line:
+                    index.append(ind)
+                    sobj.append(sobj_cur[:])
+                    isloop.append(True)
+                    endloop.append(False)
+                    ind = ind-1
+                    line = lines[ind]
+                endloop[-1] = True
+            
+            hits+=1
+            if hits>max_hit:
+                return [index, sobj, isloop, indloop, endloop]
+
+    return [index, sobj, isloop, indloop, endloop]
+
+def search_list(lines, keyword, d,max_hit=1e6):
+    index = []
+    isloop = []
+    indloop = []
+    endloop = []
+    sobj = []
+    sobj_cur = []
+
+    hits = 1
+    for i,line in enumerate(lines):
+    
         # keep track of the subordinate objects
         if 'subordinateObject' in line:
             if 'end' in line:
@@ -1072,6 +1217,10 @@ def search_list(lines, keyword, d):
                     ind = ind+1
                     line = lines[ind]
                 endloop[-1] = True
+
+            hits+=1
+            if hits>max_hit:
+                return [index, sobj, isloop, indloop, endloop]
 
     return [index, sobj, isloop, indloop, endloop]
 
@@ -1384,12 +1533,14 @@ def get_arguments(argsin):
                         help='Loop id for modifying loop variables ')
     parser.add_argument('--run_dir', '-dir',
                         help='Base directory from which sub folders are defined and par files are searched for')
-    parser.add_argument('--sub_dir', '-sd', default='',
-                        help='folders to run job in relative to run_directory /e.g. /run(runid)/preshock where (runid) is replaced by the wild and/or wild_range combined lists. wild need not be used')
     parser.add_argument('--wild', '-n', type=int, nargs='+',
                         help='used with sub_folder (wild) e.g. 1 3 5 would result in a list [1 3 5]')
     parser.add_argument('--wild_range', '-nr', type=int, nargs='+',
                         help='used with sub_folder (wild) and specified in pairs e.g. 1 4 8 9 would result in a list [1 2 3 4 8 9]')
+    parser.add_argument('--reverse_search', '-rs', type=str, default='False',
+                        help='revereses the parameter search so that it starts at the end')
+    parser.add_argument('--max_search_hits', '-mh', type=int, default=1e6,
+                        help='exits search_list early based on number of hits')
     parser.add_argument('--verbose', '-ver', type=int, default=0,
                         help='specifies the level of information output when modifying parameter files')
 
@@ -1417,9 +1568,12 @@ def get_arguments(argsin):
 
     # Build input file paths
     ifile = []
-    tmp = os.path.join(args.work_dir, args.run_dir, args.sub_dir, args.ifile)
-    for wild in wilds:
-        ifile.append(tmp.replace('(wild)', str(wild).zfill(3)))
+    tmp = os.path.join(args.work_dir, args.run_dir, args.ifile)
+    if wilds==[] or '(wild)' not in tmp:
+        ifile.append(tmp)
+    else:
+        for wild in wilds:
+            ifile.append(tmp.replace('(wild)', str(wild).zfill(3)))
     args.ifile = ifile
 
     # Generate the output file names
@@ -1468,6 +1622,11 @@ def get_arguments(argsin):
 
     # if args.task=='add_par' or args.task=='rem_par':
     #    assert args.loopid!=None, 'only allowed tosduld only do this for backgrounds..'
+    if args.reverse_search in 'True':
+        args.reverse_search=True
+    else:
+        args.reverse_search=False
+        
     return args
 
 
@@ -1552,17 +1711,24 @@ def add_datafile_background_keys(lines,d,sobj,nsobj):
                 lines.insert(index,line)
     return lines,nlines
 
-def main(argsin):
+def main(argsin,lines=None,do_write=True):
     # Get arguments from user
     args = get_arguments(argsin)
 
     # Get the dictionary of standard edits
     d = template_dict()
 
-    # Main loop through files to edit
-    for ind in range(0, len(args.ifile)):
+    if lines is None:
+        do_read = True
+    else:
+        assert len(args.ifile)==1, "Only one ifile should be specified when using stored parameter file." 
+        do_read = False
+
+    for ifile, ofile in zip(args.ifile,args.ofile): 
+        # Main loop through files to edit
         # read in the lines
-        lines = read_par(args.ifile[ind])
+        if do_read:
+            lines = read_par(ifile)
 
         index = []
         sobj_index = []
@@ -1578,9 +1744,12 @@ def main(argsin):
                 keyword = key
 
             if args.task=='add_datafile_bk_par':
-               linesMod,nlinesMod = add_datafile_background_keys(lines,d,args.sobj[i],args.nsobj[i])
+                linesMod,nlinesMod = add_datafile_background_keys(lines,d,args.sobj[i],args.nsobj[i])
             else:
-                tmp = search_list(lines, keyword, d)
+                if args.reverse_search:
+                    tmp = search_list_reverse(lines, keyword, d,args.max_search_hits)
+                else:
+                    tmp = search_list(lines, keyword, d, args.max_search_hits)
                 index.append(tmp[0])
                 sobj_index.append(tmp[1])
                 isloop_index.append(tmp[2])
@@ -1679,10 +1848,11 @@ def main(argsin):
         nlinesMod = tmp[1]
 
         # write back the par
-        write_par(linesMod, args.ofile[ind])
+        if do_write:
+            write_par(linesMod, ofile)
 
         if args.verbose > 0:
-            getStats(linesMod, nlinesMod, args.ifile[ind], args.key[0])
+            getStats(linesMod, nlinesMod, ifile, args.key[0])
 
 
 if __name__ == '__main__':

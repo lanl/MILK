@@ -9,13 +9,13 @@ Created on Mon Mar  8 17:05:49 2021
 from setuptools import setup
 from setuptools import find_packages
 setup(name='MILK',
-      version='0.2',
+      version='0.3',
       description='MAUD Interface Tool Kit',
       url='https://github.com/lanl/MILK.git',
       author='Daniel Savage',
       author_email='dansavage@lanl.gov',
       license='BSD 3',
       packages=find_packages(),
-      scripts=["bin/config_maud.py","bin/maudText.py"],
+      scripts=["bin/config_maud.py","bin/maudText.py","bin/cinema.py"],
       install_requires=[],
       zip_safe=False)
