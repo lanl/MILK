@@ -1,134 +1,123 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Aug 10 21:59:58 2022
 
-@author: danielsavage
-"""
 import MILK
 import pandas as pd
-import os
+from pathlib import Path
 from numpy import NAN
-import glob
 
-def sync_length(db, cur_index):
-    for key, val in db.items():
-        while len(val) < cur_index:
-            db[key].append(NAN)
-    return db
-
-
-def get_files(target_file, head_directory):
-    files, paths = MILK.utilities.search(keyword=target_file,
-                                         directory=head_directory, exact=False)
-    dic = {}
-    for f, p in zip(files, paths):
-
-        if p in dic.keys():
-            dic[p].append(f)
+def tidy_dictionary(d: dict,length: int):
+    """
+    Formats all values and lists in dictionary to have
+    len(length) and converts from dictionary of list to
+    list of dictionary. 
+    """
+    for key, val in d.items():
+        if isinstance(val,list):
+            while len(val) < length:
+                d[key].append(NAN)
         else:
-            dic[p] = [f]
+            d[key]=[val]*length
+    return [dict(zip(d,t)) for t in zip(*d.values())] 
 
-    files = []
-    file_paths = []
-    for key, val in dic.items():
-        # Construct the list of data based on gda
-        files.append(val)
-        file_paths.append(key)
+def get_value(key,editor,loopid=None):
+    """Wrapper for value error extraction from MAUD parameter file."""
+    editor.get_val(key=key,loopid=loopid,use_stored_par=True)
+    if editor.value==[]:
+        return [NAN],[NAN]
+    else:
+        value = [float(value.strip()) for value in editor.value]
+        editor.get_err(key=key,loopid=loopid,use_stored_par=True)
+        error = [float(value.strip()) for value in editor.value]
+        error = list(map(lambda x: x if (x!=0) else NAN, error))
+        return value,error
 
-    return files, file_paths
-
-
-if __name__ == '__main__':
+def main():
 
     # Initialize environment
     #===================================================#
     config = MILK.load_json('milk.json')
-
     editor = MILK.parameterEditor.editor()
-    editor.parseConfig(config, ifile="After_tex.par", wild=[0], wild_range=[[]])
+    editor.parseConfig(config,
+                        run_dirs="",
+                        wild=[0], 
+                        wild_range=[[]])
     #===================================================#
 
-    # Setup keys to be extracted (interface could be greatly improved)
-    keys = {
-        "Rwp": {"key": "_refine_ls_wR_factor_all", "sobj": None, "isloop": False},
-        "Rexp": {"key": "_refine_ls_goodness_of_fit_all", "sobj": None, "isloop": False},
-        "phase_fraction": {"key": "_pd_phase_atom_", "sobj": None, "isloop": True},
-        "Biso": {"key": "Biso", "sobj": "phase", "isloop": False},
-        "Cryst_Sz": {"key": "_riet_par_cryst_size", "sobj": "phase", "isloop": False},
-        "Mu_strain": {"key": "_riet_par_rs_microstrain", "sobj": "phase", "isloop": False},
-        "lattice_a": {"key": "_cell_length_a", "sobj": "phase", "isloop": False},
-        "lattice_b": {"key": "_cell_length_b", "sobj": "phase", "isloop": False},
-        "lattice_c": {"key": "_cell_length_c", "sobj": "phase", "isloop": False},
-        "lattice_alpha": {"key": "_cell_angle_alpha", "sobj": "phase", "isloop": False},
-        "lattice_beta": {"key": "_cell_angle_beta", "sobj": "phase", "isloop": False},
-        "lattice_gamma": {"key": "_cell_angle_gamma", "sobj": "phase", "isloop": False},
+    # Load run dataframe
+    run_df = pd.read_csv("dataset.csv")
+    run_include = ["folder","reduction_level"]
 
-    }
-    exclude_err = ["Rwp", "Rexp"]
-    db = {}
-    db["index"] = []
-    db["phase_name"] = []
-    db["GOF"] = []
-    for key in keys.keys():
-        db[key] = []
-        if key not in exclude_err:
-            db[f'{key}_e'] = []
+    # Initialize CINEMA output dictionary
+    cinema_d = []
 
-    #specify the step folders 
-    cur_index = 0
-    for idir, step_fname in enumerate(sorted(glob.glob(os.path.join(os.getcwd(), f"*{os.sep}steps_*")))):
-        # Scrape png in subdirectories
-        pngs, _ = get_files(".png", step_fname)
-        if pngs!=[]:
-            pngs=pngs[0]
-        editor.run_dirs = os.path.relpath(step_fname, os.getcwd())
-        editor.ifile = glob.glob(os.path.join(step_fname,"*.par"))[0]
+    # Loop over run names
+    for run_index, run_folder in enumerate(run_df["folder"]):
+        
+        #Construct the full path to the run_name
+        run_path = Path(run_folder)
 
-        for i, _ in enumerate(editor.run_dirs.split(os.sep)):
-            if f'folder_lvl{i}' not in db.keys():
-                db[f'folder_lvl{i}'] = [NAN]*len(db["Rwp"])
+        # Get list of MILK step folder paths in the run_folder
+        step_paths = sorted(list(run_path.glob("steps_*")))
 
-        for i, _ in enumerate(pngs):
-            if f'FILE{i}' not in db.keys():
-                db[f'FILE{i}'] = [NAN]*len(db["Rwp"])
+        # For each step path
+        for step_index, step_path in enumerate(step_paths):
+            
+            # Extract step_name from the path
+            step_name = step_path.parts[-1]
+            
+            # Get png files and parameter (par) file
+            png_files = list(step_path.glob("*.png"))
+            par_files = list(step_path.glob("*.par"))
+            editor.ifile = str(par_files[0])
+            
+            # Initialize step dictionary
+            step_d = {"step": int(step_name.split('_')[-1])}
 
-        editor.get_phases()
-        phases = editor.value
-        for iph, phase in enumerate(phases):
-            db["phase_name"].append(phase)
-            cur_index += 1
+            # Add folder and other run dataframe information
+            for key, val in run_df.items(): 
+                if key in run_include:
+                    step_d[key]=run_df[key][run_index]
 
-            for key, val in keys.items():
+            # Get properties of interest from parameter file
+            editor.read_par()
+            editor.reverse_search=False
+            editor.max_search_hits=1
+            step_d["phase_fraction"],step_d["phase_fraction_e"] = get_value(key="_pd_phase_atom_%", editor=editor)
+            step_d["n_phases"] = len(step_d["phase_fraction"])
+            step_d["Rwp"],_ = get_value(key="_refine_ls_wR_factor_all", editor=editor)
+            step_d["Rexp"],_ = get_value(key="_refine_ls_goodness_of_fit_all", editor=editor)
+            step_d["Rwp"]=step_d["Rwp"][0]
+            step_d["Rexp"]=step_d["Rexp"][0]
+            step_d["GOF"] = step_d["Rwp"] / step_d["Rexp"]
 
-                if val["sobj"] is not None and "phase" in val["sobj"]:
-                    sobj = phase
-                else:
-                    sobj = val["sobj"]
+            # Phase parameters 
+            editor.reverse_search=True
+            editor.max_search_hits=step_d["n_phases"]
+            editor.get_phases(use_stored_par=True)         
+            step_d["phase_name"] = editor.value
+            step_d["lattice_a"],step_d["lattice_a_e"] = get_value(key="_cell_length_a", editor=editor)
+            step_d["lattice_b"],step_d["lattice_b_e"] = get_value(key="_cell_length_b", editor=editor)
+            step_d["lattice_c"],step_d["lattice_c_e"] = get_value(key="_cell_length_c", editor=editor)
+            step_d["lattice_alpha"],step_d["lattice_alpha_e"] = get_value(key="_cell_angle_alpha", editor=editor)
+            step_d["lattice_beta"],step_d["lattice_beta_e"] = get_value(key="_cell_angle_beta", editor=editor)
+            step_d["lattice_gamma"],step_d["lattice_gamma_e"] = get_value(key="_cell_angle_gamma", editor=editor)
+            step_d["biso"],step_d["biso_e"] = get_value(key="_atom_site_B_iso_or_equiv", editor=editor)
+            step_d["crystallite_size"],step_d["crystallite_size_e"] = get_value(key="_riet_par_cryst_size", editor=editor)
+            step_d["microstrain"],step_d["microstrain_e"] = get_value(key="_riet_par_rs_microstrain", editor=editor)
 
-                if val["isloop"]:
-                    loopid = f"{iph}"
-                else:
-                    loopid = None
+            # Put png files in step dictionary
+            for png_index, png_file in enumerate(sorted(png_files)):
+                step_d[f'FILE{png_index}'] = str(png_file)
 
-                editor.get_val(key=val["key"], sobj=sobj, loopid=loopid)
-                db[key].append(float(editor.value[0]))
-                if key not in exclude_err:
-                    editor.get_err(key=val["key"], sobj=sobj, loopid=loopid)
-                    db[f'{key}_e'].append(float(editor.value[0]))
-                    if db[f'{key}_e'][-1] == 0.0:
-                        db[f'{key}_e'][-1] = NAN
+            # Tidy the dictionary and append to cinema dataframe
+            step_d = tidy_dictionary(step_d,step_d["n_phases"])
+            for d in step_d:
+                cinema_d.append(d)
+   
+    cinema_df = pd.DataFrame.from_dict(cinema_d)             
+    cinema_df.to_csv('data.csv', index=False, na_rep='NaN')
 
-            db['GOF'].append(db['Rwp'][-1]/db['Rexp'][-1])
-
-            for i, image in enumerate(pngs):
-                db[f'FILE{i}'].append(os.path.join(editor.run_dirs, image))
-
-            for i, folder_lvl in enumerate(editor.run_dirs.split(os.sep)):
-                db[f'folder_lvl{i}'].append(folder_lvl)
-
-            db["index"].append(idir)
-            db = sync_length(db, cur_index)
-
-    df = pd.DataFrame.from_dict(db, orient='index').transpose()
-    df.to_csv('data.csv', index=False, na_rep='NaN')
+if __name__ == '__main__':
+    main()
+    MILK.cinema.main()

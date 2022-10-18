@@ -1,1 +1,40 @@
-{    "folders": {        "work_dir": "",        "run_dirs": "run(wild)",        "sub_dir": "",        "wild": [],          "wild_range": [[0,1]]    },    "compute": {        "maud_path": "",        "n_maud": 3,        "java_opt": "mx16384M",        "clean_old_step_data": false,        "cur_step": 1,        "log_consol": false    },    "ins": {        "riet_analysis_file": "Initial.par",        "riet_analysis_fileToSave": "Analysis.par",        "section_title": "Steel_test_data",        "analysis_iteration_number": 4,        "LCLS2_detector_config_file": "",        "LCLS2_Cspad0_original_image": "",        "LCLS2_Cspad0_dark_image": "",        "output_plot2D_filename": "plot_",        "output_summed_data_filename": "all_spectra",        "maud_output_plot_filename": "plot1d_",        "output_PF_filename": "PF_",        "output_PF": "p0 0 0 1 0 1 1 1 1 1 p1 0 0 1 0 1 1 1 1 1",        "append_simple_result_to": "simple_results.txt",        "append_result_to": "results.txt",        "import_phase": ["cif/steel_alpha.cif","cif/steel_gamma.cif"],        "ins_file_name": "MAUDText.ins",        "maud_remove_all_datafiles": false,        "verbose": 0    },    "interface": {        "verbose": 0    }}
+{
+    "folders": {
+        "work_dir": "",
+        "run_dirs": "run(wild)",
+        "wild": [],  
+        "wild_range": [[0,4]],
+        "zfill": 3
+    },
+    "compute": {
+        "maud_path": "",
+        "n_maud": 5,
+        "java_opt": "mx16384M",
+        "clean_old_step_data": false,
+        "cur_step": 1,
+        "log_consol": false
+    },
+    "ins": {
+        "riet_analysis_file": "Initial.par",
+        "riet_analysis_fileToSave": "Analysis.par",
+        "section_title": "Steel_test_data",
+        "analysis_iteration_number": 4,
+        "LCLS2_detector_config_file": "",
+        "LCLS2_Cspad0_original_image": "",
+        "LCLS2_Cspad0_dark_image": "",
+        "output_plot2D_filename": "plot_",
+        "output_summed_data_filename": "all_spectra",
+        "maud_output_plot_filename": "plot1d_",
+        "output_PF_filename": "PF_",
+        "output_PF": "p0 0 0 1 0 1 1 1 1 1 p1 0 0 1 0 1 1 1 1 1",
+        "append_simple_result_to": "simple_results.txt",
+        "append_result_to": "results.txt",
+        "import_phase": ["cif/steel_alpha.cif","cif/steel_gamma.cif"],
+        "ins_file_name": "MAUDText.ins",
+        "maud_remove_all_datafiles": false,
+        "verbose": 0
+    },
+    "interface": {
+        "verbose": 0
+    }
+}
