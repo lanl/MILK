@@ -43,7 +43,6 @@ class arguments:
         self.ins_file_name = None
         self.work_dir = None
         self.run_dirs = None
-        self.sub_dir = None
         self.wild = None
         self.wild_range = None
         self.absolute_path = None  # Similar change to always work...
@@ -87,11 +86,17 @@ class arguments:
         self.ins_file_name = config["ins"]["ins_file_name"]
         self.work_dir = config["folders"]["work_dir"]
         self.run_dirs = config["folders"]["run_dirs"]
-        self.sub_dir = config["folders"]["sub_dir"]
         self.wild = config["folders"]["wild"]
         self.wild_range = config["folders"]["wild_range"]
         self.verboseins = config["ins"]["verbose"]
         self.maud_remove_all_datafiles = config["ins"]["maud_remove_all_datafiles"]
+
+        #Purge wild_range
+        wilds = self.wild
+        for wild_range in self.wild_range:
+            wilds+=list(range(wild_range[0],wild_range[1]+1))
+        self.wild = list(set(wilds))
+        self.wild_range = [[]]
 
     def parse_arguments_ins(self):
         args = ''
@@ -138,8 +143,6 @@ class arguments:
             args = args+'--work_dir '+self.work_dir+' '
         if self.run_dirs != None:
             args = args+'--run_dir '+self.run_dirs+' '
-        if self.sub_dir != None:
-            args = args+'--sub_dir '+self.sub_dir+' '
         if self.wild != None and self.wild != []:
             args = args+'--wild '
             for wild in self.wild:
@@ -169,8 +172,6 @@ class arguments:
             args = args+'--work_dir '+self.work_dir+' '
         if self.run_dirs != None:
             args = args+'--run_dir '+self.run_dirs+' '
-        if self.sub_dir != None:
-            args = args+'--sub_dir '+self.sub_dir+' '
         if self.wild != None and self.wild != []:
             args = args+'--wild '
             for wild in self.wild:
@@ -203,7 +204,7 @@ class maudText(arguments):
     def __init__(self):
         super().__init__()
 
-    def refinement(self, itr=None, wizard_index=None, ifile=None, ofile=None, sub_dir=None,
+    def refinement(self, itr=None, wizard_index=None, ifile=None, ofile=None,
                    wild=None, wild_range=None, work_dir=None, verboseins=None,
                    verbosecompute=None, n_maud=None, run=True, export_ins=True, import_phases=False,
                    import_lcls=False, export_PFs=False, export_plots=False, inc_step=True,
@@ -233,8 +234,6 @@ class maudText(arguments):
             self.riet_analysis_file = ifile
         if ofile != None:
             self.riet_analysis_fileToSave = ofile
-        if sub_dir != None:
-            self.sub_dir = sub_dir
         if wild_range != None:
             self.wild_range = wild_range
         if verboseins != None:

@@ -12,29 +12,29 @@ import argparse
 conda_prefix = os.getenv('CONDA_PREFIX')
 
 
-def bash_install(maud_path):
+def bash_install(maud_path,cinema_path):
     """Configure conda environment initializers to have MAUD_PATH."""
     fname_act = os.path.join(conda_prefix, "etc/conda/activate.d")
     os.makedirs(fname_act, exist_ok=True)
-    lines = ['#!/bin/bash', '', 'export MAUD_PATH='+maud_path]
+    lines = ['#!/bin/bash', '', 'export MAUD_PATH='+maud_path,'export CINEMA_PATH='+cinema_path]
     write_lines(os.path.join(fname_act, "env_vars.sh"), lines)
 
     fname_deact = os.path.join(conda_prefix, "etc/conda/deactivate.d")
     os.makedirs(fname_deact, exist_ok=True)
-    lines = ['#!/bin/bash', '', 'unset MAUD_PATH']
+    lines = ['#!/bin/bash', '', 'unset MAUD_PATH', 'unset CINEMA_PATH']
     write_lines(os.path.join(fname_deact, "env_vars.sh"), lines)
 
 
-def bat_install(maud_path):
+def bat_install(maud_path,cinema_path):
     """Configure conda environment initializers to have MAUD_PATH."""
     fname_act = os.path.join(conda_prefix, "etc/conda/activate.d")
     os.makedirs(fname_act, exist_ok=True)
-    lines = [f"set MAUD_PATH='{maud_path}'"]
+    lines = [f"set MAUD_PATH='{maud_path}'",f"set CINEMA_PATH='{cinema_path}'"]
     write_lines(os.path.join(fname_act, "env_vars.sh"), lines)
 
     fname_deact = os.path.join(conda_prefix, "etc/conda/deactivate.d")
     os.makedirs(fname_deact, exist_ok=True)
-    lines = ["set MAUD_PATH="]
+    lines = ["set MAUD_PATH=","set CINEMA_PATH="]
     write_lines(os.path.join(fname_deact, "env_vars.sh"), lines)
 
 
@@ -49,16 +49,18 @@ def main():
     """Get user supplied MAUD path and add to conda milk env."""
     parser = argparse.ArgumentParser(
         description="Install MAUD to path from installation path given by user.")
-    parser.add_argument("-p", "--maud_path", type=str, default=None,
+    parser.add_argument("-pm", "--maud_path", type=str, required=True,
                         help="Full path to MAUD installation.")
+    parser.add_argument("-pc", "--cinema_path", type=str, default='',required=False,
+                        help="Full path to cinema installation.")
     args = parser.parse_args()
 
     if "linux" in sys.platform or "darwin" in sys.platform:
-        bash_install(args.maud_path)
+        bash_install(args.maud_path,args.cinema_path)
 
     elif "win" in sys.platform:
         # TODO Verify the windows installation works
-        bat_install(args.maud_path)
+        bat_install(args.maud_path,args.cinema_path)
 
     else:
         raise OSError("Unsupported OS for automated MAUD installation")

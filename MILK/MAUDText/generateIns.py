@@ -134,28 +134,28 @@ def build_ins(args):
     # Setup the paths
     if args.paths_absolute == 'True' or args.paths_absolute == 'true':
         args.riet_analysis_file = os.path.join(
-            args.work_dir, args.run_dir, args.sub_dir, args.riet_analysis_file)
+            args.work_dir, args.run_dir, args.riet_analysis_file)
         args.riet_analysis_fileToSave = os.path.join(
-            args.work_dir, args.run_dir, args.sub_dir, args.riet_analysis_fileToSave)
+            args.work_dir, args.run_dir, args.riet_analysis_fileToSave)
         args.riet_append_result_to = os.path.join(
-            args.work_dir, args.run_dir, args.sub_dir, args.riet_append_result_to)
+            args.work_dir, args.run_dir, args.riet_append_result_to)
         args.riet_append_simple_result_to = os.path.join(
-            args.work_dir, args.run_dir, args.sub_dir, args.riet_append_simple_result_to)
+            args.work_dir, args.run_dir, args.riet_append_simple_result_to)
         if args.maud_export_pole_figures_filename != None:
             args.maud_export_pole_figures_filename = os.path.join(
-                args.work_dir, args.run_dir, args.sub_dir, args.maud_export_pole_figures_filename)
+                args.work_dir, args.run_dir, args.maud_export_pole_figures_filename)
             args.maud_export_pole_figures = " ".join(args.maud_export_pole_figures)
         if args.maud_output_plot2D_filename != None:
             args.maud_output_plot2D_filename = os.path.join(
-                args.work_dir, args.run_dir, args.sub_dir, args.maud_output_plot2D_filename)
+                args.work_dir, args.run_dir, args.maud_output_plot2D_filename)
         args.ins_file_name = os.path.join(
-            args.work_dir, args.work_dir, args.run_dir, args.sub_dir, args.ins_file_name)
+            args.work_dir, args.work_dir, args.run_dir, args.ins_file_name)
         if args.maud_import_phase != None:
             for i, phase in enumerate(args.maud_import_phase):
                 args.maud_import_phase[i] = os.path.join(args.work_dir, phase)
                 assert os.path.isfile(args.maud_import_phase[i].strip('../')), f'CIF file {os.path.abspath(args.maud_import_phase[i].strip("../"))} does not exist!'
     else:
-        args.work_dir = os.path.join(args.work_dir, args.run_dir, args.sub_dir)
+        args.work_dir = os.path.join(args.work_dir, args.run_dir)
         if args.maud_import_phase != None:
             for i, phase in enumerate(args.maud_import_phase):
                 args.maud_import_phase[i] = os.path.join('..', phase)
@@ -191,21 +191,6 @@ def build_ins(args):
                     tmp2 = [argattrstr.replace('(wild)', str(rid).zfill(3))]
                     tmp.append(tmp2)
                 setattr(args, arg, tmp)
-
-    # Need to search for LCLS2 image for import
-    if args.sub_dir != None:
-        # Look for LCLS2_Cspad0_original_image if specified
-        # This assumes 1 Cspad0 image per directory
-        if args.maud_LCLS2_Cspad0_original_image != None:
-            if 'search' in args.maud_LCLS2_Cspad0_original_image[0]:
-                tmp = []
-                for i in range(0, len(wild)):
-                    fullpath = os.path.join(
-                        args.work_dir[i][0], args.run_dir[i][0], args.sub_dir[i][0])
-                    for f in os.listdir(fullpath):
-                        if 'Cspad-0' in f and '.tiff' in f and 'MecTargetChamber' in f:
-                            tmp.append([os.path.join(fullpath, f)])
-                setattr(args, 'maud_LCLS2_Cspad0_original_image', tmp)
 
     return args
 
@@ -243,8 +228,6 @@ def get_arguments(argsin):
                         help='Base directory from which sub folders are defined and par files are searched for')
     parser.add_argument('--run_dir', '-rd',
                         help='folders to run job in relative to work_dir /e.g. /run(wild) where (wild) is replaced by the wild and/or wild_range combined lists. wild need not be used')
-    parser.add_argument('--sub_dir', '-sf',
-                        help='folders to run job in relative to work_dir /e.g. /run(wild)/preshock where (wild) is replaced by the wild and/or wild_range combined lists. wild need not be used')
     parser.add_argument('--wild', '-n', type=int, nargs='+',
                         help='used with sub_dir (wild) e.g. 1 3 5 would result in a list [1 3 5]')
     parser.add_argument('--wild_range', '-nr', type=int, nargs='+',

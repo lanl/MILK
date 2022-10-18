@@ -45,8 +45,6 @@ def get_arguments(argsin):
                         help='Base directory from which sub folders are defined and par files are searched for')
     parser.add_argument('--run_dir', '-rd', required=True,
                         help='folders to run job in relative to work_dir /e.g. /run(wild) where (wild) is replaced by the wild and/or wild_range combined lists. wild need not be used')
-    parser.add_argument('--sub_dir', '-sf', required=True,
-                        help='folders to run job in relative to work_dir /e.g. /run(wild)/preshock where (wild) is replaced by the wild and/or wild_range combined lists. wild need not be used')
     parser.add_argument('--nMAUD', '-i', type=int,
                         help='Specify the maximum number of MAUD instance to run at the same time')
     parser.add_argument('--maud_path', '-mp', required=False,
@@ -100,12 +98,12 @@ def build_paths(args):
     setattr(args, 'wild', wild)
 
     # Generate full inspaths
-    ins_file_name = os.path.join(args.work_dir, args.run_dir, args.sub_dir, args.ins_file_name)
+    ins_file_name = os.path.join(args.work_dir, args.run_dir,  args.ins_file_name)
     results_file_name = os.path.join(args.work_dir, args.run_dir,
-                                     args.sub_dir, args.riet_append_result_to)
+                                     args.riet_append_result_to)
     simple_results_file_name = os.path.join(
-        args.work_dir, args.run_dir, args.sub_dir, args.riet_append_simple_result_to)
-    refinement_id_name = os.path.join(args.run_dir, args.sub_dir)
+        args.work_dir, args.run_dir,  args.riet_append_simple_result_to)
+    refinement_id_name = args.run_dir
     ins = []
     results = []
     simple_results = []
@@ -142,7 +140,7 @@ def run_MAUD(maud_path, java_opt, simple_call, ins_paths):
         opts = f"-{java_opt}  --enable-preview --add-opens java.base/java.net=ALL-UNNAMED -cp \"{lib}\""
 
     command = f'{java} {opts} com.radiographema.MaudText -file {ins_paths}'
-
+    print(command)
     p = sub.Popen(command, shell=True, stdin=sub.PIPE, stdout=sub.PIPE, stderr=sub.PIPE)
 
     out, err = p.communicate()
