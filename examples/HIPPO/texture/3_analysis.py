@@ -3,7 +3,9 @@
 
 import MILK
 import build_cinema_database
-import time
+import pandas as pd
+from pathlib import Path
+import copy
 
 def free_bank_parameters(keyname, editor, hippo):
     for detid, bankRange in enumerate(hippo["banks"]):
@@ -77,19 +79,54 @@ def set_EWIMV(editor,resolution: float = 7.5, iterations: int = 10, refineable: 
     else:
         editor.set_val(key='_rita_odf_refinable', value='false')
 
+def set_dataset_starting_values(editor,dataset,config_dataset) -> str:
+    """Apply the dataset phase initialization keys"""
+    # Deep copy the editor object so no changes to editor leave this function
+    editor = copy.deepcopy(editor)
+    ifile = editor.ifile
+    ofile = editor.ofile
+    work_dir = editor.work_dir
+    editor.work_dir=''
+    for datasetid, folder in enumerate(dataset["folder"]):
+        file_path = Path(work_dir) / folder 
+        editor.ifile = str(file_path / ifile)
+        editor.ofile = str(file_path / ofile)
+        editor.read_par()
+        editor.get_phases(use_stored_par=True)
+        phase_names = editor.value 
+        for key in config_dataset["phase_initialization"].keys():
+            for phaseid, phase_name in enumerate(phase_names):
+                value = dataset[f"{key}_{phaseid}"][datasetid]
+                editor.set_val(key=f"{key}",value=f"{value}",sobj=phase_name,use_stored_par=True)
+        editor.write_par()
+
+    return ofile
+
+def set_dataset_wild(run,editor,maudText):
+    """"""
+    wild = [i for i, x in enumerate(run) if x]
+    editor.wild=wild
+    maudText.wild=wild
+
 if __name__ == '__main__':
-    start_time = time.time()
 
     # Initialize environment
     #===================================================#
     config = MILK.load_json('milk.json')
     config_hippo = MILK.load_json('hippo.json')
+    config_dataset = MILK.load_json('dataset.json')
 
     editor = MILK.parameterEditor.editor()
     editor.parseConfig(config, ifile='After_setup.par')
     maudText = MILK.maud.maudText()
     maudText.parseConfig(config, cur_step='2')
+
+    df = pd.read_csv("dataset.csv")
+    dataset = df.to_dict(orient='list')
+    set_dataset_wild(dataset["run"],editor,maudText)
     #===================================================#    
+
+    editor.ifile = set_dataset_starting_values(editor,dataset,config_dataset)
 
     # Refinement Step2: Tie biso, refine scale and Background
     bound_b_factors(editor)
@@ -133,5 +170,4 @@ if __name__ == '__main__':
 
     # Build the cinema database and visualize
     build_cinema_database.main()
-    print("--- %s seconds ---" % (time.time() - start_time))
-    # MILK.cinema.main()
+    MILK.cinema.main()

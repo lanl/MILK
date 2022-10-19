@@ -140,7 +140,6 @@ def run_MAUD(maud_path, java_opt, simple_call, ins_paths):
         opts = f"-{java_opt}  --enable-preview --add-opens java.base/java.net=ALL-UNNAMED -cp \"{lib}\""
 
     command = f'{java} {opts} com.radiographema.MaudText -file {ins_paths}'
-    print(command)
     p = sub.Popen(command, shell=True, stdin=sub.PIPE, stdout=sub.PIPE, stderr=sub.PIPE)
 
     out, err = p.communicate()

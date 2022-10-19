@@ -68,6 +68,7 @@ def configure_hippo_parameters(editor, hippo) -> MILK.parameterEditor.editor:
     return editor
 
 def set_dataset_starting_values(editor,dataset,config_dataset) -> str:
+    """Apply the dataset phase initialization keys"""
     # Deep copy the editor object so no changes to editor leave this function
     editor = copy.deepcopy(editor)
     ifile = editor.ifile
@@ -89,6 +90,12 @@ def set_dataset_starting_values(editor,dataset,config_dataset) -> str:
 
     return ofile
 
+def set_dataset_wild(run,editor,maudText):
+    """"""
+    wild = [i for i, x in enumerate(run) if x]
+    editor.wild=wild
+    maudText.wild=wild
+
 if __name__ == '__main__':
 
     # Initialize environment
@@ -104,6 +111,7 @@ if __name__ == '__main__':
 
     df = pd.read_csv("dataset.csv")
     dataset = df.to_dict(orient='list')
+    set_dataset_wild(dataset["run"],editor,maudText)
     #===================================================#
 
     # Configure the hippo parameters and ensure all parameters are fixed
@@ -113,7 +121,7 @@ if __name__ == '__main__':
 
     # Use MAUD to load the phases
     #============================================================#
-    maudText.refinement(itr='1', import_phases=True, export_plots=True, ifile=editor.ifile,inc_step=False,simple_call=True)
+    maudText.refinement(itr='1', import_phases=True, ifile=editor.ifile,inc_step=False,simple_call=True)
 
     # Set user parameters from dataset.csv
     #============================================================#
