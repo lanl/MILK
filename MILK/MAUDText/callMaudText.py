@@ -18,6 +18,7 @@ import tqdm
 import csv
 from prettytable import (PrettyTable, from_csv)
 import errno
+import time
 
 maud_path_global = os.getenv('MAUD_PATH')
 maud_path_global = maud_path_global.strip("'")
@@ -299,7 +300,7 @@ def main(argsin):
         return
 
     print('')
-    print('Starting MAUD refinement for step '+args.cur_step)
+    print(f"Starting MAUD refinement for step: {args.cur_step}, at: {time.strftime('%H:%M:%S')} ")
     print('=========================')
 
     # cleanup the steps if specified
