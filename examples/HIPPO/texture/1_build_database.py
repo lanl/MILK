@@ -8,8 +8,14 @@ import numpy as np
 
 def get_data(data_path: str, ext: str) -> list:
     """Walk the data directory looking for files with the data ext."""
+    if not Path(data_path).is_dir():
+        raise FileNotFoundError(f"Directory {Path(data_path)} was not found.")
     files = Path(data_path).glob(f"*{ext}")
-    return sorted([file.name for file in files])
+    files = sorted([file.name for file in files])
+    if files==[]:
+        raise FileNotFoundError(f"Directory /{Path(data_path)} contains no files of *{ext}.")
+    else:
+        return files
 
 def group_data(data_files: list, groupsz: int) -> list:
     """Group data by group size assuming increasing run number."""
