@@ -10,9 +10,13 @@
 */*/*/__pycache__/*
 /MILK/data/resources/data/*
 /examples/QPA/*
+/examples/HIPPO/texture/run*/*
 /examples/HIPPO/texture/data/*
 /examples/Synchrotron/sequential_refinement/data/*
 /examples/Synchrotron/sequential_refinement/run*/*
 *.csv
 examples/Synchrotron/sequential_refinement/groupDatasets.txt
 /feature_development/*
+*.png
+*results*.txt
+*.par.lst
