@@ -127,8 +127,9 @@ if __name__ == '__main__':
     #============================================================#
     editor.ifile = set_dataset_starting_values(editor,dataset,config_dataset)
 
-    # Refine intensities and export plots
+    # Ensure backgrounds are reset, refine intensities, and export plots
     #============================================================#
+    editor.set_val(key='Background',value='0')
     editor = free_bank_parameters('_inst_inc_spectrum_scale_factor', editor, config_hippo)
     maudText.refinement(itr='3', export_plots=True,ifile=editor.ifile, 
                         ofile='After_setup.par',inc_step=True,simple_call=False)
