@@ -350,8 +350,8 @@ def main(argsin):
     for path in paths[0]:
         # Try making the step folder
         wdir, filename = os.path.split(path)
-        stepdir = os.path.join(wdir, f"steps_{args.cur_step}")
-        for step_fname in glob.glob(os.path.join(wdir, "steps_*")):
+        stepdir = os.path.join(wdir, f"step_{args.cur_step}")
+        for step_fname in glob.glob(os.path.join(wdir, "step_*")):
             step_number = int(step_fname.split("_")[-1])
             if os.path.isdir(step_fname) and step_number >=int(args.cur_step):
                 shutil.rmtree(step_fname)
