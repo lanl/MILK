@@ -93,8 +93,9 @@ class arguments:
 
         #Purge wild_range
         wilds = self.wild
-        for wild_range in self.wild_range:
-            wilds+=list(range(wild_range[0],wild_range[1]+1))
+        if self.wild_range!=[[]]:
+            for wild_range in self.wild_range:
+                wilds+=list(range(wild_range[0],wild_range[1]+1))
         self.wild = list(set(wilds))
         self.wild_range = [[]]
 
