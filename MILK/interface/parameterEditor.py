@@ -1049,11 +1049,11 @@ class editor(arguments):
         wilds = []
         for i in wild:
             wilds.append(i)
-
-        for pair in wild_range:
-            tmp_id = range(pair[0], pair[1]+1)
-            for i in tmp_id:
-                wilds.append(i)
+        if wild_range !=[[]]:
+            for pair in wild_range:
+                tmp_id = range(pair[0], pair[1]+1)
+                for i in tmp_id:
+                    wilds.append(i)
         wilds = list(set(wilds))
 
         # Build input file paths
