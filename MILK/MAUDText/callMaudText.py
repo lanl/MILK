@@ -300,7 +300,7 @@ def main(argsin):
         return
 
     print('')
-    print(f"Starting MAUD refinement for step: {args.cur_step}, at: {time.strftime('%H:%M:%S')} ")
+    print(f"Starting MAUD refinement for step: {args.cur_step}, at: {time.strftime('%H:%M:%S, %B %d')}")
     print('=========================')
 
     # cleanup the steps if specified
