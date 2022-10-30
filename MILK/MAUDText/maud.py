@@ -65,7 +65,7 @@ class arguments:
             self.cur_step = cur_step
         self.paths_absolute = False
         self.riet_analysis_file = config["ins"]["riet_analysis_file"]
-        self.publ_section_title = config["ins"]["section_title"]
+        self.publ_section_title = config["ins"]["section_title"].replace(' ','_')
         self.riet_analysis_iteration_number = str(config["ins"]["analysis_iteration_number"])
         self.riet_analysis_fileToSave = config["ins"]["riet_analysis_fileToSave"]
         self.maud_LCLS2_detector_config_file = config["ins"]["LCLS2_detector_config_file"]
