@@ -140,27 +140,21 @@ def run_MAUD(maud_path, java_opt, simple_call, ins_paths):
         lib = os.path.join(maud_path, 'lib\\*')
         opts = f"-{java_opt}  --enable-preview --add-opens java.base/java.net=ALL-UNNAMED -cp \"{lib}\""
 
-    command = f'{java} {opts} com.radiographema.MaudText -file {ins_paths}'
-    p = sub.Popen(command, shell=True, stdin=sub.PIPE, stdout=sub.PIPE, stderr=sub.PIPE)
-
-    out, err = p.communicate()
+    command = f'{java} {opts} com.radiographema.MaudText -file {ins_paths}'    
     if simple_call == 'False':
-        # Write outputs to files
-        out = out.splitlines()
-        err = err.splitlines()
-        fID = open(ins_paths[:-4]+'.log', "w")
-        for line in out:
-            fID.write('%s\n' % line)
-            # if 'Unable to open file' in line:
-            #   print(line)
+        fIDerr = open(ins_paths[:-4]+'.err', "w")
+        fIDlog = open(ins_paths[:-4]+'.log', "w")
+        with sub.Popen(command, shell=True, stdin=sub.PIPE, stdout=sub.PIPE, stderr=sub.PIPE) as p:
+            for line in p.stdout:
+                fIDlog.write('%s\n' % line)
+            for line in p.stderr:
+                fIDerr.write('%s\n' % line)
 
-        fID.close()
-
-        fID = open(ins_paths[:-4]+'.err', "w")
-        for line in err:
-            fID.write('%s\n' % line)
-        fID.close()
-
+        fIDerr.close()
+        fIDlog.close()
+    else:
+        p=sub.Popen(command, shell=True, stdin=sub.PIPE, stdout=sub.PIPE, stderr=sub.PIPE)
+    
     return 0
 
 
