@@ -154,7 +154,7 @@ def run_MAUD(maud_path, java_opt, simple_call, ins_paths):
         fIDlog.close()
     else:
         p=sub.Popen(command, shell=True, stdin=sub.PIPE, stdout=sub.PIPE, stderr=sub.PIPE)
-    
+        out, err = p.communicate()
     return 0
 
 
@@ -329,7 +329,7 @@ def main(argsin):
 
     out = list(
         tqdm.tqdm(
-            pool.imap(partial(run_MAUD,
+            pool.imap_unordered(partial(run_MAUD,
                               args.maud_path,
                               args.java_opt,
                               args.simple_call),

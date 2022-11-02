@@ -1205,7 +1205,8 @@ def search_list(lines, keyword, d,max_hit=1e6):
                     ind = ind+1
                     indlooploc = indlooploc+1
                     line = lines[ind]
-                endloop[-1] = True
+                if endloop == []:
+                    endloop[-1] = True
             else:
                 ind = i+1
                 line = lines[ind]
@@ -1216,7 +1217,8 @@ def search_list(lines, keyword, d,max_hit=1e6):
                     endloop.append(False)
                     ind = ind+1
                     line = lines[ind]
-                endloop[-1] = True
+                if endloop == []:
+                    endloop[-1] = True
 
             hits+=1
             if hits>max_hit:
@@ -1841,11 +1843,13 @@ def main(argsin,lines=None,do_write=True):
             return get_val(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
         elif args.task == 'get_err':
             return get_err(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
+        elif args.task == 'add_datafile_bk_par':
+            pass
         else:
             raise NameError('key is not implemented')
-
-        linesMod = tmp[0]
-        nlinesMod = tmp[1]
+        if args.task !='add_datafile_bk_par':
+            linesMod = tmp[0]
+            nlinesMod = tmp[1]
 
         # write back the par
         if do_write:
