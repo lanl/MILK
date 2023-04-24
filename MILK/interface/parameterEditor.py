@@ -1193,9 +1193,16 @@ def search_list(lines, keyword, d,max_hit=1e6):
                 endloop.append(False)
                 indloop.append(-1)
             elif keyword != d['ODFValues']:
+                #is loop
                 ind = i+1
                 line = lines[ind]
                 indlooploc = 0
+                # if not bool(line.strip()):
+                #     index.append(ind)
+                #     sobj.append(sobj_cur[:])
+                #     indloop.append(indlooploc)
+                #     isloop.append(True)
+                #     endloop.append(True)
                 while bool(line.strip()):
                     index.append(ind)
                     sobj.append(sobj_cur[:])
@@ -1205,8 +1212,9 @@ def search_list(lines, keyword, d,max_hit=1e6):
                     ind = ind+1
                     indlooploc = indlooploc+1
                     line = lines[ind]
-                if endloop == []:
+                if endloop != [] and not endloop[-1]:
                     endloop[-1] = True
+                
             else:
                 ind = i+1
                 line = lines[ind]
@@ -1217,7 +1225,7 @@ def search_list(lines, keyword, d,max_hit=1e6):
                     endloop.append(False)
                     ind = ind+1
                     line = lines[ind]
-                if endloop == []:
+                if endloop != [] and not endloop[-1]:
                     endloop[-1] = True
 
             hits+=1
