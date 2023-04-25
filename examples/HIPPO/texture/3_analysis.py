@@ -171,4 +171,3 @@ if __name__ == '__main__':
     build_cinema_database.main()
     MILK.cinema.main()
 
-    maudText.refinement(wizard_index='13'

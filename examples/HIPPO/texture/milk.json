@@ -12,7 +12,8 @@
         "java_opt": "mx16384M",
         "clean_old_step_data": false,
         "cur_step": 1,
-        "log_consol": false
+        "log_consol": false,
+        "timeout": null
     },
     "ins": {
         "riet_analysis_file": "Initial.par",
