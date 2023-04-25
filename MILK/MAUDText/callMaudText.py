@@ -19,7 +19,7 @@ import csv
 from prettytable import (PrettyTable, from_csv)
 import errno
 import time
-
+from threading import Thread
 maud_path_global = os.getenv('MAUD_PATH')
 maud_path_global = maud_path_global.strip("'")
 
@@ -48,6 +48,8 @@ def get_arguments(argsin):
                         help='folders to run job in relative to work_dir /e.g. /run(wild) where (wild) is replaced by the wild and/or wild_range combined lists. wild need not be used')
     parser.add_argument('--nMAUD', '-i', type=int,
                         help='Specify the maximum number of MAUD instance to run at the same time')
+    parser.add_argument('--timeout', '-t', type=float, default=None,
+                        help='Specify the timeout in seconds for a single MAUD batch call.')
     parser.add_argument('--maud_path', '-mp', required=False,
                         help='Specify the full path to the maud directory')
     parser.add_argument('--java_opt', '-jo', required=False,
@@ -117,8 +119,12 @@ def build_paths(args):
 
     return ins, results, simple_results, refinement_id
 
+def _write_out(stream,filename):
+    with open(filename, "w") as fID:
+        for line in stream:
+            fID.write('%s\n' % line.strip())
 
-def run_MAUD(maud_path, java_opt, simple_call, ins_paths):
+def run_MAUD(maud_path, java_opt, simple_call, timeout, ins_paths):
 
     # This may be modified once general paths are filled out
     if "linux" in sys.platform:
@@ -140,21 +146,31 @@ def run_MAUD(maud_path, java_opt, simple_call, ins_paths):
         lib = os.path.join(maud_path, 'lib\\*')
         opts = f"-{java_opt}  --enable-preview --add-opens java.base/java.net=ALL-UNNAMED -cp \"{lib}\""
 
-    command = f'{java} {opts} com.radiographema.MaudText -file {ins_paths}'    
-    if simple_call == 'False':
-        fIDerr = open(ins_paths[:-4]+'.err', "w")
-        fIDlog = open(ins_paths[:-4]+'.log', "w")
+    command = f'{java} {opts} com.radiographema.MaudText -file {ins_paths}'
+   
+    if simple_call == 'True':
         with sub.Popen(command, shell=True, stdin=sub.PIPE, stdout=sub.PIPE, stderr=sub.PIPE) as p:
-            for line in p.stdout:
-                fIDlog.write('%s\n' % line)
-            for line in p.stderr:
-                fIDerr.write('%s\n' % line)
-
-        fIDerr.close()
-        fIDlog.close()
+            try:
+                p.wait(timeout=timeout)
+            except sub.TimeoutExpired:
+                p.kill()
+                print(f"MAUD batch call exceeded timeout of {timeout} for {ins_paths}.")
     else:
-        p=sub.Popen(command, shell=True, stdin=sub.PIPE, stdout=sub.PIPE, stderr=sub.PIPE)
-        out, err = p.communicate()
+        with sub.Popen(command, shell=True, stdin=sub.PIPE, stdout=sub.PIPE, stderr=sub.PIPE) as p:
+            stdout_thread = Thread(target=_write_out,
+                args=(p.stdout,ins_paths[:-4]+'.log'))
+            stderr_thread = Thread(target=_write_out,
+                args=(p.stderr,ins_paths[:-4]+'.err'))
+            stdout_thread.start()
+            stderr_thread.start()
+            try:
+                p.wait(timeout=timeout)
+            except sub.TimeoutExpired:
+                p.kill()
+                print(f"MAUD batch call exceeded timeout of {timeout} for {ins_paths}.")
+            stdout_thread.join()
+            stderr_thread.join()
+        
     return 0
 
 
@@ -290,7 +306,8 @@ def main(argsin):
             pool = Pool(os.cpu_count())
         out = pool.map(partial(run_MAUD, args.maud_path,
                                args.java_opt,
-                               args.simple_call), paths[0])
+                               args.simple_call,
+                               args.timeout), paths[0])
         return
 
     print('')
@@ -332,7 +349,8 @@ def main(argsin):
             pool.imap_unordered(partial(run_MAUD,
                               args.maud_path,
                               args.java_opt,
-                              args.simple_call),
+                              args.simple_call,
+                              args.timeout),
                       paths[0]),
             total=len(paths[0])
         )
