@@ -8,11 +8,12 @@
     },
     "compute": {
         "maud_path": "",
-        "n_maud": 5,
+        "n_maud": 2,
         "java_opt": "mx16384M",
         "clean_old_step_data": false,
         "cur_step": 1,
-        "log_consol": false
+        "log_consol": false,
+        "timeout": null
     },
     "ins": {
         "riet_analysis_file": "Initial.par",
@@ -23,7 +24,7 @@
         "LCLS2_Cspad0_original_image": "",
         "LCLS2_Cspad0_dark_image": "",
         "output_plot2D_filename": "plot_",
-        "output_summed_data_filename": "all_spectra",
+        "output_summed_data_filename": "",
         "maud_output_plot_filename": "plot1d_",
         "output_PF_filename": "PF_",
         "output_PF": "p0 0 0 1 0 1 1 1 1 1 p1 0 0 1 0 1 1 1 1 1",

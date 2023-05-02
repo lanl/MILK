@@ -14,6 +14,7 @@ import shutil
 class arguments:
     def __init__(self):
         self.n_maud = None
+        self.timeout = None
         self.log_consol = None
         self.maud_path = None
         self.java_opt = None
@@ -58,6 +59,8 @@ class arguments:
         self.log_consol = config["compute"]["log_consol"]
         self.maud_path = config["compute"]["maud_path"]
         self.java_opt = config["compute"]["java_opt"]
+        if "timeout" in config["compute"]:
+            self.timeout = config["compute"]["timeout"]
         self.clean_old_step_data = config["compute"]["clean_old_step_data"]
         if cur_step == None:
             self.cur_step = config["compute"]["cur_step"]
@@ -167,6 +170,8 @@ class arguments:
 
         if self.n_maud != None:
             args = args+'--nMAUD '+self.n_maud+' '
+        if self.timeout != None:
+            args = f"{args}--timeout {self.timeout} "
         if self.ins_file_name != None:
             args = args+'--ins_file_name '+self.ins_file_name+' '
         if self.work_dir != None and self.work_dir != '':
@@ -209,7 +214,7 @@ class maudText(arguments):
                    wild=None, wild_range=None, work_dir=None, verboseins=None,
                    verbosecompute=None, n_maud=None, run=True, export_ins=True, import_phases=False,
                    import_lcls=False, export_PFs=False, export_plots=False, inc_step=True,
-                   simple_call=False):
+                   simple_call=False,timeout=None):
         '''
         untracking all parameter outputs and stops there value from being printed in summary document after a refinement unless basic parameter
         Optional inputs:
@@ -243,7 +248,8 @@ class maudText(arguments):
             self.verbosecompute = verbosecompute
         if n_maud != None:
             self.n_maud = n_maud
-
+        if timeout != None:
+            self.timeout = timeout
         self.import_phases = import_phases
         self.import_lcls = import_lcls
         self.export_PFs = export_PFs

@@ -16,6 +16,7 @@ setup(name='MILK',
       author_email='dansavage@lanl.gov',
       license='BSD 3',
       packages=find_packages(),
-      scripts=["bin/config_maud.py","bin/maudText.py","bin/cinema.py"],
+      scripts=["bin/config_maud.py", "bin/maudText.py", "bin/cinema.py", "bin/difftools-1dhistogram-contour.py",
+               "bin/difftools-ge2fabIO.py", "bin/difftools-integrate-mg.py", "bin/difftools-maud-esg-loader.py"],
       install_requires=[],
       zip_safe=False)

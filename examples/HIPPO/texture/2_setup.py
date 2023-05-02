@@ -85,7 +85,10 @@ def set_dataset_starting_values(editor,dataset,config_dataset) -> str:
         for key in config_dataset["phase_initialization"].keys():
             for phaseid, phase_name in enumerate(phase_names):
                 value = dataset[f"{key}_{phaseid}"][datasetid]
-                editor.set_val(key=f"{key}",value=f"{value}",sobj=phase_name,use_stored_par=True)
+                if "_pd_phase_atom_" in key:
+                    editor.set_val(key=f"{key}",value=f"{value}",loopid=f"{phaseid}",use_stored_par=True)
+                else:
+                    editor.set_val(key=f"{key}",value=f"{value}",sobj=phase_name,use_stored_par=True)
         editor.write_par()
 
     return ofile
@@ -121,7 +124,7 @@ if __name__ == '__main__':
 
     # Use MAUD to load the phases
     #============================================================#
-    maudText.refinement(itr='1', import_phases=True, ifile=editor.ifile,inc_step=False,simple_call=True)
+    maudText.refinement(itr='1', import_phases=True, ifile=editor.ifile,inc_step=False,simple_call=False)
 
     # Set user parameters from dataset.csv
     #============================================================#
@@ -138,3 +141,6 @@ if __name__ == '__main__':
     #============================================================#
     build_cinema_database.main()
     MILK.cinema.main()
+
+    editor.get_phases()
+    phases = editor.value

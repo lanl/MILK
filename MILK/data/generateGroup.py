@@ -9,6 +9,7 @@ import os
 import argparse
 from . import prepareData
 import pandas as pd
+from pathlib import Path
 
 class group:
     def __init__(self):
@@ -68,12 +69,13 @@ class group:
             self.dataset["ofile"].append(self.ofile)
             self.dataset["data_files"].append(data_files)
 
-    def writeDataset(self):
+    def writeDataset(self, work_dir = Path.cwd()):
         """Write dataset file for editing"""
-        if not os.path.isfile(self.filename) or self.overwrite:
+        filename = work_dir / Path(self.filename)
+        if not os.path.isfile(filename) or self.overwrite:
             df = pd.DataFrame.from_dict(self.dataset, orient='index').transpose()
-            df.to_csv(self.filename, index=False)
+            df.to_csv(filename, index=False)
 
-    def prepareData(self,keep_intensity=True):
-        prepareData.main(filename = self.filename,keep_intensity=keep_intensity)
+    def prepareData(self, work_dir = Path.cwd(), keep_intensity=True):
+        prepareData.main(filename = work_dir / Path(self.filename), keep_intensity=keep_intensity)
             

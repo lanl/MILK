@@ -58,7 +58,7 @@ def main():
         run_path = Path(run_folder)
 
         # Get list of MILK step folder paths in the run_folder
-        step_paths = sorted(list(run_path.glob("steps_*")))
+        step_paths = sorted(list(run_path.glob("step_*")))
 
         # For each step path
         for step_index, step_path in enumerate(step_paths):
@@ -89,7 +89,10 @@ def main():
             step_d["Rexp"],_ = get_value(key="_refine_ls_goodness_of_fit_all", editor=editor)
             step_d["Rwp"]=step_d["Rwp"][0]
             step_d["Rexp"]=step_d["Rexp"][0]
-            step_d["GOF"] = step_d["Rwp"] / step_d["Rexp"]
+            if step_d["Rexp"]<=0.0:
+                step_d["GOF"] = NAN
+            else:
+                step_d["GOF"] = step_d["Rwp"] / step_d["Rexp"]
 
             # Phase parameters 
             editor.reverse_search=True
@@ -108,7 +111,10 @@ def main():
 
             # Put png files in step dictionary
             for png_index, png_file in enumerate(sorted(png_files)):
-                step_d[f'FILE{png_index}'] = str(png_file)
+                title=str(png_file.stem).split("plot_")[-1]
+                title = title.replace(" ","_")
+                title = title.replace(".","p")
+                step_d[f'FILE{png_index}_{title}'] = str(png_file)
 
             # Tidy the dictionary and append to cinema dataframe
             step_d = tidy_dictionary(step_d,step_d["n_phases"])
@@ -117,7 +123,9 @@ def main():
    
     cinema_df = pd.DataFrame.from_dict(cinema_d)             
     cinema_df.to_csv('data.csv', index=False, na_rep='NaN')
-
+    Path('test.pong').parts
 if __name__ == '__main__':
     main()
     MILK.cinema.main()
+
+    

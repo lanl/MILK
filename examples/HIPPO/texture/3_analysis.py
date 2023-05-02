@@ -97,7 +97,10 @@ def set_dataset_starting_values(editor,dataset,config_dataset) -> str:
         for key in config_dataset["phase_initialization"].keys():
             for phaseid, phase_name in enumerate(phase_names):
                 value = dataset[f"{key}_{phaseid}"][datasetid]
-                editor.set_val(key=f"{key}",value=f"{value}",sobj=phase_name,use_stored_par=True)
+                if "_pd_phase_atom_" in key:
+                    editor.set_val(key=f"{key}",value=f"{value}",loopid=f"{phaseid}",use_stored_par=True)
+                else:
+                    editor.set_val(key=f"{key}",value=f"{value}",sobj=phase_name,use_stored_par=True)
         editor.write_par()
 
     return ofile
@@ -120,49 +123,45 @@ if __name__ == '__main__':
     editor.parseConfig(config, ifile='After_setup.par')
     maudText = MILK.maud.maudText()
     maudText.parseConfig(config, cur_step='2')
-
+    
     df = pd.read_csv("dataset.csv")
     dataset = df.to_dict(orient='list')
     set_dataset_wild(dataset["run"],editor,maudText)
     #===================================================#    
-
+    
     editor.ifile = set_dataset_starting_values(editor,dataset,config_dataset)
 
-    # Refinement Step2: Tie biso, refine scale and Background
+    # Refinement Step2
     bound_b_factors(editor)
-    add_shared_background(2,editor)
     free_scale_parameters(editor,config_hippo)
+    add_shared_background(2,editor)
     editor.free(key='Background')
     maudText.refinement(itr='4',  export_plots=True, ifile=editor.ifile)
 
-    # Refinement Step3: Background, Arbitrary texture, lattice parameters
+    # Refinement Step3
     fix_scale_parameters(editor,config_hippo)
-    free_cell(editor)
     editor.texture(key='Arbitrary')
+    free_cell(editor)
     maudText.refinement(itr='3', export_plots=True, ifile=editor.ifile)
 
-    # Refinement Step4: Background, Arbitrary texture, and difc
-    # fix_cell(editor)
+    # Refinement Step4
     free_microstructure(editor)
     free_difc(editor,config_hippo)
     maudText.refinement(itr='6', export_plots=True, ifile=editor.ifile)
 
-    # # Refinement Step5: Previous + cell parameters (note difc was fixed in setup)
-    # free_cell(editor)
-    # maudText.refinement(itr='3', export_plots=True, ifile=editor.ifile)
-
-    # Refinement Step6: Add EWIMV texture model and refine phase fractions
+    # Refinement Step5
     editor.fix_all()
     set_EWIMV(editor,resolution=7.5)
     free_scale_parameters(editor,config_hippo)    
-    maudText.refinement(itr='4', export_PFs=True, export_plots=True, ifile=editor.ifile)
+    maudText.refinement(itr='4', export_PFs=True, export_plots=True,
+                        ifile=editor.ifile)
 
-    # Refinement Step7: Previous + Biso
+    # Refinement Step6
     editor.free(key='Biso')
     editor.free(key='Background')
     maudText.refinement(itr='4', export_PFs=True, export_plots=True,ifile=editor.ifile)
 
-    # Refinement Step8: Previous + broadening + Background + cell
+    # Refinement Step7
     free_microstructure(editor)
     free_cell(editor)
     maudText.refinement(itr='10', export_PFs=True,
@@ -171,3 +170,4 @@ if __name__ == '__main__':
     # Build the cinema database and visualize
     build_cinema_database.main()
     MILK.cinema.main()
+
