@@ -112,7 +112,7 @@ def build_ins(args):
 
     # Generate the working directory
     if args.work_dir != None:
-        args.work_dir = args.work_dir[0][0]
+        args.work_dir = args.work_dir
     else:
         args.work_dir = os.getcwd()
 

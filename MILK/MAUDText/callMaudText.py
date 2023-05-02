@@ -79,7 +79,7 @@ def build_paths(args):
 
     # Generate the working directory
     if args.work_dir != None:
-        args.work_dir = args.work_dir[0][0]
+        args.work_dir = args.work_dir
     else:
         args.work_dir = os.getcwd()
 
@@ -351,7 +351,7 @@ def main(argsin):
                 shutil.rmtree(step_fname)
         os.makedirs(stepdir, exist_ok=False)
 
-        exts = ['png','xpc','cif','err','ins','log']
+        exts = ['png','xpc','cif','err','ins','log','apf']
         for ext in exts:
             list_of_ext = glob.glob(os.path.join(wdir, f'*.{ext}'))
             for file in list_of_ext:
