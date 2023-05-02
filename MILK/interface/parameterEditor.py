@@ -1205,8 +1205,9 @@ def search_list(lines, keyword, d,max_hit=1e6):
                     ind = ind+1
                     indlooploc = indlooploc+1
                     line = lines[ind]
-                if endloop == []:
-                    endloop[-1] = True
+
+                endloop[-1] = True
+
             else:
                 ind = i+1
                 line = lines[ind]
