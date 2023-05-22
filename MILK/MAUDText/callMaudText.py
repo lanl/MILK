@@ -80,9 +80,7 @@ def get_arguments(argsin):
 def build_paths(args):
 
     # Generate the working directory
-    if args.work_dir != None:
-        args.work_dir = args.work_dir[0][0]
-    else:
+    if args.work_dir is None:
         args.work_dir = os.getcwd()
 
     # Get wild cases if any and combine range and wild
