@@ -64,6 +64,7 @@ def split_list_of_str(listofstr):
     tmp  = listofstr.replace('[','')
     tmp  = tmp.replace(']','')
     tmp  = tmp.replace('\'','')
+    tmp  = tmp.replace(',','')
     return tmp.split(' ')
 
 def main(filename: str = "dataset.csv", work_dir: Path = Path.cwd(), keep_intensity: bool = True):

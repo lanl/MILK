@@ -367,7 +367,7 @@ def main(argsin):
                 shutil.rmtree(step_fname)
         os.makedirs(stepdir, exist_ok=False)
 
-        exts = ['png','xpc','cif','err','ins','log']
+        exts = ['png','xpc','cif','err','ins','log','apf']
         for ext in exts:
             list_of_ext = glob.glob(os.path.join(wdir, f'*.{ext}'))
             for file in list_of_ext:
