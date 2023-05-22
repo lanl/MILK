@@ -1028,6 +1028,7 @@ class editor(arguments):
         # Prevent reinitialization
         self.ifile = self.ofile
 
+            
     def summary(self, ifile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None):
         if ifile == None:
             ifile = self.ifile
@@ -1619,6 +1620,9 @@ def get_arguments(argsin):
                 tmp2.append(nsobj2.replace('&', ' '))
             tmp.append(tmp2)
         args.nsobj = tmp
+
+    #Allow for spaces in keys
+    args.key = [[key.replace('&',' ') for key in args.key[0]]]
 
     assert len(args.nsobj) == len(args.sobj), 'There is an issue constructing nsobj or sobj'
 
