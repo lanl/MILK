@@ -17,7 +17,7 @@ def bash_install(maud_path, cinema_path):
     fname_act = os.path.join(conda_prefix, "etc/conda/activate.d")
     os.makedirs(fname_act, exist_ok=True)
     lines = ['#!/bin/bash', '',
-             f"export MAUD_PATH={maud_path}", "export CINEMA_PATH={cinema_path}"]
+             f"export MAUD_PATH={maud_path}", f"export CINEMA_PATH={cinema_path}"]
     write_lines(os.path.join(fname_act, "env_vars.sh"), lines)
 
     fname_deact = os.path.join(conda_prefix, "etc/conda/deactivate.d")
