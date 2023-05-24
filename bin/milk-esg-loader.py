@@ -19,7 +19,6 @@ class get_arguments():
         arg = parser.parse_args(sys.argv[1:3])
         self.interface = arg.interface
         parser = getattr(self,self.interface)()
-        print(parser)
         opts = parser.parse_args(sys.argv[3:])
         opts.cwd = Path(opts.maud_output_par).parent
         opts.omegas, opts.esg_files, opts.poni_files, opts.maud_detectors = self.parse_opts(opts)

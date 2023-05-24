@@ -670,13 +670,13 @@ def integration2d(mask, mg, data, opts, stem, formats, histogram_plot):
             intensity_det, X_bin_det, Y_bin_det, sigmas_det = cake2MAUD(
                 g, result, sigmas, data[i], mask[i], i)
             write_esg_detector(intensity_det, Y_bin_det, X_bin_det,
-                               sigmas_det, result.azimuthal, f"{stem}_{i}.esg", g.get_dist()*1e3)
+                               sigmas_det, result.azimuthal, f"{stem}_det{i}_2d.esg", g.get_dist()*1e3)
         formats.pop(formats.index("esg_detector"))
 
     # Export esg1 format if in formats
     if "esg1" in formats:
         write_esg1(result.radial, result.intensity,
-                   result.azimuthal, sigmas, f"{stem}.esg")
+                   result.azimuthal, sigmas, f"{stem}_2d.esg")
         formats.pop(formats.index("esg1"))
 
     # Generic export format
