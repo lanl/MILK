@@ -8,7 +8,7 @@
     },
     "compute": {
         "maud_path": "",
-        "n_maud": 2,
+        "n_maud": 5,
         "java_opt": "mx16384M",
         "clean_old_step_data": false,
         "cur_step": 1,
