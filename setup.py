@@ -17,6 +17,6 @@ setup(name='MILK',
       license='BSD 3',
       packages=find_packages(),
       scripts=["bin/milk-config.py", "bin/milk-maudText.py", "bin/milk-cinema.py", "bin/milk-1dhistogram-contour.py",
-               "bin/milk-ge2fabIO.py", "bin/milk-integrate-mg.py", "bin/milk-maud-esg-loader.py"],
+               "bin/milk-ge2fabIO.py", "bin/milk-integrate.py", "bin/milk-esg-loader.py", "bin/milk-poni-export.py"],
       install_requires=[],
       zip_safe=False)
