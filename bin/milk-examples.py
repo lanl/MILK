@@ -16,7 +16,8 @@ def main():
     parser = argparse.ArgumentParser(
         description="Setup provided examples.")
     parser.add_argument("-e", "--example", type=int, required=True,
-        help="Enter the number corresponding to the examples: 1. Maud batch processing. 2. HIPPO texture analysis. 3. Synchrotron XRD analysis.")
+        help="Enter the number corresponding to the examples: 1. Maud batch processing. 2. HIPPO texture analysis. \
+            3. Synchrotron XRD analysis. 4. CHESS: GE Detector calibration and integration.")
     args = parser.parse_args()
 
     args.maud_path = os.getenv('MAUD_PATH')
@@ -27,6 +28,8 @@ def main():
         MILK.examples.hippo_texture()
     elif args.example == 3:
         MILK.examples.sequential_refinement()
+    elif args.example == 4:
+        MILK.examples.GEDetector()
     else:
         raise OSError("Use command milk-examples.py -e n to setup a tutorial where n is either 1, 2, or 3")
 
