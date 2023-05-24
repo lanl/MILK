@@ -20,8 +20,8 @@ milk-integrate.py \
     --format "esg1" "esg_detector"\
     --histogram_plot
 
-# ## Load data into MAUD parameter files
-# echo ""Loading data into MAUD parameter files
+## Load data into MAUD parameter files
+echo ""Loading data into MAUD parameter files
 milk-esg-loader.py \
     --interface command \
     --maud-input-par "templates/detector_ang_cal.par" \
