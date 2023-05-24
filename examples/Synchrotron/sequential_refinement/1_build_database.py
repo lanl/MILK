@@ -44,5 +44,6 @@ if __name__ == '__main__':
         data_fnames=data_files,
         ifile=dataset["template_name"],
         ofile=config["ins"]["riet_analysis_file"])
+    group.buildDataset()
     group.writeDataset()
     group.prepareData()
