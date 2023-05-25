@@ -39,6 +39,11 @@ def sequential_refinement(path='synchrotron/sequential_refinement'):
     fn = os.path.join(os.path.dirname(__file__), '../../examples/Synchrotron/sequential_refinement')
     shutil.copytree(fn, os.path.join(os.getcwd(), path))
 
+def GEDetector(path='Detector_Calibrations/CHESS-GE'):
+    """CHESS: GE Detector calibration and integration example."""
+    fn = os.path.join(os.path.dirname(__file__), '../../examples/Detector_Calibrations/CHESS-GE')
+    shutil.copytree(fn, os.path.join(os.getcwd(), path))
+
 
 def download_example(url, path, filename):
     """
