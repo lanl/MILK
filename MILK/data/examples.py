@@ -19,7 +19,7 @@ def qpa(path='QPA'):
     unzip_download(dpath, path)
 
 
-def maudbatch(path='maudbatch'):
+def maudBatch(path='maudbatch'):
     """MAUD batch analysis example updated for newer versions of MAUD."""
     # url = "http://nanoair.dii.unitn.it:8080/static/tutorial/batch.zip"
     # dpath = download_example(url, path, os.path.basename(url))
@@ -28,13 +28,13 @@ def maudbatch(path='maudbatch'):
     shutil.copytree(fn, os.path.join(os.getcwd(), path))
 
 
-def hippo_texture(path='HIPPO/texture'):
+def hippoTexture(path='HIPPO/texture'):
     """HIPPO two phase texture example."""
     fn = os.path.join(os.path.dirname(__file__), '../../examples/HIPPO/texture')
     shutil.copytree(fn, os.path.join(os.getcwd(), path))
 
 
-def sequential_refinement(path='synchrotron/sequential_refinement'):
+def sequentialRefinement(path='synchrotron/sequential_refinement'):
     """Synchrotron three sequential refinement example."""
     fn = os.path.join(os.path.dirname(__file__), '../../examples/Synchrotron/sequential_refinement')
     shutil.copytree(fn, os.path.join(os.getcwd(), path))
@@ -44,6 +44,10 @@ def GEDetector(path='Detector_Calibrations/CHESS-GE'):
     fn = os.path.join(os.path.dirname(__file__), '../../examples/Detector_Calibrations/CHESS-GE')
     shutil.copytree(fn, os.path.join(os.getcwd(), path))
 
+def APSHydra(path='Detector_Calibrations/APS-1ID-Hydra'):
+    """CHESS: GE Detector calibration and integration example."""
+    fn = os.path.join(os.path.dirname(__file__), '../../examples/Detector_Calibrations/APS-1ID-Hydra')
+    shutil.copytree(fn, os.path.join(os.getcwd(), path))
 
 def download_example(url, path, filename):
     """
