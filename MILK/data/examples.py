@@ -49,6 +49,16 @@ def APSHydra(path='Detector_Calibrations/APS-1ID-Hydra'):
     fn = os.path.join(os.path.dirname(__file__), '../../examples/Detector_Calibrations/APS-1ID-Hydra')
     shutil.copytree(fn, os.path.join(os.getcwd(), path))
 
+def SLACMEC(path='Detector_Calibrations/SLAC-MEC'):
+    """CHESS: GE Detector calibration and integration example."""
+    fn = os.path.join(os.path.dirname(__file__), '../../examples/Detector_Calibrations/SLAC-MEC')
+    shutil.copytree(fn, os.path.join(os.getcwd(), path))
+
+def euXFEL(path='Detector_Calibrations/euXFEL-HED'):
+    """CHESS: GE Detector calibration and integration example."""
+    fn = os.path.join(os.path.dirname(__file__), '../../examples/Detector_Calibrations/euXFEL-HED')
+    shutil.copytree(fn, os.path.join(os.getcwd(), path))
+    
 def download_example(url, path, filename):
     """
     Download URL and return path to download.

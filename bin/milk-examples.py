@@ -17,7 +17,8 @@ def main():
         description="Setup provided examples.")
     parser.add_argument("-e", "--example", type=int, required=True,
         help="Enter the number corresponding to the examples: 1. Maud batch processing. 2. HIPPO texture analysis. \
-            3. Synchrotron XRD analysis. 4. CHESS: GE Detector calibration and integration. 5. APS 1D Hydra 4 detector calibration.")
+            3. Synchrotron XRD analysis. 4. CHESS: GE Detector calibration and integration. 5. APS 1D Hydra 4 detector calibration.\
+            6. SLAC-MEC 4 detector calibration. 7. euXFEL-HED 2 detector calibration")
     args = parser.parse_args()
 
     args.maud_path = os.getenv('MAUD_PATH')
@@ -32,6 +33,10 @@ def main():
         MILK.examples.GEDetector()
     elif args.example == 5:
         MILK.examples.APSHydra()
+    elif args.example == 6:
+        MILK.examples.SLACMEC()
+    elif args.example == 7:
+        MILK.examples.euXFEL()
     else:
         raise OSError("Use command milk-examples.py -e n to setup a tutorial where n is one of the valid examples. See milk-examples.py -h for a list.")
 
