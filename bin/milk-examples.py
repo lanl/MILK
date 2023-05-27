@@ -17,21 +17,28 @@ def main():
         description="Setup provided examples.")
     parser.add_argument("-e", "--example", type=int, required=True,
         help="Enter the number corresponding to the examples: 1. Maud batch processing. 2. HIPPO texture analysis. \
-            3. Synchrotron XRD analysis. 4. CHESS: GE Detector calibration and integration.")
+            3. Synchrotron XRD analysis. 4. CHESS: GE Detector calibration and integration. 5. APS 1D Hydra 4 detector calibration.\
+            6. SLAC-MEC 4 detector calibration. 7. euXFEL-HED 2 detector calibration")
     args = parser.parse_args()
 
     args.maud_path = os.getenv('MAUD_PATH')
 
     if args.example == 1:
-        MILK.examples.maudbatch()
+        MILK.examples.maudBatch()
     elif args.example == 2:
-        MILK.examples.hippo_texture()
+        MILK.examples.hippoTexture()
     elif args.example == 3:
-        MILK.examples.sequential_refinement()
+        MILK.examples.sequentialRefinement()
     elif args.example == 4:
         MILK.examples.GEDetector()
+    elif args.example == 5:
+        MILK.examples.APSHydra()
+    elif args.example == 6:
+        MILK.examples.SLACMEC()
+    elif args.example == 7:
+        MILK.examples.euXFEL()
     else:
-        raise OSError("Use command milk-examples.py -e n to setup a tutorial where n is either 1, 2, or 3")
+        raise OSError("Use command milk-examples.py -e n to setup a tutorial where n is one of the valid examples. See milk-examples.py -h for a list.")
 
 
 if __name__ == "__main__":

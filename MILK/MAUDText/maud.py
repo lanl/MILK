@@ -240,6 +240,8 @@ class maudText(arguments):
             self.riet_analysis_file = ifile
         if ofile != None:
             self.riet_analysis_fileToSave = ofile
+        if wild != None:
+            self.wild = wild
         if wild_range != None:
             self.wild_range = wild_range
         if verboseins != None:
