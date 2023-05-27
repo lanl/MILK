@@ -317,6 +317,10 @@ class editor(arguments):
             lines = self.lines
         else:
             lines = None
+        if ('e-' in value or 'E-' in value):
+            precision = int(value.split('-')[-1])
+            value = f'{float(value):.{precision}f}'
+
         self.key1 = key
         self.key2 = None
         self.task = 'set_par'
@@ -1629,6 +1633,9 @@ def get_arguments(argsin):
     # Make sure arguments make sense
     if args.task == 'set_par':
         assert args.value != None, 'must pass a value argument to set a parameter!'
+        #Handle value formating
+        for i, val in enumerate(args.value):
+            args.value[i] = f'{float(val):.14E}' 
 
     # Make sure arguments make sense
     if args.task == 'ref_par':

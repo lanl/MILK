@@ -20,3 +20,4 @@ examples/Synchrotron/sequential_refinement/groupDatasets.txt
 *.png
 *results*.txt
 *.par.lst
+examples/Detector_Calibrations/APS-1ID-Hydra/calibration_files/configuration.pptx
