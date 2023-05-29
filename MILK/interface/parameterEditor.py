@@ -1635,7 +1635,10 @@ def get_arguments(argsin):
         assert args.value != None, 'must pass a value argument to set a parameter!'
         #Handle value formating
         for i, val in enumerate(args.value):
-            args.value[i] = f'{float(val):.14E}' 
+            try:
+                args.value[i] = f'{float(val):.14E}' 
+            except ValueError:
+                pass
 
     # Make sure arguments make sense
     if args.task == 'ref_par':
