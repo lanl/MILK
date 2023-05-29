@@ -14,6 +14,7 @@ import shutil
 class arguments:
     def __init__(self):
         self.n_maud = None
+        self.exit_code = None
         self.timeout = None
         self.log_consol = None
         self.maud_path = None
@@ -257,6 +258,7 @@ class maudText(arguments):
         self.export_PFs = export_PFs
         self.export_plots = export_plots
         self.simple_call = simple_call
+        self.exit_code = [0]
 
         # parse
         self.parse_arguments_ins()
@@ -264,6 +266,6 @@ class maudText(arguments):
         if export_ins:
             generateIns.main(self.args_ins)
         if run:
-            callMaudText.main(self.args_compute)
+            self.exit_code = callMaudText.main(self.args_compute)
             if inc_step:
                 self.cur_step = str(int(self.cur_step)+1)

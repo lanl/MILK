@@ -145,7 +145,7 @@ def run_MAUD(maud_path, java_opt, simple_call, timeout, ins_paths):
         opts = f"-{java_opt}  --enable-preview --add-opens java.base/java.net=ALL-UNNAMED -cp \"{lib}\""
 
     command = f'{java} {opts} com.radiographema.MaudText -file {ins_paths}'
-   
+    exit_code=0
     if simple_call == 'True':
         with sub.Popen(command, shell=True, stdin=sub.PIPE, stdout=sub.PIPE, stderr=sub.PIPE) as p:
             try:
@@ -153,6 +153,8 @@ def run_MAUD(maud_path, java_opt, simple_call, timeout, ins_paths):
             except sub.TimeoutExpired:
                 p.kill()
                 print(f"MAUD batch call exceeded timeout of {timeout} for {ins_paths}.")
+                exit_code=1
+
     else:
         with sub.Popen(command, shell=True, stdin=sub.PIPE, stdout=sub.PIPE, stderr=sub.PIPE) as p:
             stdout_thread = Thread(target=_write_out,
@@ -166,10 +168,11 @@ def run_MAUD(maud_path, java_opt, simple_call, timeout, ins_paths):
             except sub.TimeoutExpired:
                 p.kill()
                 print(f"MAUD batch call exceeded timeout of {timeout} for {ins_paths}.")
+                exit_code=1
             stdout_thread.join()
             stderr_thread.join()
         
-    return 0
+    return exit_code
 
 
 def manage_step_dirs(path: str,
@@ -306,7 +309,7 @@ def main(argsin):
                                args.java_opt,
                                args.simple_call,
                                args.timeout), paths[0])
-        return
+        return out
 
     print('')
     print(f"Starting MAUD refinement for step: {args.cur_step}, at: {time.strftime('%H:%M:%S, %B %d')}")
