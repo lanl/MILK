@@ -28,7 +28,7 @@ To install:
 git clone https://github.com/lanl/MILK.git
 ```
 
-You may need to configure your git proxy
+You may need to configure your git proxy for the clone to work
 ```
 git config --global http.proxy http://myproxy:port
 ```
@@ -42,6 +42,7 @@ By editing environment.yml, the name of the conda environment can be changed fro
 conda config --set proxy_servers.http http://myproxy:port
 conda config --set proxy_servers.https https://myproxy:port
 git config --global http.proxy http://myproxy:port
+python -m pip config set global.proxy http://myproxy:port
 ```
 
 4. To install your MAUD path and CINEMA to your conda environment run
