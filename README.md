@@ -28,17 +28,28 @@ To install:
 git clone https://github.com/lanl/MILK.git
 ```
 
+You may need to configure your git proxy for the clone to work
+```
+git config --global http.proxy http://myproxy:port
+```
+
 3. To install MILK locally in terminal navigate to the repository and run
 ```bash
 conda env create -f environment.yml
 ```
-By editing environment.yml, the name of the conda environment can be changed from the default "milk" to e.g. "milk_test" or so.
-
-4. To install your MAUD path to your conda environment run
-```bash
-config_maud.py -p /path/to/maud/application/Maud.app
+By editing environment.yml, the name of the conda environment can be changed from the default "rietveld" to e.g. "rietveld_test" or so. For the install to complete you may need to configure your conda and your git proxy e.g. 
 ```
-MILK uses the bash key $MAUD_PATH if it is defined unless a path is specified in the milk.json file.
+conda config --set proxy_servers.http http://myproxy:port
+conda config --set proxy_servers.https https://myproxy:port
+git config --global http.proxy http://myproxy:port
+python -m pip config set global.proxy http://myproxy:port
+```
+
+4. To install your MAUD path and CINEMA to your conda environment run
+```bash
+config_maud.py /path/to/maud/application/Maud.app -c /path/to/cinema/repo
+```
+MILK uses the bash key $MAUD_PATH and $CINEMA_PATH unless a path is specified in the milk.json file.
 
 In the case you are on linux or windows, you just specify the Maud folder without the .app
 
