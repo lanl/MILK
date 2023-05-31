@@ -237,7 +237,7 @@ def write_maud_batch_script(maud_batch_script, maud_output_par, maud_load_script
               "_maud_remove_all_datafiles",
               "_riet_meas_datains_name",
               "",
-              f"'{Path(maud_output_par)}' -1 'true' '{maud_load_script}'"]
+              f"'{Path(maud_output_par)}' 0 'true' '{maud_load_script}'"]
     write_script(script, cwd / maud_batch_script)
 
 
