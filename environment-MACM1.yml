@@ -16,6 +16,7 @@ dependencies:
   - pyfai
   - matplotlib
   - pyopencl
+  - ocl_icd_wrapper_apple
   - opencv
   - pyqtgraph
   - autopep8
