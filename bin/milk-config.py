@@ -32,12 +32,12 @@ def bat_install(maud_path, cinema_path):
     os.makedirs(fname_act, exist_ok=True)
     lines = [f"set MAUD_PATH='{maud_path}'",
              f"set CINEMA_PATH='{cinema_path}'"]
-    write_lines(os.path.join(fname_act, "env_vars.sh"), lines)
+    write_lines(os.path.join(fname_act, "env_vars.bat"), lines)
 
     fname_deact = os.path.join(conda_prefix, "etc/conda/deactivate.d")
     os.makedirs(fname_deact, exist_ok=True)
     lines = ["set MAUD_PATH=", "set CINEMA_PATH="]
-    write_lines(os.path.join(fname_deact, "env_vars.sh"), lines)
+    write_lines(os.path.join(fname_deact, "env_vars.bat"), lines)
 
 
 def write_lines(fname, lines):
