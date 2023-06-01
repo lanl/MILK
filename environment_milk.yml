@@ -1,0 +1,27 @@
+name: milk
+
+channels:
+  - defaults
+  - conda-forge
+  
+dependencies:
+  #Base MILK
+  - tqdm
+  - pip=22.1.2
+  - prettytable
+  - python=3.9
+  - pandas
+  - pydantic
+  - seaborn
+  - matplotlib
+  - opencv
+  - pyqtgraph
+  - autopep8
+  - numpy
+  - pyfai
+  - pyopencl
+  
+  # pip packages
+  - pip:
+    #MILK github installation
+    - -e ./
