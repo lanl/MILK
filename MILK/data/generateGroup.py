@@ -75,6 +75,8 @@ class group:
         if not os.path.isfile(filename) or self.overwrite:
             df = pd.DataFrame.from_dict(self.dataset, orient='index').transpose()
             df.to_csv(filename, index=False)
+        else:
+            print()
 
     def prepareData(self, work_dir = Path.cwd(), keep_intensity=True):
         prepareData.main(filename = work_dir / Path(self.filename), keep_intensity=keep_intensity)

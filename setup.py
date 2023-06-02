@@ -19,5 +19,10 @@ setup(name='MILK',
       scripts=["bin/milk-config.py", "bin/milk-maudText.py", "bin/milk-cinema.py", "bin/milk-1dhistogram-contour.py",
                "bin/milk-ge2fabIO.py", "bin/milk-integrate.py", "bin/milk-esg-loader.py", "bin/milk-poni-export.py",
                "bin/milk-examples.py"],
+      entry_points={
+          'console_scripts': [
+              'config2 = MILK.bin.milk_config:main',
+          ],
+      },
       install_requires=[],
       zip_safe=False)
