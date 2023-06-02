@@ -25,7 +25,7 @@ setup(name='MILK',
               'milk-ge2fabIO = bin.milk_ge2fabIO:main',
               'milk-integrate = bin.milk_integrate:main',
               'milk-esg-loader = bin.milk_esg_loader:main',
-              'milk-poni-export = bin.milk_poni_export:main',
+              'milk-poni-export = bin.milk_poni_export:entry_point',
               'milk-examples = bin.milk_examples:main'
           ],
       },

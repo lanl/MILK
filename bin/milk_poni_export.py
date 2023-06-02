@@ -50,6 +50,10 @@ def write_poni(wavelength, distance, x, y, rot1, rot2, rot3, detector_config, de
         f.write(f"Wavelength: {wavelength}\n")
 
 
+def entry_point():
+    args = get_arguments()
+    main(args.FILE, args.detectors, args.detector_config, args.output)
+
 def main(file: str, detectors: list, detector_config: dict, output: Path() = None):
     """Exports poni detector file from MAUD inclined detector geometry.
 
