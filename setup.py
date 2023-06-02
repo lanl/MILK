@@ -16,12 +16,17 @@ setup(name='MILK',
       author_email='dansavage@lanl.gov',
       license='BSD 3',
       packages=find_packages(),
-      scripts=["bin/milk-config.py", "bin/milk-maudText.py", "bin/milk-cinema.py", "bin/milk-1dhistogram-contour.py",
-               "bin/milk-ge2fabIO.py", "bin/milk-integrate.py", "bin/milk-esg-loader.py", "bin/milk-poni-export.py",
-               "bin/milk-examples.py"],
       entry_points={
           'console_scripts': [
-              'config2 = MILK.bin.milk_config:main',
+              'milk-config = bin.milk_config:main'
+              'milk-maudText = bin.milk_maudText:main',
+              'milk-cinema = bin.milk_cinema:main',
+              'milk-1dhistogram-contour = bin.milk_1dhistogram_contour:main',
+              'milk-ge2fabIO = bin.milk_ge2fabIO:main',
+              'milk-integrate = bin.milk_integrate:main',
+              'milk-esg-loader = bin.milk_esg_loader:main',
+              'milk-poni-export = bin.milk_poni_export:main',
+              'milk-examples = bin.milk_examples:main'
           ],
       },
       install_requires=[],
