@@ -20,8 +20,13 @@ from prettytable import (PrettyTable, from_csv)
 import errno
 import time
 from threading import Thread
-maud_path_global = os.getenv('MAUD_PATH')
-maud_path_global = maud_path_global.strip("'")
+try:
+    maud_path_global = os.getenv('MAUD_PATH')
+    maud_path_global = maud_path_global.strip("'")
+except AttributeError:
+    print("maud_path is not yet set correctly or available in your environment.")
+except Exception as e:
+    raise e("Maud_path not set correctly or available in your environment.")
 
 def resource_file_path(filename):
     for d in sys.path:
