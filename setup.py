@@ -18,7 +18,7 @@ setup(name='MILK',
       packages=find_packages(),
       entry_points={
           'console_scripts': [
-              'milk-config = bin.milk_config:main'
+              'milk-config = bin.milk_config:main',
               'milk-maudText = bin.milk_maudText:main',
               'milk-cinema = bin.milk_cinema:main',
               'milk-1dhistogram-contour = bin.milk_1dhistogram_contour:main',
