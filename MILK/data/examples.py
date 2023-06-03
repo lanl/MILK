@@ -27,45 +27,61 @@ def maudBatch(path='maudbatch'):
     # url = "http://nanoair.dii.unitn.it:8080/static/tutorial/batch.zip"
     # dpath = download_example(url, path, os.path.basename(url))
     # unzip_download(dpath, path)
-    fn = MOD_DIR / '../../examples/maudbatch'
-    shutil.copytree(fn, CUR_DIR / path)
-
+    fout = CUR_DIR / path
+    fin = MOD_DIR / '../../examples/maudbatch'
+    shutil.copytree(fin, fout)
+    shutil.copy(MOD_DIR / '../../examples/data/MAUD_batch.zip', fout)
+    unzip(fout / 'MAUD_batch.zip', fout)
 
 def hippoTexture(path='HIPPO/texture'):
     """HIPPO two phase texture example."""
-    fn = os.path.join(os.path.dirname(__file__), '../../examples/HIPPO/texture')
-    shutil.copytree(fn, os.path.join(os.getcwd(), path))
+    fout = CUR_DIR / path
+    fin = MOD_DIR / '../../examples/HIPPO/texture'
+    shutil.copytree(fin, fout)
 
 
 def sequentialRefinement(path='sequential_refinement'):
     """Synchrotron three sequential refinement example."""
     fout = CUR_DIR / path
-    shutil.copytree( MOD_DIR / '../../examples/Synchrotron/sequential_refinement', fout)
+    shutil.copytree(
+        MOD_DIR / '../../examples/Synchrotron/sequential_refinement', fout)
     shutil.copy(MOD_DIR / '../../examples/data/CHESS_insitu.zip', fout)
-    unzip(fout / 'CHESS_insitu.zip',fout)
+    unzip(fout / 'CHESS_insitu.zip', fout)
     shutil.move(fout / 'CHESS_insitu', fout / 'data')
-    os.remove(fout / 'CHESS_insitu.zip')
 
-def GEDetector(path='Detector_Calibrations/CHESS-GE'):
-    """CHESS: GE Detector calibration and integration example."""
-    fn = os.path.join(os.path.dirname(__file__), '../../examples/Detector_Calibrations/CHESS-GE')
-    shutil.copytree(fn, os.path.join(os.getcwd(), path))
 
-def APSHydra(path='Detector_Calibrations/APS-1ID-Hydra'):
+def GEDetector(path='CHESS-GE'):
     """CHESS: GE Detector calibration and integration example."""
-    fn = os.path.join(os.path.dirname(__file__), '../../examples/Detector_Calibrations/APS-1ID-Hydra')
-    shutil.copytree(fn, os.path.join(os.getcwd(), path))
+    fout = CUR_DIR / path
+    fin = MOD_DIR / '../../examples/Detector_Calibrations/CHESS-GE'
+    shutil.copytree(fin, fout)
+    unzip(fout / 'Archive.zip', fout)
 
-def SLACMEC(path='Detector_Calibrations/SLAC-MEC'):
-    """CHESS: GE Detector calibration and integration example."""
-    fn = os.path.join(os.path.dirname(__file__), '../../examples/Detector_Calibrations/SLAC-MEC')
-    shutil.copytree(fn, os.path.join(os.getcwd(), path))
 
-def euXFEL(path='Detector_Calibrations/euXFEL-HED'):
+def APSHydra(path='APS-1ID-Hydra'):
     """CHESS: GE Detector calibration and integration example."""
-    fn = os.path.join(os.path.dirname(__file__), '../../examples/Detector_Calibrations/euXFEL-HED')
-    shutil.copytree(fn, os.path.join(os.getcwd(), path))
-    
+    fout = CUR_DIR / path
+    fin = MOD_DIR / '../../examples/Detector_Calibrations/APS-1ID-Hydra'
+    shutil.copytree(fin, fout)
+    unzip(fout / 'Archive.zip', fout)
+
+
+def SLACMEC(path='SLAC-MEC'):
+    """CHESS: GE Detector calibration and integration example."""
+    fout = CUR_DIR / path
+    fin = MOD_DIR / '../../examples/Detector_Calibrations/SLAC-MEC'
+    shutil.copytree(fin, fout)
+    unzip(fout / 'Archive.zip', fout)
+
+
+def euXFEL(path='euXFEL-HED'):
+    """CHESS: GE Detector calibration and integration example."""
+    fout = CUR_DIR / path
+    fin = MOD_DIR / '../../examples/Detector_Calibrations/euXFEL-HED'
+    shutil.copytree(fin, fout)
+    unzip(fout / 'Archive.zip', fout)
+
+
 def download_example(url, path, filename):
     """
     Download URL and return path to download.
@@ -90,7 +106,8 @@ def download_example(url, path, filename):
     return download_path
 
 
-def unzip(input_path, export_path):
+def unzip(input, export_path, remove_zip=True):
     """Extract all contents of zip."""
-    with zipfile.ZipFile(input_path, 'r') as zobj:
+    with zipfile.ZipFile(input, 'r') as zobj:
         zobj.extractall(path=export_path)
+    os.remove(input)
