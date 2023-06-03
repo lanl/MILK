@@ -1,1 +1,18 @@
-{    "2theta": [3.4,11.1],    "data_dir": "data/",    "data_ext": ".chi",    "data_group_size": 1,    "template_name": "template.par"}
+{
+
+    "2theta": [3.4,11.1],
+    "data_dir": "data/",
+    "data_ext": ".chi",
+    "data_group_size": 1,
+    "template_name": "templates/template_4768.par",
+    "meta_data": {
+    },
+    "phase_initialization": {
+        "_cell_length_a": [2.9306538,3.6026807,3.233392],
+        "_cell_length_c": [4.6817646,3.6026807,3.233392],
+        "_riet_par_cryst_size": [1000.0,1000.0,1000.0],
+        "_riet_par_rs_microstrain": [0.002,0.002,0.002],
+        "_atom_site_B_iso_or_equiv": [0.06529825,0.06529825,0.06529825],
+        "_pd_phase_atom_": [0.624,0.159,0.217]
+    }
+}

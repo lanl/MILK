@@ -40,7 +40,6 @@ def user_data(ds: dict, n_run: int, config: dict) -> dict:
     return ds
 
 if __name__ == '__main__':
-    
     # import config files
     #===================================================#
     config_dataset = MILK.load_json('dataset.json')
