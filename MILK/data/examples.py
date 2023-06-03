@@ -27,7 +27,7 @@ def maudBatch(path='maudbatch'):
     # url = "http://nanoair.dii.unitn.it:8080/static/tutorial/batch.zip"
     # dpath = download_example(url, path, os.path.basename(url))
     # unzip_download(dpath, path)
-    fn = os.path.join(MOD_DIR / '../../examples/maudbatch')
+    fn = MOD_DIR / '../../examples/maudbatch'
     shutil.copytree(fn, CUR_DIR / path)
 
 
