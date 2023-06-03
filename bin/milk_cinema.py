@@ -28,7 +28,7 @@ def main():
     """Run cinema instance."""
     parser = argparse.ArgumentParser(
         description="Launch CINEMA viewing session.")
-    parser.add_argument("-cinema_path", type=str, default=os.getenv('CINEMA_PATH'),
+    parser.add_argument("-cinema_path", type=str, default=os.getenv('CINEMA_PATH').strip("'"),
                         help="Installation path of Cinema:debye-scherrer.")
     parser.add_argument("-data_path", type=str, default=Path.cwd(),
                         help="Directory containing data.csv.")  
