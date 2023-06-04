@@ -73,6 +73,11 @@ def get_arguments():
 
     return args
 
+def entry_point():
+    freeze_support()
+    args = get_arguments()
+    main(files=args.FILE, json_file=args.json, output=args.output,
+         overwrite=args.overwrite, poolsize=args.poolsize, formats=args.format, histogram_plot=args.histogram_plot, quiet=args.quiet)
 
 def write_json():
     """Write a template json file for integration."""
