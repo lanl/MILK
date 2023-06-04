@@ -23,8 +23,8 @@ dependencies:
   # Spotlight
   - klepto=0.2.2
   - numpy
-  - openmpi
-  - mpi4py
+  # - openmpi
+  # - mpi4py
   - jupyter=1.0.0
   - nbsphinx=0.8.9
   - sphinx=5.0.2
@@ -37,7 +37,7 @@ dependencies:
     #MILK github installation
     - -e ./
     #Spotlight
-    - git+https://github.com/lanl/spotlight.git@v0.10.0
+    - git+https://github.com/lanl/spotlight.git@v0.10.2
     - mystic==0.3.9
     - pyina==0.2.6
     - pathos==0.2.9
