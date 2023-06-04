@@ -24,7 +24,7 @@ def start_server(ip,port,serve_path):
     httpd = HTTPServer(server_address, Handler)
     httpd.serve_forever()
 
-def main(cinema_path: str = os.getenv('CINEMA_PATH'),
+def main(cinema_path: str = os.getenv('CINEMA_PATH').strip("'"),
          data_path: str = Path.cwd(),
          serve_path: str = Path.home(),
          port: int = 8080,
