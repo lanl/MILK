@@ -77,11 +77,12 @@ def main(cinema_path: str = os.getenv('CINEMA_PATH').strip("'"),
         print(f"Serving: {url}")
         if open_browser:
             webbrowser.open_new(url)
+            time.sleep(5)
         while True:
             try:
                 time.sleep(1)
             except KeyboardInterrupt:
-                sys.exit(0)
+                os._exit(0)
 
 if __name__ == "__main__":
     main()
