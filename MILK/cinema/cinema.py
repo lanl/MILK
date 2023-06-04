@@ -7,7 +7,15 @@ from pathlib import Path
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 import json
 import os
-import argparse
+import shutil
+
+
+def common_dir(p1: Path, p2: Path) -> Path:
+    pout = Path()
+    for parts1,parts2 in zip(p1.parts,p2.parts):
+        if parts1==parts2:
+            pout = pout / parts1
+    return pout
 
 def load_json(fname: str):
     with open(fname, 'r') as f:
@@ -26,20 +34,29 @@ def start_server(ip,port,serve_path):
 
 def main(cinema_path: str = os.getenv('CINEMA_PATH').strip("'"),
          data_path: str = Path.cwd(),
-         serve_path: str = Path.home(),
+         serve_path: str = Path.cwd(),
          port: int = 8080,
          ip: str = "127.0.0.1",
          databases_index: int = 0,
          databases_name: str = 'MILK',
          run_server: bool = True,
-         open_browser: bool = True
+         open_browser: bool = True,
+         local_cinema: bool = True
          ):
     """Run cinema instance."""
 
     cinema_path = Path(cinema_path)
     serve_path = Path(serve_path)
     data_path = Path(data_path)
-    
+
+    if local_cinema:
+        cinema_path_old = cinema_path
+        cinema_path = data_path / cinema_path.name
+        if not cinema_path.exists():
+            shutil.copytree(cinema_path_old,cinema_path)
+
+    serve_path = common_dir(cinema_path,serve_path)
+
     # Configure the http link
     html_path =  cinema_path / "main.html"
     assert html_path.is_file(), "Please specify a valid cinema path which contains main.html"
