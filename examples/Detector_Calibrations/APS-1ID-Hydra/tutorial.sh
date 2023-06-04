@@ -2,7 +2,7 @@
 
 ## 1D and 2D (caking) integration using MILKs multigeometry pyFAI tool
 echo "Doing the integration"
-milk-integrate.py \
+milk-integrate \
     "calibration_files/ge1.tif" "calibration_files/ge2.tif" "calibration_files/ge3.tif" "calibration_files/ge4.tif" \
     --json "1d.azimint.json" \
     --output "results" \
@@ -11,7 +11,7 @@ milk-integrate.py \
     --format "esg" \
     --histogram_plot
 
-milk-integrate.py \
+milk-integrate \
     "calibration_files/ge1.tif" "calibration_files/ge2.tif" "calibration_files/ge3.tif" "calibration_files/ge4.tif" \
     --json "2d.azimint.json" \
     --output "results" \
@@ -22,7 +22,7 @@ milk-integrate.py \
 
 ## Load data into MAUD parameter files
 echo ""Loading data into MAUD parameter files
-milk-esg-loader.py \
+milk-esg-loader \
     --interface command \
     --maud-input-par "templates/detector_ang_cal.par" \
     --maud-detectors "det0" "det1" "det2" "det3" \
@@ -31,7 +31,7 @@ milk-esg-loader.py \
     --maud-output-par "Detector_ang_cal_2d.par" \
     --maud-run-import
 
-milk-esg-loader.py \
+milk-esg-loader \
     --interface command \
     --maud-input-par "templates/no_ang_cal.par" \
     --maud-detectors "det0" \
@@ -39,7 +39,7 @@ milk-esg-loader.py \
     --maud-output-par "No_ang_cal_2d.par" \
     --maud-run-import
     
-milk-esg-loader.py \
+milk-esg-loader \
     --interface command \
     --maud-input-par "templates/no_ang_cal.par" \
     --maud-detectors "det0" \
