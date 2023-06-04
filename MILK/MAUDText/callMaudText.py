@@ -153,13 +153,21 @@ def run_MAUD(maud_path, java_opt, simple_call, timeout, ins_paths):
     exit_code=0
     if simple_call == 'True':
         with sub.Popen(command, shell=True, stdin=sub.PIPE, stdout=sub.PIPE, stderr=sub.PIPE) as p:
+            # stdout_thread = Thread(target=_write_out,
+            #     args=(p.stdout,ins_paths[:-4]+'.log'))
+            # stderr_thread = Thread(target=_write_out,
+            #     args=(p.stderr,ins_paths[:-4]+'.err'))
+            # stdout_thread.start()
+            # stderr_thread.start()
             try:
-                p.wait(timeout=timeout)
+                _, _ = p.communicate(timeout=timeout) 
             except sub.TimeoutExpired:
-                p.kill()
                 print(f"MAUD batch call exceeded timeout of {timeout} for {ins_paths}.")
                 exit_code=1
-
+                if "win" in sys.platform:
+                    sub.call(['taskkill', '/F', '/T', '/PID', str(p.pid)],stdout=sub.PIPE)
+                else:
+                    p.kill()
     else:
         with sub.Popen(command, shell=True, stdin=sub.PIPE, stdout=sub.PIPE, stderr=sub.PIPE) as p:
             stdout_thread = Thread(target=_write_out,
@@ -310,10 +318,10 @@ def main(argsin):
                 pool = Pool(args.nMAUD)
         else:
             pool = Pool(os.cpu_count())
-        out = pool.map(partial(run_MAUD, args.maud_path,
+        out = list(map(partial(run_MAUD, args.maud_path,
                                args.java_opt,
                                args.simple_call,
-                               args.timeout), paths[0])
+                               args.timeout), paths[0]))
         return out
 
     print('')
@@ -413,7 +421,8 @@ def main(argsin):
             os.getcwd(), args.riet_append_simple_result_to[:-4]+str(args.cur_step).zfill(2)+'.txt'), paths[3])
     except:
         print('unable to compile results from folders. This usually means a maud simulation didnt run')
-
+    
+    return out
 
 if __name__ == '__main__':
     freeze_support()
