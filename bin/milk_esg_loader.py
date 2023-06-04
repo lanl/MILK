@@ -250,7 +250,8 @@ def main():
                         "_riet_meas_datafile_name", ""]
     for esg_file, maud_detector in zip(opts.esg_files, opts.maud_detectors):
         data_load_script = update_script(
-            data_load_script, f"'{maud_detector}' '{Path(esg_file).relative_to(opts.cwd)}'")
+            data_load_script, f"'{maud_detector}' '.{os.sep}{Path(esg_file).relative_to(opts.cwd)}'")
+
 
     write_script(data_load_script, opts.cwd / opts.maud_load_script)
 
@@ -276,13 +277,12 @@ def main():
     # Run import using MILK
     if opts.maud_run_import:
         MILK.MAUDText.callMaudText.run_MAUD(
-            os.getenv('MAUD_PATH'),
+            os.getenv('MAUD_PATH').strip("'"),
             "mx8G",
             'False',
             None,
             str(opts.maud_batch_script)
         )
-
 
 if __name__ == "__main__":
     main()
