@@ -179,9 +179,12 @@ def run_MAUD(maud_path, java_opt, simple_call, timeout, ins_paths):
             try:
                 p.wait(timeout=timeout)
             except sub.TimeoutExpired:
-                p.kill()
                 print(f"MAUD batch call exceeded timeout of {timeout} for {ins_paths}.")
                 exit_code=1
+                if "win" in sys.platform:
+                    sub.call(['taskkill', '/F', '/T', '/PID', str(p.pid)],stdout=sub.PIPE)
+                else:
+                    p.kill()
             stdout_thread.join()
             stderr_thread.join()
         
