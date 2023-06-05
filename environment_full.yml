@@ -23,15 +23,15 @@ dependencies:
 
   # Spotlight
   - klepto=0.2.2
-  - numpy
+  - numpy=1.23.0
   # - openmpi
   # - mpi4py
   - jupyter=1.0.0
   - nbsphinx=0.8.9
   - sphinx=5.0.2
   - sphinxcontrib-programoutput=0.16
-  - scipy
-  - scikit-learn
+  - scipy=1.8.1
+  - scikit-learn=1.1.2
 
   # pip packages
   - pip:
