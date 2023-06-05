@@ -6,7 +6,7 @@ Created on Mon Oct 12 08:53:18 2020
 @author: danielsavage
 """
 
-from multiprocessing import Pool, freeze_support
+from multiprocess import Pool, freeze_support
 from functools import partial
 import argparse
 import os
