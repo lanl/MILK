@@ -315,7 +315,12 @@ def main(argsin):
 
     if args.simple_call == 'True':
         if args.nMAUD != None:
-            if args.nMAUD > os.cpu_count():
+            if args.nMAUD == 1:
+                return [run_MAUD(args.maud_path,
+                                 args.java_opt,
+                                 args.simple_call,
+                                 args.timeout, paths[0][0])]
+            elif args.nMAUD > os.cpu_count():
                 pool = Pool(os.cpu_count())
             else:
                 pool = Pool(args.nMAUD)
