@@ -11,7 +11,7 @@ import shutil
 import time
 from mystic import models
 from spotlight import filesystem
-
+from pathlib import Path
 from multiprocessing import freeze_support
 
 class CostFunction(models.AbstractFunction):
@@ -46,7 +46,7 @@ class CostFunction(models.AbstractFunction):
         if os.path.exists(self.editor.run_dirs):
             shutil.rmtree(self.editor.run_dirs)
         filesystem.mkdir(self.editor.run_dirs)
-        filesystem.cp(["/Users/Nate/milk_workshop/sequential_refinement/templates/template_4768.par"], dest=self.editor.run_dirs) # CHANGE THIS LINE
+        filesystem.cp([str(Path().cwd() / 'templates/template_4768.par')], dest=self.editor.run_dirs) # CHANGE THIS LINE
 
         # set initial phase fractions
         self.editor.set_val(key='_pd_phase_atom_', value='0.33')
