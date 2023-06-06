@@ -1628,7 +1628,8 @@ def get_arguments(argsin):
     #Allow for spaces in keys and values
     args.key = [[key.replace('&',' ')] for keys in args.key for key in keys]
     if args.value is not None:
-        args.value = [args.value[0].replace('&',' ')]
+        for i,value in enumerate(args.value):
+            args.value[i] = value.replace('&',' ')
     assert len(args.nsobj) == len(args.sobj), 'There is an issue constructing nsobj or sobj'
 
     # Make sure arguments make sense
