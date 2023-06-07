@@ -26,7 +26,6 @@ def main():
     if args.example == 1:
         MILK.examples.maudBatch()
     elif args.example == 2:
-        raise NotImplementedError
         MILK.examples.hippoTexture()
     elif args.example == 3:
         MILK.examples.sequentialRefinement()

@@ -38,7 +38,9 @@ def hippoTexture(path='HIPPO/texture'):
     fout = CUR_DIR / path
     fin = MOD_DIR / '../../examples/HIPPO/texture'
     shutil.copytree(fin, fout)
-
+    shutil.copy(MOD_DIR / '../../examples/data/HIPPO_texture.zip', fout)
+    unzip(fout / 'HIPPO_texture.zip', fout)
+    shutil.move(fout / 'HIPPO_texture', fout / 'data')
 
 def sequentialRefinement(path='sequential_refinement'):
     """Synchrotron three sequential refinement example."""
