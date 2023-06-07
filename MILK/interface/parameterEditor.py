@@ -1638,7 +1638,10 @@ def get_arguments(argsin):
         #Handle value formating
         for i, val in enumerate(args.value):
             try:
-                args.value[i] = f'{float(val):.14E}' 
+                if float(val).is_integer():
+                    args.value[i] = f'{int(val)}' 
+                else:
+                    args.value[i] = f'{float(val):G}' 
             except ValueError:
                 pass
 
