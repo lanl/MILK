@@ -1,0 +1,16 @@
+{
+    "data_group_size": 3,
+    "data_dir": "data",
+    "data_ext": ".gda",
+    "template_name": "templates/45panel_3rot.par",
+    "meta_data": {
+    },
+    "phase_initialization": {
+        "_cell_length_a": [2.9180448,3.28,3.62],
+        "_cell_length_c": [4.651735,3.28,3.62],
+        "_riet_par_cryst_size": [1000.0,1000.0,1000.0],
+        "_riet_par_rs_microstrain": [0.002,0.002,0.002],
+        "_atom_site_B_iso_or_equiv": [0.6,0.6,0.6],
+        "_pd_phase_atom_": [0.33,0.33,0.33]
+    }
+}

@@ -1,0 +1,164 @@
+data_phase_alpha-Ti
+_chemical_name_common alpha-Ti
+_chemical_formula_sum Ti1
+_symmetry_cell_setting hexagonal
+_symmetry_space_group_name_H-M P63/mmc
+_cell_formula_units_Z 2
+_refine_ls_d_res_low 0
+_refine_ls_d_res_high 5000
+_reflns_d_resolution_low 0.3
+_reflns_d_resolution_high 50
+_maud_sg_centering_type P
+_chemical_name_mineral Unknown
+_chemical_name_systematic Unknown
+
+_cell_length_a 2.9180448(0.0035417408) #positive
+_cell_length_b 2.9180448 #positive
+_cell_length_c 4.651735(0.0056397733) #positive
+_cell_angle_alpha 90. #positive
+_cell_angle_beta 90. #positive
+_cell_angle_gamma 120. #positive
+_riet_par_strain_thermal 0
+_exptl_absorpt_cryst_size 0 #positive
+_riet_par_phase_scale_factor 1.0 #positive
+
+
+#subordinateObject_Delft
+
+_riet_size_strain_model 'Delft'
+
+
+#end_subordinateObject_Delft
+
+
+#subordinateObject_Isotropic
+
+_riet_sizestrain_sym_model 'Isotropic'
+
+_riet_par_cryst_size 1362.8688(88.47583) #positive
+_riet_par_rs_microstrain 0.004333208(5.613963E-5) #positive
+
+#end_subordinateObject_Isotropic
+
+
+#subordinateObject_none abm
+
+_riet_antiphase_boundary 'none abm'
+
+
+#end_subordinateObject_none abm
+
+
+#subordinateObject_none pd
+
+_riet_planar_defect 'none pd'
+
+
+#end_subordinateObject_none pd
+
+
+#subordinateObject_no magnetic
+
+_riet_magnetic_structure_model 'no magnetic'
+
+
+#end_subordinateObject_no magnetic
+
+
+#subordinateObject_no strain
+
+_riet_par_strain_model 'no strain'
+
+
+#end_subordinateObject_no strain
+
+
+#subordinateObject_No microabsorption
+
+_riet_micro_absorption_model 'No microabsorption'
+
+
+#end_subordinateObject_No microabsorption
+
+
+#subordinateObject_Atomic Structure
+
+_riet_structure_model 'Atomic Structure'
+
+_riet_structure_quantity_from_occupancy true
+_refine_ls_energy_weight 1.0
+_riet_structure_use_U_dimensionless false
+
+#subordinateObject_No force field
+
+_riet_structure_force_field 'No force field'
+
+
+#end_subordinateObject_No force field
+
+
+#subordinateObject_Ti1
+
+_atom_site_label 'Ti1'
+
+_atom_site_type_symbol dummy
+_atom_site_constraints ?
+_atom_type_number_in_cell 2.0
+_atom_site_calc_flag .
+_atom_site_occupancy 1. #positive
+_atom_site_fract_x 0.3333
+_atom_site_fract_y 0.6667
+_atom_site_fract_z 0.25
+_atom_site_B_iso_or_equiv 1.2977102(0.012428182)
+_atom_site_aniso_B_11 0
+_atom_site_aniso_B_22 0
+_atom_site_aniso_B_33 0
+_atom_site_aniso_B_12 0
+_atom_site_aniso_B_13 0
+_atom_site_aniso_B_23 0
+
+#subordinateObject_Ti
+
+_rg_site_scatterer 'Ti'
+
+_atom_type_symbol Ti
+_atom_site_occupancy 1.0 #positive
+
+#end_subordinateObject_Ti
+
+
+#end_subordinateObject_Ti1
+
+
+#end_subordinateObject_Atomic Structure
+
+
+#subordinateObject_atomic standard model
+
+_riet_structure_factor_model 'atomic standard model'
+
+
+#end_subordinateObject_atomic standard model
+
+
+#subordinateObject_Le Bail
+
+_riet_structure_factor_extractor 'Le Bail'
+
+_riet_lebail_iteration_max 5
+_riet_lebail_error_max 0.0050
+_riet_lebail_range_factor 0.05
+_riet_lebail_use_bkg true
+_riet_lebail_summation_delta 1.0E-4
+_riet_lebail_use_previous_factors true
+
+#end_subordinateObject_Le Bail
+
+
+#subordinateObject_None TDS
+
+_riet_tds_model 'None TDS'
+
+
+#end_subordinateObject_None TDS
+
