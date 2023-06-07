@@ -156,7 +156,7 @@ def build_ins(args):
         args.work_dir = os.path.join(args.work_dir, args.run_dir)
         if args.maud_import_phase != None:
             for i, phase in enumerate(args.maud_import_phase):
-                args.maud_import_phase[i] = os.path.join('..', phase)
+                args.maud_import_phase[i] = os.path.join('../', phase)
                 assert os.path.isfile(args.maud_import_phase[i].strip('../')), f'CIF file {os.path.abspath(args.maud_import_phase[i].strip("../"))} does not exist!'
         args.riet_analysis_file = os.path.join(args.work_dir, args.riet_analysis_file)
         args.riet_analysis_fileToSave = args.riet_analysis_fileToSave
