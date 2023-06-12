@@ -18,6 +18,8 @@ More details and tutorials can be found in the [wiki](https://github.com/lanl/MI
 Installation and requirements
 =============================
 
+The wiki is currently disabled pending LANL release. Should be back available soon.
+
 See the [MILK installation wiki](https://github.com/lanl/MILK/wiki/Installation-Overview).
 
 Contributing
