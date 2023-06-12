@@ -3,7 +3,7 @@ name: Build and Test [Python 3.9 on Windows, Linux, MacOS]
 on:
   push:
     branches: [ master ]
-job-name:
+jobs:
   runs-on: 'ubuntu-latest'
   steps:
     - uses: actions/checkout@v2
