@@ -40,9 +40,9 @@ jobs:
           activate-conda: false
       - run: conda --version
       - run: conda env create -f environment_windows.yml
-      - uses: engineerd/configurator@v0.0.1
+      - uses: engineerd/configurator@v0.0.9
         with:
-          name: "Maud"
+          name: "Maud.bat"
           url: "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip"
           pathInArchive: "Maud/Maud.bat"
       - run: dir
@@ -51,6 +51,11 @@ jobs:
       - run: dir
       - run: conda activate rietveld
       - run: milk-config ./Maud/ -c ./cinema_debye_scherrer
+      - run: conda deactivate
+      - run: conda activate rietveld
+      - run: |
+          echo %MAUD_PATH%
+          echo %CINEMA_PATH%
 
   # build-on-macos:
   #   name: Build MILK on MacOS
