@@ -38,12 +38,16 @@ jobs:
       - uses: s-weigand/setup-conda@v1
         with:
           activate-conda: false
+      - run: conda --version
+      #- run: conda env create -f environment_windows.yml
       - run: |
-          conda --version
-          conda env create -f environment_windows.yml
+         shell: cmd
+         curl.exe -o index.html https://superuser.com
+      # Invoke-WebRequest -OutFile Maud.zip -Uri https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip
       - run: |
-          Invoke-WebRequest -OutFile Maud.zip -Uri https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip
-          Expand-Archive -LiteralPath Maud.zip -DestinationPath Maud
+          shell: cmd
+          tar -a -c -f Maud.zip ./Maud
+      #    Expand-Archive -LiteralPath Maud.zip -DestinationPath Maud
       - run: dir
       - run: dir Maud
       - run: git clone https://github.com/cinemascience/cinema_debye_scherrer
