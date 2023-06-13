@@ -69,7 +69,7 @@ jobs:
       - run: which conda
       - run: sysctl -a | grep brand
       - run: conda create --name rietveld --file conda-osx-64.lock
-      - run: conda init
+      - run: conda init bash
       - run: source ~/.bashrc
       - run: conda activate rietveld
       - run: conda install ocl_icd_wrapper_apple
