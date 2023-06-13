@@ -6,20 +6,20 @@ channels:
   
 dependencies:
   #Base MILK
-  - tqdm
+  - tqdm=4.65.0
   - pip=22.1.2
-  - prettytable
+  - prettytable=3.5.0
   - python=3.9
-  - pandas
-  - pydantic
-  - seaborn
-  - pyfai
-  - matplotlib
-  - pyopencl
-  - opencv
-  - pyqtgraph
-  - autopep8
-  - git
+  - pandas=1.5.3
+  - pydantic=1.10.8
+  - seaborn=0.12.2
+  - pyfai=2023.5.0
+  - matplotlib=3.7.1
+  - pyopencl=2023.1
+  - opencv=4.6.0
+  - pyqtgraph=0.13.1
+  - autopep8=1.6.0
+  - git=2.40.1
 
   # Spotlight
   - klepto=0.2.2

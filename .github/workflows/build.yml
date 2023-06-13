@@ -6,22 +6,25 @@ on:
   pull_request:
     branches: [ workflow-draft2 ]
 jobs:
-  build-on-ubuntu:
-    name: Build MILK on Linux (Ubuntu)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
-      - uses: s-weigand/setup-conda@v1
-        with:
-          activate-conda: true
-      - run: conda env create -f environment_linux.yml
-      - run: conda list -n rietveld
-      #- run: git clone https://github.com/cinemascience/cinema_debye_scherrer
-      #- run: pip download  
+  # build-on-ubuntu:
+  #   name: Build MILK on Linux (Ubuntu)
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Set up Python 3.9
+  #       uses: actions/setup-python@v2
+  #       with:
+  #         python-version: 3.9
+  #     - uses: s-weigand/setup-conda@v1
+  #       with:
+  #         activate-conda: false
+  #     - run: conda create --name rietveld --file conda-linux-64.lock
+  #     # - run: conda list -n rietveld
+  #     - run: git clone https://github.com/cinemascience/cinema_debye_scherrer
+  #     - run: wget https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AABxmzMfRS2zsxfXhUNftZHCa/linux64/Maud.tar.gz
+  #     - run: tar -xvf Maud.tar.gz
+  #     - run: conda activate rietveld
+  #     - run: milk-config ./Maud/ -c ./cinema_debye_scherrer/
           
   build-on-windows:
     name: Build MILK on Windows
@@ -34,26 +37,37 @@ jobs:
           python-version: 3.9
       - uses: s-weigand/setup-conda@v1
         with:
-          activate-conda: true
+          activate-conda: false
       - run: conda --version
       - run: conda env create -f environment_windows.yml
-      - run: conda list -n rietveld
+      - uses: engineerd/configurator@v0.0.1
+        with:
+          name: "Maud"
+          url: "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip"
+          pathInArchive: "Maud/Maud.bat"
+      - run: dir
+      - run: dir Maud
+      - run: git clone https://github.com/cinemascience/cinema_debye_scherrer
+      - run: dir
+      - run: conda activate rietveld
+      - run: milk-config ./Maud/ -c ./cinema_debye_scherrer
 
-  build-on-macos:
-    name: Build MILK on MacOS
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
-      - uses: s-weigand/setup-conda@v1
-        with:
-          activate-conda: true
-      - run: conda --version
-      - run: sysctl -a | grep brand
-      - run: conda env create -f environment_mac.yml
-      - run: conda list -n rietveld
-      #- run: git clone https://github.com/cinemascience/cinema_debye_scherrer
-      #- run: pip download  
+  # build-on-macos:
+  #   name: Build MILK on MacOS
+  #   runs-on: macos-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Set up Python 3.9
+  #       uses: actions/setup-python@v2
+  #       with:
+  #         python-version: 3.9
+  #     - uses: s-weigand/setup-conda@v1
+  #       with:
+  #         activate-conda: true
+  #     - run: conda --version
+  #     - run: sysctl -a | grep brand
+  #     - run: conda env create -f environment_mac.yml
+  #     - run: conda list -n rietveld
+  #     - run: curl -JLO "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AAD4uGx8QNACWnItJ4yvfZcWa/macosx64/Maud_intel64.dmg.gz"
+  #     #- run: git clone https://github.com/cinemascience/cinema_debye_scherrer
+  #     #- run: pip download  
