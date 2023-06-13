@@ -38,13 +38,14 @@ jobs:
       - uses: s-weigand/setup-conda@v1
         with:
           activate-conda: false
-      - run: conda --version
-      - run: conda env create -f environment_windows.yml
-      - uses: engineerd/configurator@v0.0.9
-        with:
-          name: "Maud.bat"
-          url: "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip"
-          pathInArchive: "Maud/Maud.bat"
+      - run: |
+          shell: cmd
+          conda --version
+          conda env create -f environment_windows.yml
+      - run: |
+          shell: cmd
+          curl.exe --url https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip
+          tar -a -c -f Maud.zip ./Maud
       - run: dir
       - run: dir Maud
       - run: git clone https://github.com/cinemascience/cinema_debye_scherrer
