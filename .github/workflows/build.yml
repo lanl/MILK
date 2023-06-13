@@ -38,36 +38,52 @@ jobs:
       - uses: s-weigand/setup-conda@v1
         with:
           activate-conda: false
-      - run: conda --version
-      - run: conda env create -f environment_windows.yml
-      - uses: engineerd/configurator@v0.0.1
-        with:
-          name: "Maud"
-          url: "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip"
-          pathInArchive: "Maud/Maud.bat"
+      - run: |
+          conda --version
+          conda env create -f environment_windows.yml
+      - run: |
+          Invoke-WebRequest -OutFile Maud.zip -Uri https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip
+          Expand-Archive -LiteralPath Maud.zip -DestinationPath Maud
       - run: dir
       - run: dir Maud
       - run: git clone https://github.com/cinemascience/cinema_debye_scherrer
       - run: dir
       - run: conda activate rietveld
       - run: milk-config ./Maud/ -c ./cinema_debye_scherrer
+      - run: conda deactivate
+      - run: conda activate rietveld
+      - run: |
+          echo %MAUD_PATH%
+          echo %CINEMA_PATH%
 
-  # build-on-macos:
-  #   name: Build MILK on MacOS
-  #   runs-on: macos-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Set up Python 3.9
-  #       uses: actions/setup-python@v2
-  #       with:
-  #         python-version: 3.9
-  #     - uses: s-weigand/setup-conda@v1
-  #       with:
-  #         activate-conda: true
-  #     - run: conda --version
-  #     - run: sysctl -a | grep brand
-  #     - run: conda env create -f environment_mac.yml
-  #     - run: conda list -n rietveld
-  #     - run: curl -JLO "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AAD4uGx8QNACWnItJ4yvfZcWa/macosx64/Maud_intel64.dmg.gz"
-  #     #- run: git clone https://github.com/cinemascience/cinema_debye_scherrer
-  #     #- run: pip download  
+  build-on-macos:
+    name: Build MILK on MacOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - uses: s-weigand/setup-conda@v1
+        with:
+          activate-conda: true
+      - run: conda --version
+      - run: sysctl -a | grep brand
+      - run: conda create --name rietveld --file conda-osx-64.lock
+      - run: conda activate rietveld
+      - run: conda install ocl_icd_wrapper_apple
+      # - run: conda env create -f environment_mac.yml
+      - run: curl -JLO "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AAD4uGx8QNACWnItJ4yvfZcWa/macosx64/Maud_intel64.dmg.gz"
+      - run: gunzip Maud_intel64.dmg.gz
+      - run: hdiutil attach Maud_intel64.dmg
+      - run: cp -r /Volumes/Maud .
+      - run: cp -r ./Maud/Maud.app /Applications/Maud.app
+      - run: git clone https://github.com/cinemascience/cinema_debye_scherrer
+      - run: milk-config /Applications/Maud.app -c ./cinema_debye_scherrer
+      - run: |
+          conda deactivate
+          conda activate rietveld
+      - run: |
+          $MAUD_PATH
+          $CINEMA_PATH
