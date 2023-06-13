@@ -2,9 +2,9 @@ name: Build and Test [Python 3.9 on Windows, Linux, MacOS]
 
 on:
   push:
-    branches: [ workflow-draft ]
+    branches: [ workflow-draft2 ]
   pull_request:
-    branches: [ workflow-draft ]
+    branches: [ workflow-draft2 ]
 jobs:
   build-on-ubuntu:
     name: Build MILK on Linux (Ubuntu)
@@ -18,11 +18,10 @@ jobs:
       - uses: s-weigand/setup-conda@v1
         with:
           activate-conda: true
-      - run: conda --version
-      - run: which python
-      - run: conda env create -f environment_full.yml
-      - run: git clone https://github.com/cinemascience/cinema_debye_scherrer
-      - run: pip download  
+      - run: conda env create -f environment_linux.yml
+      - run: conda list -n rietveld
+      #- run: git clone https://github.com/cinemascience/cinema_debye_scherrer
+      #- run: pip download  
           
   build-on-windows:
     name: Build MILK on Windows
@@ -37,8 +36,8 @@ jobs:
         with:
           activate-conda: true
       - run: conda --version
-      - run: which python
-      - run: conda env create -f environment_full.yml
+      - run: conda env create -f environment_windows.yml
+      - run: conda list -n rietveld
 
   build-on-macos:
     name: Build MILK on MacOS
@@ -53,8 +52,8 @@ jobs:
         with:
           activate-conda: true
       - run: conda --version
-      - run: which python
       - run: sysctl -a | grep brand
-      - run: conda env create -f environment_full_mac.yml
-      - run: git clone https://github.com/cinemascience/cinema_debye_scherrer
-      - run: pip download  
+      - run: conda env create -f environment_mac.yml
+      - run: conda list -n rietveld
+      #- run: git clone https://github.com/cinemascience/cinema_debye_scherrer
+      #- run: pip download  
