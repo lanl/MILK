@@ -26,37 +26,33 @@ jobs:
   #     - run: conda activate rietveld
   #     - run: milk-config ./Maud/ -c ./cinema_debye_scherrer/
           
-  # build-on-windows:
-  #   name: Build MILK on Windows
-  #   runs-on: windows-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Set up Python 3.9
-  #       uses: actions/setup-python@v2
-  #       with:
-  #         python-version: 3.9
-  #     - uses: s-weigand/setup-conda@v1
-  #       with:
-  #         activate-conda: false
-  #     - run: conda --version
-  #     #- run: conda env create -f environment_windows.yml
-  #     - run: Invoke-WebRequest -OutFile Maud.zip -Uri https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip
-  #     #   shell: cmd
-  #     #   curl.exe -o Maud.zip https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip
-  #     - run: Expand-Archive -LiteralPath Maud.zip -DestinationPath Maud
-  #     #    shell: cmd
-  #     #    tar -a -c -f Maud.zip ./Maud
-  #     - run: dir
-  #     - run: dir Maud
-  #     - run: git clone https://github.com/cinemascience/cinema_debye_scherrer
-  #     - run: dir
-  #     - run: conda activate rietveld
-  #     - run: milk-config ./Maud/ -c ./cinema_debye_scherrer
-  #     - run: conda deactivate
-  #     - run: conda activate rietveld
-  #     - run: |
-  #         echo %MAUD_PATH%
-  #         echo %CINEMA_PATH%
+  build-on-windows:
+    name: Build MILK on Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - uses: s-weigand/setup-conda@v1
+        with:
+          activate-conda: false
+      - run: conda --version
+      #- run: conda env create -f environment_windows.yml
+      - run: Invoke-WebRequest -OutFile Maud.zip -Uri "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip?dl=1"
+      - run: Expand-Archive -Path Maud.zip -DestinationPath ./Maud
+      - run: dir
+      - run: dir Maud
+      - run: git clone https://github.com/cinemascience/cinema_debye_scherrer
+      - run: dir
+      # - run: conda activate rietveld
+      # - run: milk-config ./Maud/ -c ./cinema_debye_scherrer
+      # - run: conda deactivate
+      # - run: conda activate rietveld
+      # - run: |
+      #     echo %MAUD_PATH%
+      #     echo %CINEMA_PATH%
 
   build-on-macos:
     name: Build MILK on MacOS
@@ -75,7 +71,10 @@ jobs:
       - run: sysctl -a | grep brand
       - run: conda create --name rietveld --file conda-osx-64.lock
       - run: conda init 
+      - run: echo $0
       - run: source ~/.bashrc
+      - run: . ~/.profile
+      - run: source ~/.zshrc
       - run: conda activate rietveld
       - run: conda install ocl_icd_wrapper_apple
       # - run: conda env create -f environment_mac.yml
