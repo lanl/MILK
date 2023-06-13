@@ -40,14 +40,12 @@ jobs:
           activate-conda: false
       - run: conda --version
       #- run: conda env create -f environment_windows.yml
-      - run: |
-         shell: cmd
-         curl.exe -o index.html https://superuser.com
-      # Invoke-WebRequest -OutFile Maud.zip -Uri https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip
-      - run: |
-          shell: cmd
-          tar -a -c -f Maud.zip ./Maud
-      #    Expand-Archive -LiteralPath Maud.zip -DestinationPath Maud
+      - run: Invoke-WebRequest -OutFile Maud.zip -Uri https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip
+      #   shell: cmd
+      #   curl.exe -o Maud.zip https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip
+      - run: Expand-Archive -LiteralPath Maud.zip -DestinationPath Maud
+      #    shell: cmd
+      #    tar -a -c -f Maud.zip ./Maud
       - run: dir
       - run: dir Maud
       - run: git clone https://github.com/cinemascience/cinema_debye_scherrer
@@ -71,10 +69,12 @@ jobs:
           python-version: 3.9
       - uses: s-weigand/setup-conda@v1
         with:
-          activate-conda: true
+          activate-conda: false
       - run: conda --version
+      - run: where conda
       - run: sysctl -a | grep brand
       - run: conda create --name rietveld --file conda-osx-64.lock
+      - run: conda init 
       - run: conda activate rietveld
       - run: conda install ocl_icd_wrapper_apple
       # - run: conda env create -f environment_mac.yml
