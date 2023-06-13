@@ -70,9 +70,8 @@ jobs:
       - run: sysctl -a | grep brand
       - run: conda create --name rietveld --file conda-osx-64.lock
       - run: conda init bash
-      - run: ls /usr/local/miniconda
-      - run: source /usr/local/miniconda/conda.sh
-      # - run: source ~/.bashrc
+      - run: echo ". /usr/local/miniconda/etc/profile.d/conda.sh" >> ~/.bashrc
+      - run: source ~/.bashrc
       - run: conda activate rietveld
       - run: conda install ocl_icd_wrapper_apple
       # - run: conda env create -f environment_mac.yml
