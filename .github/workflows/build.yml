@@ -51,6 +51,7 @@ jobs:
           conda list
           conda info --envs
           conda init bash
+          source ~/.bashrc
           conda activate rietveld
           milk-config ./Maud/ -c ./cinema_debye_scherrer/
           conda deactivate
