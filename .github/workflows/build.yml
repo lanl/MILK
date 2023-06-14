@@ -48,24 +48,24 @@ jobs:
       - shell: cmd
         run: |
           @echo off
-          echo milk-config ./Maud/ -c ./cinema_debye_scherrer/
-          echo conda env create -f environment_windows.yml
-          echo conda list
-          echo conda info --envs
-          echo conda init cmd
-          echo conda activate rietveld
-          echo milk-config ./Maud/ -c ./cinema_debye_scherrer/
-          echo conda deactivate
-          echo conda activate rietveld
-          echo %MAUD_PATH%
-          echo %CINEMA_PATH%
+          milk-config ./Maud/ -c ./cinema_debye_scherrer/
+          conda env create -f environment_windows.yml
+          conda list
+          conda info --envs
+          conda init cmd
+          conda activate rietveld
+          milk-config ./Maud/ -c ./cinema_debye_scherrer/
+          conda deactivate
+          conda activate rietveld
+          %MAUD_PATH%
+          %CINEMA_PATH%
           @echo on
       - shell: cmd
         run: |
           @echo off
-          echo conda activate rietveld
-          echo %MAUD_PATH%
-          echo %CINEMA_PATH%
+          conda activate rietveld
+          %MAUD_PATH%
+          %CINEMA_PATH%
           @echo on
 
   build-on-macos:
