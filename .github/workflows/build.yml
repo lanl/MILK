@@ -48,10 +48,15 @@ jobs:
         run: |
           conda list
           conda info --envs
-          conda activate rietveld
-          milk-config ./Maud/ -c ./cinema_debye_scherrer
       - shell: cmd
         run: |
+          conda init cmd
+          conda activate rietveld
+      - shell: cmd
+        run: milk-config ./Maud/ -c ./cinema_debye_scherrer
+      - shell: cmd
+        run: |
+          milk-examples
           conda deactivate
           conda activate rietveld
       - shell: cmd
