@@ -45,6 +45,7 @@ jobs:
           Invoke-WebRequest -OutFile Maud.zip -Uri "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip?dl=1"
           Expand-Archive -Path Maud.zip -DestinationPath .
           git clone https://github.com/cinemascience/cinema_debye_scherrer
+      - run: dir
       - shell: cmd
         run: |
           conda list
@@ -55,8 +56,8 @@ jobs:
         run: |
           conda deactivate
           conda activate rietveld
-          echo %MAUD_PATH%
-          echo %CINEMA_PATH%
+      - run: echo %MAUD_PATH%
+      - run: echo %CINEMA_PATH%
 
   build-on-macos:
     name: Build MILK on MacOS
