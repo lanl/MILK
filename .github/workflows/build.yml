@@ -38,18 +38,23 @@ jobs:
       - uses: s-weigand/setup-conda@v1
         with:
           activate-conda: false
-      - run: conda --version
-      - run: conda env create -f environment_windows.yml
-      - run: Invoke-WebRequest -OutFile Maud.zip -Uri "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip?dl=1"
-      - run: Expand-Archive -Path Maud.zip -DestinationPath .
-      - run: git clone https://github.com/cinemascience/cinema_debye_scherrer
-      - run: conda list
-      - run: conda info --envs
-      - run: conda activate rietveld
-      - run: milk-config ./Maud/ -c ./cinema_debye_scherrer
-      - run: conda deactivate
-      - run: conda activate rietveld
-      - run: |
+      - shell: cmd
+        run: conda env create -f environment_windows.yml
+      - shell: cmd
+        run: |
+          Invoke-WebRequest -OutFile Maud.zip -Uri "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip?dl=1"
+          Expand-Archive -Path Maud.zip -DestinationPath .
+          git clone https://github.com/cinemascience/cinema_debye_scherrer
+      - shell: cmd
+        run: |
+          conda list
+          conda info --envs
+          conda activate rietveld
+          milk-config ./Maud/ -c ./cinema_debye_scherrer
+      - shell: cmd
+        run: |
+          conda deactivate
+          conda activate rietveld
           echo %MAUD_PATH%
           echo %CINEMA_PATH%
 
