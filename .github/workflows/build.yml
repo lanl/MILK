@@ -98,10 +98,6 @@ jobs:
           # conda env create -f environment_mac.yml
           conda create --name rietveld --file conda-osx-64.lock
           python -m pip install -e ./
-          python -m pip install git+https://github.com/lanl/spotlight.git@v0.10.2
-          python -m pip install mystic==0.3.9
-          python -m pip install pyina==0.2.6
-          python -m pip install pathos==0.2.9
           echo ". /usr/local/miniconda/etc/profile.d/conda.sh" >> ~/.bashrc
           conda init bash
           source ~/.bashrc
