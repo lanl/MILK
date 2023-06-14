@@ -54,6 +54,14 @@ jobs:
           conda activate rietveld
           echo %MAUD_PATH%
           echo %CINEMA_PATH%
+      - shell: cmd
+        run: conda env list
+      - shell: cmd
+        run: |
+          dir
+          conda activate rietveld
+          echo %MAUD_PATH%
+          echo %CINEMA_PATH%
 
   build-on-macos:
     name: Build MILK on MacOS
@@ -76,7 +84,7 @@ jobs:
           conda init bash
           source ~/.bashrc
           conda activate rietveld
-          conda install ocl_icd_wrapper_apple
+          conda install ocl_icd_wrapper_apple -c conda-forge
           curl -JLO "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AAD4uGx8QNACWnItJ4yvfZcWa/macosx64/Maud_intel64.dmg.gz"
           gunzip Maud_intel64.dmg.gz
           hdiutil attach Maud_intel64.dmg
