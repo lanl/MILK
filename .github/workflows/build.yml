@@ -47,28 +47,26 @@ jobs:
           git clone https://github.com/cinemascience/cinema_debye_scherrer
       - shell: cmd
         run: |
-          echo on
-          conda env create -f environment_windows.yml
-          conda list
-          conda info --envs
-          conda init cmd
-          conda activate rietveld
-          milk-config ./Maud/ -c ./cinema_debye_scherrer/
-          conda deactivate
-          conda activate rietveld
+          @echo off
+          echo milk-config ./Maud/ -c ./cinema_debye_scherrer/
+          echo conda env create -f environment_windows.yml
+          echo conda list
+          echo conda info --envs
+          echo conda init cmd
+          echo conda activate rietveld
+          echo milk-config ./Maud/ -c ./cinema_debye_scherrer/
+          echo conda deactivate
+          echo conda activate rietveld
           echo %MAUD_PATH%
           echo %CINEMA_PATH%
+          @echo on
       - shell: cmd
         run: |
-          echo on
+          @echo off
+          echo conda activate rietveld
           echo %MAUD_PATH%
           echo %CINEMA_PATH%
-      - shell: cmd
-        run: |
-          echo on
-          conda activate rietveld
-          echo %MAUD_PATH%
-          echo %CINEMA_PATH%
+          @echo on
 
   build-on-macos:
     name: Build MILK on MacOS
@@ -83,15 +81,16 @@ jobs:
         with:
           activate-conda: false
       - run: |
+          echo on
           conda --version
           which conda
           sysctl -a | grep brand
           conda create --name rietveld --file conda-osx-64.lock
-          pip install setup.py -e ./
-          pip install git+https://github.com/lanl/spotlight.git@v0.10.2
-          pip install mystic==0.3.9
-          pip install pyina==0.2.6
-          pip install pathos==0.2.9
+          python -m pip install setup.py -e ./
+          python -m pip install git+https://github.com/lanl/spotlight.git@v0.10.2
+          python -m pip install mystic==0.3.9
+          python -m pip install pyina==0.2.6
+          python -m pip install pathos==0.2.9
           echo ". /usr/local/miniconda/etc/profile.d/conda.sh" >> ~/.bashrc
           conda init bash
           source ~/.bashrc
@@ -105,7 +104,7 @@ jobs:
           cp -r /Volumes/Maud .
           cp -r ./Maud/Maud.app /Applications/Maud.app
           git clone https://github.com/cinemascience/cinema_debye_scherrer
-          ./bin/milk-config /Applications/Maud.app -c ./cinema_debye_scherrer
+          python ./bin/milk_config.py /Applications/Maud.app -c ./cinema_debye_scherrer
           conda deactivate
           conda activate rietveld
           echo $MAUD_PATH
