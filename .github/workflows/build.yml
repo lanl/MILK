@@ -47,6 +47,7 @@ jobs:
           git clone https://github.com/cinemascience/cinema_debye_scherrer
       - shell: cmd
         run: |
+          echo on
           conda env create -f environment_windows.yml
           conda list
           conda info --envs
@@ -55,19 +56,11 @@ jobs:
           milk-config ./Maud/ -c ./cinema_debye_scherrer/
           conda deactivate
           conda activate rietveld
-          echo on
           echo %MAUD_PATH%
           echo %CINEMA_PATH%
       - shell: cmd
-        run: conda env list
-      - shell: cmd
         run: |
-          dir
-          dir ..
-      - shell: cmd
-        run: conda activate rietveld
-      - shell: cmd
-        run: |
+          echo on
           echo %MAUD_PATH%
           echo %CINEMA_PATH%
       - shell: cmd
@@ -94,6 +87,11 @@ jobs:
           which conda
           sysctl -a | grep brand
           conda create --name rietveld --file conda-osx-64.lock
+          pip install setup.py -e ./
+          pip install git+https://github.com/lanl/spotlight.git@v0.10.2
+          pip install mystic==0.3.9
+          pip install pyina==0.2.6
+          pip install pathos==0.2.9
           echo ". /usr/local/miniconda/etc/profile.d/conda.sh" >> ~/.bashrc
           conda init bash
           source ~/.bashrc
