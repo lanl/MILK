@@ -40,8 +40,7 @@ jobs:
           activate-conda: false
       - shell: cmd
         run: conda env create -f environment_windows.yml
-      - shell: cmd
-        run: |
+      - run: |
           Invoke-WebRequest -OutFile Maud.zip -Uri "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip?dl=1"
           Expand-Archive -Path Maud.zip -DestinationPath .
           git clone https://github.com/cinemascience/cinema_debye_scherrer
@@ -51,13 +50,16 @@ jobs:
           conda list
           conda info --envs
           conda activate rietveld
-          milk-config ./Maud/ -c ./cinema_debye_scherrer
+      - shell: cmd
+        run: milk-config ./Maud/ -c ./cinema_debye_scherrer
       - shell: cmd
         run: |
           conda deactivate
           conda activate rietveld
-      - run: echo %MAUD_PATH%
-      - run: echo %CINEMA_PATH%
+      - shell: cmd
+        run: echo %MAUD_PATH%
+      - shell: cmd
+        run: echo %CINEMA_PATH%
 
   build-on-macos:
     name: Build MILK on MacOS
