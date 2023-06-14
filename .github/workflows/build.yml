@@ -40,16 +40,18 @@ jobs:
           activate-conda: false
       - shell: cmd
         run: |
-          conda env create -f environment_windows.yml
           curl.exe --output Maud.zip --url https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip?dl=1
           tar -a -c -f Maud.zip .
           dir
           git clone https://github.com/cinemascience/cinema_debye_scherrer
+      - shell: cmd
+        run: |
+          conda env create -f environment_windows.yml
           conda list
           conda info --envs
           conda init cmd
           conda activate rietveld
-          milk-config ./Maud/ -c ./cinema_debye_scherrer
+          milk-config ./Maud/ -c ./cinema_debye_scherrer/
           conda deactivate
           conda activate rietveld
           echo %MAUD_PATH%
@@ -59,6 +61,15 @@ jobs:
       - shell: cmd
         run: |
           dir
+          dir ..
+      - shell: cmd
+        run: conda activate rietveld
+      - shell: cmd
+        run: |
+          echo %MAUD_PATH%
+          echo %CINEMA_PATH%
+      - shell: cmd
+        run: |
           conda activate rietveld
           echo %MAUD_PATH%
           echo %CINEMA_PATH%
@@ -84,6 +95,8 @@ jobs:
           conda init bash
           source ~/.bashrc
           conda activate rietveld
+          echo $CONDA_DEFAULT_ENV
+          echo $CONDA_PREFIX
           conda install ocl_icd_wrapper_apple -c conda-forge
           curl -JLO "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AAD4uGx8QNACWnItJ4yvfZcWa/macosx64/Maud_intel64.dmg.gz"
           gunzip Maud_intel64.dmg.gz
@@ -91,8 +104,8 @@ jobs:
           cp -r /Volumes/Maud .
           cp -r ./Maud/Maud.app /Applications/Maud.app
           git clone https://github.com/cinemascience/cinema_debye_scherrer
-          milk-config /Applications/Maud.app -c ./cinema_debye_scherrer
+          ./bin/milk-config /Applications/Maud.app -c ./cinema_debye_scherrer
           conda deactivate
           conda activate rietveld
-          $MAUD_PATH
-          $CINEMA_PATH
+          echo $MAUD_PATH
+          echo $CINEMA_PATH
