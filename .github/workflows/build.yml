@@ -72,6 +72,7 @@ jobs:
           which conda
           sysctl -a | grep brand
           conda create --name rietveld --file conda-osx-64.lock
+          echo ". /usr/local/miniconda/etc/profile.d/conda.sh" >> ~/.bashrc
           conda init bash
           source ~/.bashrc
           conda activate rietveld
