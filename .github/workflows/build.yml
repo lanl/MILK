@@ -44,14 +44,12 @@ jobs:
           Invoke-WebRequest -OutFile Maud.zip -Uri "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip?dl=1"
           Expand-Archive -Path Maud.zip -DestinationPath .
           git clone https://github.com/cinemascience/cinema_debye_scherrer
-      - run: dir
       - shell: cmd
         run: |
           conda list
           conda info --envs
           conda activate rietveld
-      - shell: cmd
-        run: milk-config ./Maud/ -c ./cinema_debye_scherrer
+          milk-config ./Maud/ -c ./cinema_debye_scherrer
       - shell: cmd
         run: |
           conda deactivate
