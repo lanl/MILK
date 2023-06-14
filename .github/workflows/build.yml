@@ -68,22 +68,22 @@ jobs:
         with:
           activate-conda: false
       - run: |
-        conda --version
-        which conda
-        sysctl -a | grep brand
-        conda create --name rietveld --file conda-osx-64.lock
-        conda init bash
-        source ~/.bashrc
-        conda activate rietveld
-        conda install ocl_icd_wrapper_apple
-        curl -JLO "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AAD4uGx8QNACWnItJ4yvfZcWa/macosx64/Maud_intel64.dmg.gz"
-        gunzip Maud_intel64.dmg.gz
-        hdiutil attach Maud_intel64.dmg
-        cp -r /Volumes/Maud .
-        cp -r ./Maud/Maud.app /Applications/Maud.app
-        git clone https://github.com/cinemascience/cinema_debye_scherrer
-        milk-config /Applications/Maud.app -c ./cinema_debye_scherrer
-        conda deactivate
-        conda activate rietveld
-        $MAUD_PATH
-        $CINEMA_PATH
+          conda --version
+          which conda
+          sysctl -a | grep brand
+          conda create --name rietveld --file conda-osx-64.lock
+          conda init bash
+          source ~/.bashrc
+          conda activate rietveld
+          conda install ocl_icd_wrapper_apple
+          curl -JLO "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AAD4uGx8QNACWnItJ4yvfZcWa/macosx64/Maud_intel64.dmg.gz"
+          gunzip Maud_intel64.dmg.gz
+          hdiutil attach Maud_intel64.dmg
+          cp -r /Volumes/Maud .
+          cp -r ./Maud/Maud.app /Applications/Maud.app
+          git clone https://github.com/cinemascience/cinema_debye_scherrer
+          milk-config /Applications/Maud.app -c ./cinema_debye_scherrer
+          conda deactivate
+          conda activate rietveld
+          $MAUD_PATH
+          $CINEMA_PATH
