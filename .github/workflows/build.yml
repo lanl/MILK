@@ -45,26 +45,38 @@ jobs:
           Invoke-WebRequest -Uri $source -OutFile $Destination
           Expand-Archive -Path Maud.zip
           git clone https://github.com/cinemascience/cinema_debye_scherrer
-      - shell: bash
+      - shell: cmd
         run: |
+          @echo off
+          echo "Creating environment"
           conda env create -f environment_windows.yml
+          echo "Done creating environment"
           conda list
           conda info --envs
-          conda init bash
-          source ~/.bashrc
+          echo "Initialize cmd shell for conda"
+          conda init cmd.exe
+      - shell: cmd
+        run: |
+          @echo off
           conda activate rietveld
+          echo "Activated rietveld"
+          echo %CONDA_DEFAULT_ENV%
+          echo %CONDA_PREFIX%
           milk-config ./Maud/ -c ./cinema_debye_scherrer/
+          echo "Ran milk-config"
           conda deactivate
           conda activate rietveld
-          echo $MAUD_PATH
-          echo $CINEMA_PATH
-      - shell: bash
+          echo %CONDA_DEFAULT_ENV%
+          echo %CONDA_PREFIX%
+          echo %MAUD_PATH%
+          echo %CINEMA_PATH%
+      - shell: cmd
         run: |
           conda activate rietveld
-          echo $MAUD_PATH
-          $MAUD_PATH
-          echo $CINEMA_PATH
-          $CINEMA_PATH
+          echo %CONDA_DEFAULT_ENV%
+          echo %CONDA_PREFIX%
+          echo %MAUD_PATH%
+          echo %CINEMA_PATH%
 
   build-on-macos:
     name: Build MILK on MacOS
