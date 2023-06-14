@@ -45,10 +45,8 @@ jobs:
           Invoke-WebRequest -Uri $source -OutFile $Destination
           Expand-Archive -Path Maud.zip
           git clone https://github.com/cinemascience/cinema_debye_scherrer
-      - shell: cmd
+      - shell: bash
         run: |
-          @echo off
-          milk-config ./Maud/ -c ./cinema_debye_scherrer/
           conda env create -f environment_windows.yml
           conda list
           conda info --envs
@@ -57,16 +55,15 @@ jobs:
           milk-config ./Maud/ -c ./cinema_debye_scherrer/
           conda deactivate
           conda activate rietveld
-          %MAUD_PATH%
-          %CINEMA_PATH%
-          @echo on
-      - shell: cmd
+          echo $MAUD_PATH
+          echo $CINEMA_PATH
+      - shell: bash
         run: |
-          @echo off
           conda activate rietveld
-          %MAUD_PATH%
-          %CINEMA_PATH%
-          @echo on
+          echo $MAUD_PATH
+          $MAUD_PATH
+          echo $CINEMA_PATH
+          $CINEMA_PATH
 
   build-on-macos:
     name: Build MILK on MacOS
@@ -86,11 +83,11 @@ jobs:
           which conda
           sysctl -a | grep brand
           conda create --name rietveld --file conda-osx-64.lock
-          python -m pip install setup.py -e ./
-          python -m pip install git+https://github.com/lanl/spotlight.git@v0.10.2
-          python -m pip install mystic==0.3.9
-          python -m pip install pyina==0.2.6
-          python -m pip install pathos==0.2.9
+          python -m pip3 install setup.py -e ./
+          python -m pip3 install git+https://github.com/lanl/spotlight.git@v0.10.2
+          python -m pip3 install mystic==0.3.9
+          python -m pip3 install pyina==0.2.6
+          python -m pip3 install pathos==0.2.9
           echo ". /usr/local/miniconda/etc/profile.d/conda.sh" >> ~/.bashrc
           conda init bash
           source ~/.bashrc
