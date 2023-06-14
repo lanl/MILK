@@ -38,11 +38,12 @@ jobs:
       - uses: s-weigand/setup-conda@v1
         with:
           activate-conda: false
-      - shell: cmd
-        run: |
-          curl.exe --output Maud.zip --url https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip?dl=1
-          tar -a -c -f Maud.zip .
-          dir
+      - run: |
+          $ProgressPreference = 'SilentlyContinue'
+          $Source = "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip?dl=1"
+          $Destination = "./Maud.zip"
+          Invoke-WebRequest -Uri $source -OutFile $Destination
+          Expand-Archive -Path Maud.zip
           git clone https://github.com/cinemascience/cinema_debye_scherrer
       - shell: cmd
         run: |
@@ -54,6 +55,7 @@ jobs:
           milk-config ./Maud/ -c ./cinema_debye_scherrer/
           conda deactivate
           conda activate rietveld
+          echo on
           echo %MAUD_PATH%
           echo %CINEMA_PATH%
       - shell: cmd
@@ -70,6 +72,7 @@ jobs:
           echo %CINEMA_PATH%
       - shell: cmd
         run: |
+          echo on
           conda activate rietveld
           echo %MAUD_PATH%
           echo %CINEMA_PATH%
