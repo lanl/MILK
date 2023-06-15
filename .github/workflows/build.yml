@@ -66,11 +66,12 @@ jobs:
           setx FLAG5 %MAUD_PATH%
           setx FLAG6 %CINEMA_PATH%
           md -p Tutorials
-          dir
           cd Tutorials
-          dir
           milk-examples -e 1
-          dir
+      - shell: cmd
+        run: dir
+      - shell: cmd
+        run: dir Tutorials
         # cd maudbatch
         # python writeIns.py
         # milk-maudText -f fecu.ins 
