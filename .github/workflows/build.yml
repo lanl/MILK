@@ -72,8 +72,7 @@ jobs:
         with:
           activate-environment: rietveld
           environment-file: conda-osx-64.lock
-          python-version: 3.9
-          auto-activate-base: false
+          auto-activate-base: true
       - name: download related programs
         run: |
           mkdir -p Tutorials
