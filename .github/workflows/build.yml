@@ -65,8 +65,8 @@ jobs:
           conda activate rietveld
           setx FLAG5 %MAUD_PATH%
           setx FLAG6 %CINEMA_PATH%
-          mkdir D:\a\MILK\Examples
-          cd D:\a\MILK\Examples
+          md Tutorials
+          cd Tutorials
           milk-examples -e 1
           dir
         # cd maudbatch
@@ -131,15 +131,16 @@ jobs:
           cp -r /Volumes/Maud .
           cp -r ./Maud/Maud.app /Applications/Maud.app
           git clone https://github.com/cinemascience/cinema_debye_scherrer
-          python ./bin/milk_config.py /Applications/Maud.app -c ./cinema_debye_scherrer
+          milk-config /Applications/Maud.app -c ./cinema_debye_scherrer
           conda deactivate
           conda activate rietveld
           echo $MAUD_PATH
           echo $CINEMA_PATH
           echo "Running first example"
-          mkdir ../Examples
-          cd ../Examples
+          mkdir Tutorials
+          cd Tutorials
           conda list -n rietveld
+          conda install panda==1.5.3
           milk-examples -e 1
           ls
      #     cd maudbatch
