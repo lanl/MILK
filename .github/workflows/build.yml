@@ -55,6 +55,8 @@ jobs:
           setx FLAG2 InitializeCmdShellForConda
           conda init cmd.exe
       - shell: cmd
+        run: md -p Tutorials
+      - shell: cmd
         run: |
           @echo off
           conda activate rietveld
@@ -65,7 +67,6 @@ jobs:
           conda activate rietveld
           setx FLAG5 %MAUD_PATH%
           setx FLAG6 %CINEMA_PATH%
-          md -p Tutorials
           cd Tutorials
           milk-examples -e 1
       - shell: cmd
@@ -109,6 +110,7 @@ jobs:
       - uses: s-weigand/setup-conda@v1
         with:
           activate-conda: false
+      - run: mkdir -p Tutorials
       - run: |
           echo on
           conda --version
@@ -121,8 +123,6 @@ jobs:
           conda init bash
           source ~/.bashrc
           conda activate rietveld
-          echo $CONDA_DEFAULT_ENV
-          echo $CONDA_PREFIX
           # conda install ocl_icd_wrapper_apple -c conda-forge
           curl -JLO "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AAD4uGx8QNACWnItJ4yvfZcWa/macosx64/Maud_intel64.dmg.gz"
           gunzip Maud_intel64.dmg.gz
@@ -136,10 +136,9 @@ jobs:
           echo $MAUD_PATH
           echo $CINEMA_PATH
           echo "Running first example"
-          mkdir -p Tutorials
           cd Tutorials
-          conda list -n rietveld
-          conda install pandas
+          echo $CONDA_DEFAULT_ENV
+          echo $CONDA_PREFIX
           milk-examples -e 1
           ls
      #     cd maudbatch
