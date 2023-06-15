@@ -31,7 +31,7 @@ jobs:
     runs-on: windows-latest
     defaults:
       run:
-        shell: cmd {0} /V:ON
+        shell: cmd
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.9
@@ -49,6 +49,8 @@ jobs:
           Invoke-WebRequest -Uri $source -OutFile $Destination
           Expand-Archive -Path Maud.zip
           git clone https://github.com/cinemascience/cinema_debye_scherrer
+          mkdir Tutorials
+      - run: dir
       - run: |
           conda env create -f environment_windows.yml
           setx FLAG1 DoneCreatingEnvironment
@@ -65,9 +67,9 @@ jobs:
           conda activate rietveld
           setx FLAG5 %MAUD_PATH%
           setx FLAG6 %CINEMA_PATH%
-          cd Tutorials
           setx FLAG7 dir
           milk-examples -e 1
+      - run: dir
       - run: |
           @echo on
           echo %FLAG1%
@@ -141,11 +143,9 @@ jobs:
           echo "Running first example"
           echo $CONDA_DEFAULT_ENV
           echo $CONDA_PREFIX
-          python
-          import pandas
-          exit()
+          pip freeze
+          pip list
           milk-examples -e 1
-          ls
      #  cd Tutorials
      #     cd maudbatch
      #     python writeIns.py
