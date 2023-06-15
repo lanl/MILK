@@ -7,22 +7,28 @@ on:
     branches: [ workflow-draft2 ]
 jobs:
   build-on-ubuntu:
-    name: Build MILK on linux
-    runs-on: ubuntu-latest
+    name: Build MILK on Linux and Windows (${{ matrix.os }}, Mambaforge)
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: "ubuntu"
+        include:
+          - os: ubuntu
+            environment-file: environment_linux.yml
+            miniforge-variant: Mambaforge
+            miniforge-version: 4.9.2-4
     defaults:
       run:
         shell: bash -el {0}
     steps:
       - uses: actions/checkout@v2
-      - uses: mamba-org/setup-micromamba@v1
-        with:
-          micromamba-version: '1.3.1-0'
-          environment-file: environment_linux.yml
-          init-shell: >-
-            bash
-            powershell
-          cache-environment: true
-          post-cleanup: 'all'
+      - uses: conda-incubator/setup-miniconda@v2
+          with:
+            environment-file: ${{ matrix.environment-file }}
+            miniforge-variant: ${{ matrix.miniforge-variant }}
+            miniforge-version: ${{ matrix.miniforge-version }}
+            use-mamba: true
       - name: download related programs and make tutorials folder for test examples
         run: |
           mkdir -p Tutorials
@@ -131,23 +137,15 @@ jobs:
           conda activate rietveld
           echo $MAUD_PATH
           echo $CINEMA_PATH
-      - name: Running first test example
-        run: |
-          conda activate rietveld
-          $CONDA_DEFAULT_ENV
           cd Tutorials
           milk-examples -e 1
           cd maudbatch
           python writeIns.py
           milk-maudText -f fecu.ins
-      - name: Running second test example
-        run: |
-          pwd
-          conda activate rietveld
-          $CONDA_DEFAULT_ENV
-          cd Tutorials
+          cd ..
           milk-examples -e 3
           cd sequential_refinement
+          ls
       # - name: use pytest to generate coverage report
       #   run: |
       #     pytest --junitxml="./pytest.xml"
