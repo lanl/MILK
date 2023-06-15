@@ -31,7 +31,7 @@ jobs:
     runs-on: windows-latest
     defaults:
       run:
-        shell: cmd
+        shell: cmd %ComSpec% /D /Q /E:ON /V:ON /S /C "CALL "{0}""
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.9
@@ -70,15 +70,13 @@ jobs:
           setx FLAG7 dir
           milk-examples -e 1
       - run: dir
-      - run: |
-          @echo on
-          echo %FLAG1%
-          echo %FLAG2%
-          echo %FLAG3%
-          echo %FLAG4%
-          echo %FLAG5%
-          echo %FLAG6%
-          echo %FLAG7%
+      - run: echo %FLAG1%
+      - run: echo %FLAG2%
+      - run: echo %FLAG3%
+      - run: echo %FLAG4%
+      - run: echo %FLAG5%
+      - run: echo %FLAG6%
+      - run: echo %FLAG7%
           
       # cd maudbatch
       # python writeIns.py
