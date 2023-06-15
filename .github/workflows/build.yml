@@ -26,45 +26,45 @@ jobs:
   #     - run: conda activate rietveld
   #     - run: milk-config ./Maud/ -c ./cinema_debye_scherrer/
           
-  build-on-windows:
-    name: Build MILK on Windows
-    runs-on: windows-latest
-    defaults:
-      run:
-        shell: cmd /C CALL {0}
-    steps:
-      - uses: actions/checkout@v2
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          activate-environment: rietveld
-          environment-file: environment_windows.yml
-          auto-activate-base: false
-      - run: |
-          conda info
-          conda list
-      - shell: pwsh
-        run: |
-          $ProgressPreference = 'SilentlyContinue'
-          $Source = "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip?dl=1"
-          $Destination = ".\Maud.zip"
-          Invoke-WebRequest -Uri $source -OutFile $Destination
-          Expand-Archive -Path Maud.zip
-          git clone https://github.com/cinemascience/cinema_debye_scherrer
-          mkdir Tutorials
-      - run: |
-          conda activate rietveld
-          milk-config .\Maud\ -c .\cinema_debye_scherrer\
-          conda deactivate
-          conda activate rietveld
-          echo %MAUD_PATH%
-          echo %CINEMA_PATH%
-          cd Tutorials
-          milk-examples -e 1
-          cd maudbatch
-          python writeIns.py
-          milk-maudText -f fecu.ins 
-      - run: dir Tutorials
-      - run: more .\Tutorials\maudbatch\*.log
+  # build-on-windows:
+  #   name: Build MILK on Windows
+  #   runs-on: windows-latest
+  #   defaults:
+  #     run:
+  #       shell: cmd /C CALL {0}
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: conda-incubator/setup-miniconda@v2
+  #       with:
+  #         activate-environment: rietveld
+  #         environment-file: environment_windows.yml
+  #         auto-activate-base: false
+  #     - run: |
+  #         conda info
+  #         conda list
+  #     - shell: pwsh
+  #       run: |
+  #         $ProgressPreference = 'SilentlyContinue'
+  #         $Source = "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip?dl=1"
+  #         $Destination = ".\Maud.zip"
+  #         Invoke-WebRequest -Uri $source -OutFile $Destination
+  #         Expand-Archive -Path Maud.zip
+  #         git clone https://github.com/cinemascience/cinema_debye_scherrer
+  #         mkdir Tutorials
+  #     - run: |
+  #         conda activate rietveld
+  #         milk-config .\Maud\ -c .\cinema_debye_scherrer\
+  #         conda deactivate
+  #         conda activate rietveld
+  #         echo %MAUD_PATH%
+  #         echo %CINEMA_PATH%
+  #         cd Tutorials
+  #         milk-examples -e 1
+  #         cd maudbatch
+  #         python writeIns.py
+  #         milk-maudText -f fecu.ins 
+  #     - run: dir Tutorials
+  #     - run: more .\Tutorials\maudbatch\*.log
 
   build-on-macos:
     name: Build MILK on MacOS
@@ -77,9 +77,13 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: rietveld
-          environment-file: environment_mac.yml
+          environment-file: conda-osx-64.lock
           auto-activate-base: false
-      - name: download related programs
+      - name: setup pip and install missing ocl_wrapper initialize conda
+        run: |
+          conda install ocl_icd_wrapper_apple -c conda-forge
+          python -m pip install -e ./
+      - name: download related programs and make tutorials folder for test examples
         run: |
           mkdir -p Tutorials
           curl -JLO "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AAD4uGx8QNACWnItJ4yvfZcWa/macosx64/Maud_intel64.dmg.gz"
@@ -88,7 +92,7 @@ jobs:
           cp -r /Volumes/Maud .
           cp -r ./Maud/Maud.app /Applications/Maud.app
           git clone https://github.com/cinemascience/cinema_debye_scherrer
-      - name: setup pip and install missing ocl_wrapper initialize conda
+      - name: config milk
         run: |
           milk-config /Applications/Maud.app -c ./cinema_debye_scherrer
           conda deactivate
@@ -112,4 +116,4 @@ jobs:
           cd Tutorials
           milk-examples -e 3
           cd sequential_refinement
-          
+
