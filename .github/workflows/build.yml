@@ -29,6 +29,9 @@ jobs:
   build-on-windows:
     name: Build MILK on Windows
     runs-on: windows-latest
+    defaults:
+      run:
+        shell: cmd {0} /V:ON
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.9
@@ -38,25 +41,22 @@ jobs:
       - uses: s-weigand/setup-conda@v1
         with:
           activate-conda: false
-      - run: |
+      - shell: pwsh
+        run: |
           $ProgressPreference = 'SilentlyContinue'
           $Source = "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip?dl=1"
           $Destination = ".\Maud.zip"
           Invoke-WebRequest -Uri $source -OutFile $Destination
           Expand-Archive -Path Maud.zip
           git clone https://github.com/cinemascience/cinema_debye_scherrer
-      - shell: cmd
-        run: |
+      - run: |
           conda env create -f environment_windows.yml
           setx FLAG1 DoneCreatingEnvironment
           conda list
           conda info --envs
           setx FLAG2 InitializeCmdShellForConda
           conda init cmd.exe
-      - shell: cmd
-        run: md -p Tutorials
-      - shell: cmd
-        run: |
+      - run: |
           conda activate rietveld
           setx FLAG3 ActivatedRietveld
           milk-config .\Maud\ -c .\cinema_debye_scherrer\
@@ -68,24 +68,20 @@ jobs:
           cd Tutorials
           setx FLAG7 dir
           milk-examples -e 1
-      - shell: cmd
-        run: echo %FLAG1%
-      - shell: cmd
-        run: eccho %FLAG2%
-      - shell: cmd
-        run: eccho %FLAG3%
-      - shell: cmd
-        run: eccho %FLAG4%
-      - shell: cmd
-        run: eccho %FLAG5%
-      - shell: cmd
-        run: eccho %FLAG6%
-      - shell: cmd
-        run: eccho %FLAG7%
-        # cd maudbatch
-        # python writeIns.py
-        # milk-maudText -f fecu.ins 
-        # more *.log
+      - run: |
+          @echo on
+          echo %FLAG1%
+          echo %FLAG2%
+          echo %FLAG3%
+          echo %FLAG4%
+          echo %FLAG5%
+          echo %FLAG6%
+          echo %FLAG7%
+          
+      # cd maudbatch
+      # python writeIns.py
+      # milk-maudText -f fecu.ins 
+      # more *.log
       # - shell: cmd
       #   run: echo %CONDA_DEFAULT_ENV%
       # - shell: cmd
@@ -143,11 +139,14 @@ jobs:
           echo $MAUD_PATH
           echo $CINEMA_PATH
           echo "Running first example"
-          cd Tutorials
           echo $CONDA_DEFAULT_ENV
           echo $CONDA_PREFIX
+          python
+          import pandas
+          exit()
           milk-examples -e 1
           ls
+     #  cd Tutorials
      #     cd maudbatch
      #     python writeIns.py
      #     milk-maudText -f fecu.ins
