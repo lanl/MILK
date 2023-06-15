@@ -47,7 +47,6 @@ jobs:
           git clone https://github.com/cinemascience/cinema_debye_scherrer
       - shell: cmd
         run: |
-          @echo off
           conda env create -f environment_windows.yml
           setx FLAG1 DoneCreatingEnvironment
           conda list
@@ -58,7 +57,6 @@ jobs:
         run: md -p Tutorials
       - shell: cmd
         run: |
-          @echo off
           conda activate rietveld
           setx FLAG3 ActivatedRietveld
           milk-config .\Maud\ -c .\cinema_debye_scherrer\
@@ -68,11 +66,22 @@ jobs:
           setx FLAG5 %MAUD_PATH%
           setx FLAG6 %CINEMA_PATH%
           cd Tutorials
+          setx FLAG7 dir
           milk-examples -e 1
       - shell: cmd
-        run: dir
+        run: echo %FLAG1%
       - shell: cmd
-        run: dir Tutorials
+        run: eccho %FLAG2%
+      - shell: cmd
+        run: eccho %FLAG3%
+      - shell: cmd
+        run: eccho %FLAG4%
+      - shell: cmd
+        run: eccho %FLAG5%
+      - shell: cmd
+        run: eccho %FLAG6%
+      - shell: cmd
+        run: eccho %FLAG7%
         # cd maudbatch
         # python writeIns.py
         # milk-maudText -f fecu.ins 
@@ -112,18 +121,16 @@ jobs:
           activate-conda: false
       - run: mkdir -p Tutorials
       - run: |
-          echo on
           conda --version
           which conda
           sysctl -a | grep brand
-          # conda env create -f environment_mac.yml
           conda create --name rietveld --file conda-osx-64.lock
           python -m pip install -e ./
+          conda install ocl_icd_wrapper_apple -c conda-forge
           echo ". /usr/local/miniconda/etc/profile.d/conda.sh" >> ~/.bashrc
           conda init bash
           source ~/.bashrc
           conda activate rietveld
-          # conda install ocl_icd_wrapper_apple -c conda-forge
           curl -JLO "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AAD4uGx8QNACWnItJ4yvfZcWa/macosx64/Maud_intel64.dmg.gz"
           gunzip Maud_intel64.dmg.gz
           hdiutil attach Maud_intel64.dmg
@@ -146,3 +153,4 @@ jobs:
      #     milk-maudText -f fecu.ins
      # ls
      # cat *.log
+     # conda env create -f environment_mac.yml
