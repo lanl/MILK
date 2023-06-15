@@ -31,7 +31,7 @@ jobs:
     runs-on: windows-latest
     defaults:
       run:
-        shell: cmd
+        shell: cmd /C CALL {0}
     steps:
       - uses: actions/checkout@v2
       - uses: conda-incubator/setup-miniconda@v2
@@ -39,6 +39,9 @@ jobs:
           activate-environment: rietveld
           environment-file: environment_windows.yml
           auto-activate-base: false
+      - run: |
+          conda info
+          conda list
       - shell: pwsh
         run: |
           $ProgressPreference = 'SilentlyContinue'
@@ -48,8 +51,6 @@ jobs:
           Expand-Archive -Path Maud.zip
           git clone https://github.com/cinemascience/cinema_debye_scherrer
           mkdir Tutorials
-          dir
-      - run: conda init cmd.exe
       - run: |
           conda activate rietveld
           milk-config .\Maud\ -c .\cinema_debye_scherrer\
@@ -68,6 +69,9 @@ jobs:
   build-on-macos:
     name: Build MILK on MacOS
     runs-on: macos-latest
+    defaults:
+      run:
+        shell: bash -el {0}
     steps:
       - uses: actions/checkout@v2
       - uses: conda-incubator/setup-miniconda@v2
@@ -86,10 +90,6 @@ jobs:
           git clone https://github.com/cinemascience/cinema_debye_scherrer
       - name: setup pip and install missing ocl_wrapper initialize conda
         run: |
-          echo ". /usr/local/miniconda/etc/profile.d/conda.sh" >> ~/.bashrc
-          conda init bash
-          source ~/.bashrc
-          conda activate rietveld
           milk-config /Applications/Maud.app -c ./cinema_debye_scherrer
           conda deactivate
           conda activate rietveld
