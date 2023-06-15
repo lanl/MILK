@@ -26,7 +26,7 @@ jobs:
       - name: download related programs and make tutorials folder for test examples
         run: |
           mkdir -p Tutorials
-          wget "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AABxmzMfRS2zsxfXhUNftZHCa/linux64/Maud.tar.gz?dl=1"
+          wget -O Maud.tar.gz "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AABxmzMfRS2zsxfXhUNftZHCa/linux64/Maud.tar.gz?dl=1"
           tar -xvf Maud.tar.gz
           git clone https://github.com/cinemascience/cinema_debye_scherrer
       - name: config milk
@@ -133,8 +133,8 @@ jobs:
           echo $CINEMA_PATH
       - name: Running first test example
         run: |
-          $CONDA_DEFAULT_ENV
           conda activate rietveld
+          $CONDA_DEFAULT_ENV
           cd Tutorials
           milk-examples -e 1
           cd maudbatch
@@ -142,9 +142,9 @@ jobs:
           milk-maudText -f fecu.ins
       - name: Running second test example
         run: |
-          $CONDA_DEFAULT_ENV
           pwd
           conda activate rietveld
+          $CONDA_DEFAULT_ENV
           cd Tutorials
           milk-examples -e 3
           cd sequential_refinement
