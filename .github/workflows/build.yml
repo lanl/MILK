@@ -136,11 +136,9 @@ jobs:
           echo $CINEMA_PATH
           echo "Running first example"
           mkdir -p Tutorials
-          ls
-          cd -p Tutorials
-          ls
+          cd Tutorials
           conda list -n rietveld
-          conda install panda==1.5.3
+          conda install pandas
           milk-examples -e 1
           ls
      #     cd maudbatch
