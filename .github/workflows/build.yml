@@ -6,25 +6,49 @@ on:
   pull_request:
     branches: [ workflow-draft2 ]
 jobs:
-  # build-on-ubuntu:
-  #   name: Build MILK on Linux (Ubuntu)
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Set up Python 3.9
-  #       uses: actions/setup-python@v2
-  #       with:
-  #         python-version: 3.9
-  #     - uses: s-weigand/setup-conda@v1
-  #       with:
-  #         activate-conda: false
-  #     - run: conda create --name rietveld --file conda-linux-64.lock
-  #     # - run: conda list -n rietveld
-  #     - run: git clone https://github.com/cinemascience/cinema_debye_scherrer
-  #     - run: wget https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AABxmzMfRS2zsxfXhUNftZHCa/linux64/Maud.tar.gz
-  #     - run: tar -xvf Maud.tar.gz
-  #     - run: conda activate rietveld
-  #     - run: milk-config ./Maud/ -c ./cinema_debye_scherrer/
+  build-on-ubuntu:
+    name: Build MILK on linux
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: rietveld
+          environment-file: environment_linux.yml
+          auto-activate-base: false
+      - name: download related programs and make tutorials folder for test examples
+        run: |
+          mkdir -p Tutorials
+          wget "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AABxmzMfRS2zsxfXhUNftZHCa/linux64/Maud.tar.gz?dl=1"
+          tar -xvf Maud.tar.gz
+          git clone https://github.com/cinemascience/cinema_debye_scherrer
+      - name: config milk
+        run: |
+          milk-config ./Maud -c ./cinema_debye_scherrer
+          conda deactivate
+          conda activate rietveld
+          echo $MAUD_PATH
+          echo $CINEMA_PATH
+      - name: Running first test example
+        run: |
+          conda info --env
+          conda activate rietveld
+          cd Tutorials
+          milk-examples -e 1
+          cd maudbatch
+          python writeIns.py
+          milk-maudText -f fecu.ins
+      - name: Running second test example
+        run: |
+          conda info --env
+          pwd
+          conda activate rietveld
+          cd Tutorials
+          milk-examples -e 3
+          cd sequential_refinement
           
   # build-on-windows:
   #   name: Build MILK on Windows
