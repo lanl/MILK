@@ -95,10 +95,21 @@ jobs:
           conda activate rietveld
           echo $MAUD_PATH
           echo $CINEMA_PATH
-          echo "Running first example"
+      - name: Running first test example
+        run: |
+          conda info --env
+          conda activate rietveld
           cd Tutorials
           milk-examples -e 1
           cd maudbatch
           python writeIns.py
           milk-maudText -f fecu.ins
-          cat *.log
+      - name: Running second test example
+        run: |
+          conda info --env
+          pwd
+          conda activate rietveld
+          cd Tutorials
+          milk-examples -e 3
+          cd sequential_refinement
+          
