@@ -116,3 +116,10 @@ jobs:
           conda activate rietveld
           echo $MAUD_PATH
           echo $CINEMA_PATH
+          echo "Running first example"
+          mkdir ../Examples
+          cd ../Examples
+          milk-examples -e 1
+          ls
+          cd maudbatch
+          sed 's/# /Users/testuser/Documents/GitHub/MILK/maudbatch//asdfasdf/' fecu.ins
