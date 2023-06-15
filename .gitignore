@@ -9,6 +9,7 @@
 */*/__pycache__/*
 */*/*/__pycache__/*
 /MILK/data/resources/data/*
+/examples/*
 /examples/QPA/*
 /examples/HIPPO/texture/run*/*
 /examples/HIPPO/texture/data/*

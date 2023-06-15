@@ -1,0 +1,60 @@
+name: Build and Test [Python 3.9 on Windows, Linux, MacOS]
+
+on:
+  push:
+    branches: [ workflow-draft ]
+  pull_request:
+    branches: [ workflow-draft ]
+jobs:
+  build-on-ubuntu:
+    name: Build MILK on Linux (Ubuntu)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - uses: s-weigand/setup-conda@v1
+        with:
+          activate-conda: true
+      - run: conda --version
+      - run: which python
+      - run: conda env create -f environment_full.yml
+      - run: git clone https://github.com/cinemascience/cinema_debye_scherrer
+      - run: pip download  
+          
+  build-on-windows:
+    name: Build MILK on Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - uses: s-weigand/setup-conda@v1
+        with:
+          activate-conda: true
+      - run: conda --version
+      - run: which python
+      - run: conda env create -f environment_full.yml
+
+  build-on-macos:
+    name: Build MILK on MacOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - uses: s-weigand/setup-conda@v1
+        with:
+          activate-conda: true
+      - run: conda --version
+      - run: which python
+      - run: sysctl -a | grep brand
+      - run: conda env create -f environment_full_mac.yml
+      - run: git clone https://github.com/cinemascience/cinema_debye_scherrer
+      - run: pip download  
