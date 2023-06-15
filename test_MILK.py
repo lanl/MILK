@@ -2,11 +2,11 @@
 
 import os
 
-def test_maudbatch():
-    for dirpath, dirnames, filenames in os.walk("."):
-        for filename in [f for f in filenames if f.endswith(".log")]:
-            print os.path.join(dirpath, filename)
-    assert os.path.isfile('/Tutorials/maudbatch/environment.yml')
+def test_maudbatch1():
+    assert os.path.isfile('../Workshop/Tutorials/maudbatch/FECU1010.par')
 
-def test_always_fails():
-    assert os.path.isfile('environment_mac.yml')
+def test_maudbatch2():
+    assert os.path.isfile('../Workshop/Tutorials/maudbatch/fecu.log')
+
+# def test_synchrotron1():
+#     assert os.path.isfile('environment_mac.yml')

@@ -14,11 +14,15 @@ jobs:
         shell: bash -el {0}
     steps:
       - uses: actions/checkout@v2
-      - uses: conda-incubator/setup-miniconda@v2
+      - uses: mamba-org/setup-micromamba@v1
         with:
-          activate-environment: rietveld
+          micromamba-version: '1.3.1-0'
           environment-file: environment_linux.yml
-          auto-activate-base: false
+          init-shell: >-
+            bash
+            powershell
+          cache-environment: true
+          post-cleanup: 'all'
       - name: download related programs and make tutorials folder for test examples
         run: |
           mkdir -p Tutorials
@@ -34,7 +38,7 @@ jobs:
           echo $CINEMA_PATH
       - name: Running first test example
         run: |
-          conda info --env
+          $CONDA_DEFAULT_ENV
           conda activate rietveld
           cd Tutorials
           milk-examples -e 1
@@ -43,7 +47,7 @@ jobs:
           milk-maudText -f fecu.ins
       - name: Running second test example
         run: |
-          conda info --env
+          $CONDA_DEFAULT_ENV
           pwd
           conda activate rietveld
           cd Tutorials
@@ -129,7 +133,7 @@ jobs:
           echo $CINEMA_PATH
       - name: Running first test example
         run: |
-          conda info --env
+          $CONDA_DEFAULT_ENV
           conda activate rietveld
           cd Tutorials
           milk-examples -e 1
@@ -138,10 +142,18 @@ jobs:
           milk-maudText -f fecu.ins
       - name: Running second test example
         run: |
-          conda info --env
+          $CONDA_DEFAULT_ENV
           pwd
           conda activate rietveld
           cd Tutorials
           milk-examples -e 3
           cd sequential_refinement
+      # - name: use pytest to generate coverage report
+      #   run: |
+      #     pytest --junitxml="./pytest.xml"
+      # - name: convert pytest reports to badge
+      #   uses: MishaKav/pytest-coverage-comment@main
+      #     with:
+      #       pytest-coverage-path: ./pytest-coverage.txt
+      #       junitxml-path: ./pytest.xml
 
