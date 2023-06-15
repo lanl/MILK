@@ -65,19 +65,18 @@ jobs:
           conda activate rietveld
           setx FLAG5 %MAUD_PATH%
           setx FLAG6 %CINEMA_PATH%
-          mkdir ..\Examples
-          cd ..\Examples
+          mkdir D:\a\MILK\Examples
+          cd D:\a\MILK\Examples
           milk-examples -e 1
-          cd maudbatch
-          python writeIns.py
-          milk-maudText -f fecu.ins 
-          more *.log
+          dir
+        # cd maudbatch
+        # python writeIns.py
+        # milk-maudText -f fecu.ins 
+        # more *.log
       - shell: cmd
         run: dir
       - shell: cmd
         run: dir ..
-      - shell: cmd
-        run: dir ..\Examples
       # - shell: cmd
       #   run: echo %CONDA_DEFAULT_ENV%
       # - shell: cmd
@@ -140,10 +139,11 @@ jobs:
           echo "Running first example"
           mkdir ../Examples
           cd ../Examples
+          conda list -n rietveld
           milk-examples -e 1
           ls
-          cd maudbatch
-          python writeIns.py
-          milk-maudText -f fecu.ins
-          ls
-          cat *.log
+     #     cd maudbatch
+     #     python writeIns.py
+     #     milk-maudText -f fecu.ins
+     # ls
+     # cat *.log
