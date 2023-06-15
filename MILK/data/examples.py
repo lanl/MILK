@@ -33,6 +33,14 @@ def maudBatch(path='maudbatch'):
     shutil.copy(MOD_DIR / '../../examples/data/MAUD_batch.zip', fout)
     unzip(fout / 'MAUD_batch.zip', fout)
 
+
+def G2vsMAUD(path='G2vsMAUD'):
+    """Comparison of G2 and MAUD overhead."""
+    fout = CUR_DIR / path
+    fin = MOD_DIR / '../../examples/misc/G2vsMAUD'
+    shutil.copytree(fin, fout)
+
+
 def hippoTexture(path='HIPPO/texture'):
     """HIPPO two phase texture example."""
     fout = CUR_DIR / path
@@ -41,6 +49,7 @@ def hippoTexture(path='HIPPO/texture'):
     shutil.copy(MOD_DIR / '../../examples/data/HIPPO_texture.zip', fout)
     unzip(fout / 'HIPPO_texture.zip', fout)
     shutil.move(fout / 'HIPPO_texture', fout / 'data')
+
 
 def sequentialRefinement(path='sequential_refinement'):
     """Synchrotron three sequential refinement example."""
