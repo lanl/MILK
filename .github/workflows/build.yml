@@ -57,11 +57,13 @@ jobs:
           conda activate rietveld
           echo %MAUD_PATH%
           echo %CINEMA_PATH%
+          cd Tutorials
           milk-examples -e 1
           cd maudbatch
           python writeIns.py
           milk-maudText -f fecu.ins 
-          more *.log
+      - run: dir Tutorials
+      - run: more .\Tutorials\maudbatch\*.log
 
   build-on-macos:
     name: Build MILK on MacOS
@@ -71,7 +73,7 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: rietveld
-          environment-file: conda-osx-64.lock
+          environment-file: environment_mac.yml
           auto-activate-base: true
       - name: download related programs
         run: |
@@ -82,12 +84,14 @@ jobs:
           cp -r /Volumes/Maud .
           cp -r ./Maud/Maud.app /Applications/Maud.app
           git clone https://github.com/cinemascience/cinema_debye_scherrer
-      - run: |
-          python -m pip install -e ./
-          conda install ocl_icd_wrapper_apple -c conda-forge
+      - name: setup pip and install missing ocl_wrapper initialize conda
+        run: |
           echo ". /usr/local/miniconda/etc/profile.d/conda.sh" >> ~/.bashrc
           conda init bash
-          source ~/.bashrc
+          #python -m pip install -e ./
+          #conda install ocl_icd_wrapper_apple -c conda-forge
+          #conda activate rietveld
+      - run: |
           conda activate rietveld
           milk-config /Applications/Maud.app -c ./cinema_debye_scherrer
           conda deactivate
