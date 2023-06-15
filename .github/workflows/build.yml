@@ -41,42 +41,63 @@ jobs:
       - run: |
           $ProgressPreference = 'SilentlyContinue'
           $Source = "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip?dl=1"
-          $Destination = "./Maud.zip"
+          $Destination = ".\Maud.zip"
           Invoke-WebRequest -Uri $source -OutFile $Destination
           Expand-Archive -Path Maud.zip
           git clone https://github.com/cinemascience/cinema_debye_scherrer
       - shell: cmd
         run: |
           @echo off
-          echo "Creating environment"
           conda env create -f environment_windows.yml
-          echo "Done creating environment"
+          setx FLAG1 DoneCreatingEnvironment
           conda list
           conda info --envs
-          echo "Initialize cmd shell for conda"
+          setx FLAG2 InitializeCmdShellForConda
           conda init cmd.exe
       - shell: cmd
         run: |
           @echo off
           conda activate rietveld
-          echo "Activated rietveld"
-          echo %CONDA_DEFAULT_ENV%
-          echo %CONDA_PREFIX%
-          milk-config ./Maud/ -c ./cinema_debye_scherrer/
-          echo "Ran milk-config"
+          setx FLAG3 ActivatedRietveld
+          milk-config .\Maud\ -c .\cinema_debye_scherrer\
+          setx FLAG4 RanMilkConfig
           conda deactivate
           conda activate rietveld
-          echo %CONDA_DEFAULT_ENV%
-          echo %CONDA_PREFIX%
-          echo %MAUD_PATH%
-          echo %CINEMA_PATH%
+          setx FLAG5 %MAUD_PATH%
+          setx FLAG6 %CINEMA_PATH%
+          mkdir ..\Examples
+          cd ..\Examples
+          milk-examples -e 1
+          cd maudbatch
+          python writeIns.py
+          milk-maudText -f fecu.ins 
+          more *.log
       - shell: cmd
-        run: |
-          conda activate rietveld
-          echo %CONDA_DEFAULT_ENV%
-          echo %CONDA_PREFIX%
-          echo %MAUD_PATH%
-          echo %CINEMA_PATH%
+        run: dir
+      - shell: cmd
+        run: dir ..
+      - shell: cmd
+        run: dir ..\Examples
+      # - shell: cmd
+      #   run: echo %CONDA_DEFAULT_ENV%
+      # - shell: cmd
+      #   run: echo %CONDA_PREFIX%
+      # - shell: cmd
+      #   run: echo %MAUD_PATH%
+      # - shell: cmd
+      #   run: echo %CINEMA_PATH%
+      # - shell: cmd
+      #   run: echo %FLAG1%
+      # - shell: cmd
+      #   run: echo %FLAG2%
+      # - shell: cmd
+      #   run: echo %FLAG3%
+      # - shell: cmd
+      #   run: echo %FLAG4%
+      # - shell: cmd
+      #   run: echo %FLAG5%
+      # - shell: cmd
+      #   run: echo %FLAG6%
 
   build-on-macos:
     name: Build MILK on MacOS
@@ -122,4 +143,7 @@ jobs:
           milk-examples -e 1
           ls
           cd maudbatch
-          sed 's/# /Users/testuser/Documents/GitHub/MILK/maudbatch//asdfasdf/' fecu.ins
+          python writeIns.py
+          milk-maudText -f fecu.ins
+          ls
+          cat *.log
