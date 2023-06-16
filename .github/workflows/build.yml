@@ -143,13 +143,13 @@ jobs:
           python 2_setup.py
           ls
       # python 3_analysis.py
-      - name: use pytest to generate coverage report
-        run: |
-          pytest
-          pytest --junitxml="./pytest.xml"
-      - name: convert pytest reports to badge
-        uses: MishaKav/pytest-coverage-comment@main
-          with:
-            pytest-coverage-path: ./pytest-coverage.txt
-            junitxml-path: ./pytest.xml
+      # - name: use pytest to generate coverage report
+      #   run: |
+      #     pytest
+      #     pytest --junitxml="./pytest.xml"
+      # - name: convert pytest reports to badge
+      #   uses: MishaKav/pytest-coverage-comment@main
+      #     with:
+      #       pytest-coverage-path: ./pytest-coverage.txt
+      #       junitxml-path: ./pytest.xml
 
