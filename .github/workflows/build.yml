@@ -39,11 +39,11 @@ jobs:
           conda activate rietveld
           echo $MAUD_PATH
           echo $CINEMA_PATH
-          bash ./Maud/Maud.sh
-          # cd Tutorials
-          # milk-examples -e 1
-          # cd maudbatch
-          # python writeIns.py
+          cd Tutorials
+          milk-examples -e 1
+          cd maudbatch
+          python writeIns.py
+          $MAUD_PATH/Contents/PlugIns/Home/bin/Java -mx8G --enable-preview -cp "$MAUD_PATH/Contents/Java/*" com.radiographema.MaudText -file fecu.ins
           # milk-maudText -f fecu.ins
           # ls
       # cd ..
