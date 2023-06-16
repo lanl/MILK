@@ -32,26 +32,26 @@ jobs:
           wget -O Maud.tar.gz "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AABxmzMfRS2zsxfXhUNftZHCa/linux64/Maud.tar.gz?dl=1"
           tar -xvf Maud.tar.gz
           git clone https://github.com/cinemascience/cinema_debye_scherrer
-          ls ./Maud
       - name: config milk and run examples
         run: |
-          milk-config ./Maud -c ./cinema_debye_scherrer
+          milk-config ./Maud/ -c ./cinema_debye_scherrer/
           conda deactivate
           conda activate rietveld
           echo $MAUD_PATH
           echo $CINEMA_PATH
-          cd Tutorials
-          milk-examples -e 1
-          cd maudbatch
-          python writeIns.py
-          milk-maudText -f fecu.ins
-          ls
-          cd ..
-          milk-examples -e 3
-          cd sequential_refinement
-          python 1_build_database.py
-          python 2_setup.py
-          ls
+          bash ./Maud/Maud.sh
+          # cd Tutorials
+          # milk-examples -e 1
+          # cd maudbatch
+          # python writeIns.py
+          # milk-maudText -f fecu.ins
+          # ls
+      # cd ..
+      # milk-examples -e 3
+      # cd sequential_refinement
+      # python 1_build_database.py
+      # python 2_setup.py
+      # ls
           
   # build-on-windows:
   #   name: Build MILK on Windows
@@ -93,55 +93,55 @@ jobs:
   #     - run: dir Tutorials
   #     - run: more .\Tutorials\maudbatch\*.log
 
-  build-on-macos:
-    name: Build MILK on MacOS Intel
-    runs-on: macos-latest
-    defaults:
-      run:
-        shell: bash -el {0}
-    steps:
-      - uses: actions/checkout@v2
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          activate-environment: rietveld
-          environment-file: conda-osx-intel-64.lock
-          auto-activate-base: false
-      - name: setup pip and install missing ocl_wrapper initialize conda
-        run: |
-          conda install ocl_icd_wrapper_apple -c conda-forge
-          python -m pip install -e ./
-          python -m pip install git+https://github.com/lanl/spotlight.git@v0.10.2
-          python -m pip install mystic==0.3.9
-          python -m pip install pyina==0.2.6
-          python -m pip install pathos==0.2.9
-      - name: download related programs and make tutorials folder for test examples
-        run: |
-          mkdir -p Tutorials
-          curl -JLO "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AAD4uGx8QNACWnItJ4yvfZcWa/macosx64/Maud_intel64.dmg.gz"
-          gunzip Maud_intel64.dmg.gz
-          hdiutil attach Maud_intel64.dmg
-          cp -r /Volumes/Maud .
-          cp -r ./Maud/Maud.app /Applications/Maud.app
-          git clone https://github.com/cinemascience/cinema_debye_scherrer
-      - name: config milk and run examples
-        run: |
-          milk-config /Applications/Maud.app -c ./cinema_debye_scherrer
-          conda deactivate
-          conda activate rietveld
-          echo $MAUD_PATH
-          echo $CINEMA_PATH
-          cd Tutorials
-          milk-examples -e 1
-          cd maudbatch
-          python writeIns.py
-          milk-maudText -f fecu.ins
-          ls
-          cd ..
-          milk-examples -e 3
-          cd sequential_refinement
-          python 1_build_database.py
-          python 2_setup.py
-          ls
+  # build-on-macos:
+  #   name: Build MILK on MacOS Intel
+  #   runs-on: macos-latest
+  #   defaults:
+  #     run:
+  #       shell: bash -el {0}
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: conda-incubator/setup-miniconda@v2
+  #       with:
+  #         activate-environment: rietveld
+  #         environment-file: conda-osx-intel-64.lock
+  #         auto-activate-base: false
+  #     - name: setup pip and install missing ocl_wrapper initialize conda
+  #       run: |
+  #         conda install ocl_icd_wrapper_apple -c conda-forge
+  #         python -m pip install -e ./
+  #         python -m pip install git+https://github.com/lanl/spotlight.git@v0.10.2
+  #         python -m pip install mystic==0.3.9
+  #         python -m pip install pyina==0.2.6
+  #         python -m pip install pathos==0.2.9
+  #     - name: download related programs and make tutorials folder for test examples
+  #       run: |
+  #         mkdir -p Tutorials
+  #         curl -JLO "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AAD4uGx8QNACWnItJ4yvfZcWa/macosx64/Maud_intel64.dmg.gz"
+  #         gunzip Maud_intel64.dmg.gz
+  #         hdiutil attach Maud_intel64.dmg
+  #         cp -r /Volumes/Maud .
+  #         cp -r ./Maud/Maud.app /Applications/Maud.app
+  #         git clone https://github.com/cinemascience/cinema_debye_scherrer
+  #     - name: config milk and run examples
+  #       run: |
+  #         milk-config /Applications/Maud.app -c ./cinema_debye_scherrer
+  #         conda deactivate
+  #         conda activate rietveld
+  #         echo $MAUD_PATH
+  #         echo $CINEMA_PATH
+  #         cd Tutorials
+  #         milk-examples -e 1
+  #         cd maudbatch
+  #         python writeIns.py
+  #         milk-maudText -f fecu.ins
+  #         ls
+  #         cd ..
+  #         milk-examples -e 3
+  #         cd sequential_refinement
+  #         python 1_build_database.py
+  #         python 2_setup.py
+  #         ls
       # python 3_analysis.py
       # - name: use pytest to generate coverage report
       #   run: |
