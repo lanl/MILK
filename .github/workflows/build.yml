@@ -77,13 +77,11 @@ jobs:
           Expand-Archive -Path Maud.zip
           git clone https://github.com/cinemascience/cinema_debye_scherrer
           mkdir Tutorials
+      - run: milk-config D:\a\MILK\MILK\Maud\ -c D:\a\MILK\MILK\cinema_debye_scherrer\
+      - run: echo %MAUD_PATH%
+      - run: echo %CINEMA_PATH%
       - run: |
-          milk-config .\Maud\ -c .\cinema_debye_scherrer\
-          conda deactivate
-          conda activate rietveld
-          echo %MAUD_PATH%
-          echo %CINEMA_PATH%
-          cd Tutorials
+          cd /d Tutorials
           milk-examples -e 1
           cd maudbatch
           python writeIns.py
