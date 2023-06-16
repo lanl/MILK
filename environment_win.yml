@@ -1,5 +1,9 @@
 name: rietveld
 
+platforms:
+  - win-64
+  - osx-arm64  # For Apple Silicon, e.g. M1/M2
+
 channels:
   - defaults
   - conda-forge

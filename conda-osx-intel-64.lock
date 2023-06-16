@@ -9,7 +9,7 @@ https://repo.anaconda.com/pkgs/main/osx-64/giflib-5.2.1-h6c40b1e_3.conda#a5ab49b
 https://repo.anaconda.com/pkgs/main/osx-64/jpeg-9e-h6c40b1e_1.conda#fc3e61fa41309946c9283fe8737d7f41
 https://conda.anaconda.org/conda-forge/osx-64/khronos-opencl-icd-loader-2023.04.17-hb7f2c08_0.conda#1da90df0f7c60763700477e616df685c
 https://repo.anaconda.com/pkgs/main/osx-64/libbrotlicommon-1.0.9-hca72f7f_7.conda#6c865b9e76fa2fad0c8ac32aa0f01f75
-https://conda.anaconda.org/conda-forge/osx-64/libcxx-16.0.5-hd57cbcb_0.conda#d34eed0a4fb993f0d934db6394ba23ef
+https://conda.anaconda.org/conda-forge/osx-64/libcxx-16.0.6-hd57cbcb_0.conda#7d6972792161077908b62971802f289a
 https://repo.anaconda.com/pkgs/main/osx-64/libdeflate-1.17-hb664fd8_0.conda#4236b26b451011822d3a3086282063c0
 https://repo.anaconda.com/pkgs/main/osx-64/libev-4.33-h9ed2024_1.conda#ffb0ee08779a6ccb4706b72523712cb7
 https://repo.anaconda.com/pkgs/main/osx-64/libffi-3.4.4-hecd8cb5_0.conda#c20b2687118c471b1d70067ef2b2703f
@@ -212,7 +212,7 @@ https://repo.anaconda.com/pkgs/main/osx-64/gst-plugins-base-1.14.1-hcec6c5f_1.co
 https://repo.anaconda.com/pkgs/main/osx-64/harfbuzz-4.3.0-hffc734d_1.conda#159b06f45177b79c1e906e6f63e30f65
 https://repo.anaconda.com/pkgs/main/noarch/importlib_metadata-6.0.0-hd3eb1b0_0.conda#0af8f090f7e0090aa5f92dd9d537c09d
 https://repo.anaconda.com/pkgs/main/osx-64/jupyter_events-0.6.3-py39hecd8cb5_0.conda#33137f0271c345cc20914043280fbcac
-https://repo.anaconda.com/pkgs/main/osx-64/jupyter_server_terminals-0.4.4-py39hecd8cb5_0.conda#17cb37a5fa3ded99c63c4cd17c20ef35
+https://repo.anaconda.com/pkgs/main/osx-64/jupyter_server_terminals-0.4.4-py39hecd8cb5_1.conda#027cd39450eac280ef448a65fc950d3d
 https://conda.anaconda.org/conda-forge/osx-64/liblapacke-3.9.0-16_osx64_openblas.tar.bz2#fdde3ba87373e04a109c58b229676f8f
 https://repo.anaconda.com/pkgs/main/osx-64/nbformat-5.7.0-py39hecd8cb5_0.conda#7791fe71133f8ffe41242047ea445b78
 https://conda.anaconda.org/conda-forge/osx-64/numpy-1.23.0-py39hda39a74_0.tar.bz2#3f3ac1d12297a29e395d2364ea7a930e

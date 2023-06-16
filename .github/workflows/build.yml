@@ -7,17 +7,8 @@ on:
     branches: [ workflow-draft2 ]
 jobs:
   build-on-ubuntu:
-    name: Build MILK on Linux and Windows (${{ matrix.os }}, Mambaforge)
-    runs-on: ${{ matrix.os }}-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        os: ["ubuntu"]
-        include:
-          - os: ubuntu
-            environment-file: environment_linux.yml
-            miniforge-variant: Mambaforge
-            miniforge-version: 4.9.2-4
+    name: Build MILK on Linux
+    runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash -el {0}
@@ -25,10 +16,16 @@ jobs:
       - uses: actions/checkout@v2
       - uses: conda-incubator/setup-miniconda@v2
         with:
-          environment-file: ${{ matrix.environment-file }}
-          miniforge-variant: ${{ matrix.miniforge-variant }}
-          miniforge-version: ${{ matrix.miniforge-version }}
-          use-mamba: true
+          activate-environment: rietveld
+          environment-file: conda-linux-64.lock
+          auto-activate-base: false
+      - name: setup pip and install packages
+        run: |
+          python -m pip install -e ./
+          python -m pip install git+https://github.com/lanl/spotlight.git@v0.10.2
+          python -m pip install mystic==0.3.9
+          python -m pip install pyina==0.2.6
+          python -m pip install pathos==0.2.9
       - name: download related programs and make tutorials folder for test examples
         run: |
           mkdir -p Tutorials
@@ -36,31 +33,23 @@ jobs:
           tar -xvf Maud.tar.gz
           git clone https://github.com/cinemascience/cinema_debye_scherrer
           ls
-      - name: config milk
+      - name: config milk and run examples
         run: |
           milk-config ./Maud -c ./cinema_debye_scherrer
-          conda info --envs
           conda deactivate
           conda activate rietveld
           echo $MAUD_PATH
           echo $CINEMA_PATH
-      - name: Running first test example
-        run: |
-          $CONDA_DEFAULT_ENV
-          conda activate rietveld
           cd Tutorials
           milk-examples -e 1
           cd maudbatch
           python writeIns.py
           milk-maudText -f fecu.ins
-      - name: Running second test example
-        run: |
-          $CONDA_DEFAULT_ENV
-          pwd
-          conda activate rietveld
-          cd Tutorials
+          cd ..
           milk-examples -e 3
           cd sequential_refinement
+          python 1_build_database.py
+          python 2_setup.py
           
   # build-on-windows:
   #   name: Build MILK on Windows
@@ -103,7 +92,7 @@ jobs:
   #     - run: more .\Tutorials\maudbatch\*.log
 
   build-on-macos:
-    name: Build MILK on MacOS
+    name: Build MILK on MacOS Intel
     runs-on: macos-latest
     defaults:
       run:
@@ -113,7 +102,7 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: rietveld
-          environment-file: conda-osx-64.lock
+          environment-file: conda-osx-intel-64.lock
           auto-activate-base: false
       - name: setup pip and install missing ocl_wrapper initialize conda
         run: |
@@ -132,7 +121,7 @@ jobs:
           cp -r /Volumes/Maud .
           cp -r ./Maud/Maud.app /Applications/Maud.app
           git clone https://github.com/cinemascience/cinema_debye_scherrer
-      - name: config milk
+      - name: config milk and run examples
         run: |
           milk-config /Applications/Maud.app -c ./cinema_debye_scherrer
           conda deactivate
@@ -147,7 +136,10 @@ jobs:
           cd ..
           milk-examples -e 3
           cd sequential_refinement
-          ls
+          python 1_build_database.py
+          python 2_setup.py
+      # python 3_analysis.py
+
       # - name: use pytest to generate coverage report
       #   run: |
       #     pytest --junitxml="./pytest.xml"
