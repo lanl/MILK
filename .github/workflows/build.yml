@@ -86,8 +86,8 @@ jobs:
           cd maudbatch
           python writeIns.py
           milk-maudText -f fecu.ins 
-      - run: dir .\Tutorials\maudbatch
-      - run: more .\Tutorials\maudbatch\*.log
+      - run: dir D:\a\MILK\MILK\Tutorials\maudbatch
+      - run: more D:\a\MILK\MILK\Tutorials\maudbatch\fecu.log
 
   build-on-macos:
     name: Build MILK on MacOS Intel
