@@ -34,8 +34,7 @@ jobs:
           git clone https://github.com/cinemascience/cinema_debye_scherrer
       - name: config milk and run examples
         run: |
-          milk-config ./Maud/ -c ./cinema_debye_scherrer/
-          pwd
+          milk-config /home/runner/work/MILK/Maud -c /home/runner/work/MILK/cinema_debye_scherrer
           conda deactivate
           conda activate rietveld
           echo $MAUD_PATH
