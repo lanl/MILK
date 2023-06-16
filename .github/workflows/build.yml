@@ -34,9 +34,7 @@ jobs:
           git clone https://github.com/cinemascience/cinema_debye_scherrer
       - name: config milk and run examples
         run: |
-          milk-config /home/runner/work/MILK/Maud -c /home/runner/work/MILK/cinema_debye_scherrer
-          pwd
-          ls
+          milk-config /home/runner/work/MILK/MILK/Maud -c /home/runner/work/MILK/MILK/cinema_debye_scherrer
           conda deactivate
           conda activate rietveld
           echo $MAUD_PATH
@@ -45,9 +43,8 @@ jobs:
           milk-examples -e 1
           cd maudbatch
           python writeIns.py
-          $MAUD_PATH/Contents/PlugIns/Home/bin/Java -mx8G --enable-preview -cp "$MAUD_PATH/Contents/Java/*" com.radiographema.MaudText -file fecu.ins
-          # milk-maudText -f fecu.ins
-          # ls
+          milk-maudText -f fecu.ins
+          ls
       # cd ..
       # milk-examples -e 3
       # cd sequential_refinement
