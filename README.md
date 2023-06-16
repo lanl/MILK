@@ -4,7 +4,7 @@ MILK
 ![](https://img.shields.io/github/v/release/lanl/MILK)&nbsp;
 ![](https://img.shields.io/github/repo-size/lanl/MILK)&nbsp;
 ![](https://img.shields.io/github/contributors/lanl/MILK)&nbsp;
-![Build and Test (Python 3.9 on Windows, Linux, MacOS)](https://github.com/lanl/MILK/actions/workflows/build.yml/badge.svg)&nbsp;
+
 
 MAUD Interface Language Kit (MILK) is a set of Rietveld tools for automated processing of diffraction datasets. It's main features are:
 
