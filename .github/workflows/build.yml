@@ -35,6 +35,7 @@ jobs:
       - name: config milk and run examples
         run: |
           milk-config ./Maud/ -c ./cinema_debye_scherrer/
+          pwd
           conda deactivate
           conda activate rietveld
           echo $MAUD_PATH
