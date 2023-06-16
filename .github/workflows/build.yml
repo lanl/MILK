@@ -32,7 +32,7 @@ jobs:
           wget -O Maud.tar.gz "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AABxmzMfRS2zsxfXhUNftZHCa/linux64/Maud.tar.gz?dl=1"
           tar -xvf Maud.tar.gz
           git clone https://github.com/cinemascience/cinema_debye_scherrer
-          ls
+          ls ./Maud
       - name: config milk and run examples
         run: |
           milk-config ./Maud -c ./cinema_debye_scherrer
@@ -45,11 +45,13 @@ jobs:
           cd maudbatch
           python writeIns.py
           milk-maudText -f fecu.ins
+          ls
           cd ..
           milk-examples -e 3
           cd sequential_refinement
           python 1_build_database.py
           python 2_setup.py
+          ls
           
   # build-on-windows:
   #   name: Build MILK on Windows
@@ -133,19 +135,21 @@ jobs:
           cd maudbatch
           python writeIns.py
           milk-maudText -f fecu.ins
+          ls
           cd ..
           milk-examples -e 3
           cd sequential_refinement
           python 1_build_database.py
           python 2_setup.py
+          ls
       # python 3_analysis.py
-
-      # - name: use pytest to generate coverage report
-      #   run: |
-      #     pytest --junitxml="./pytest.xml"
-      # - name: convert pytest reports to badge
-      #   uses: MishaKav/pytest-coverage-comment@main
-      #     with:
-      #       pytest-coverage-path: ./pytest-coverage.txt
-      #       junitxml-path: ./pytest.xml
+      - name: use pytest to generate coverage report
+        run: |
+          pytest
+          pytest --junitxml="./pytest.xml"
+      - name: convert pytest reports to badge
+        uses: MishaKav/pytest-coverage-comment@main
+          with:
+            pytest-coverage-path: ./pytest-coverage.txt
+            junitxml-path: ./pytest.xml
 
