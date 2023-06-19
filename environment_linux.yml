@@ -20,7 +20,8 @@ dependencies:
   - pyqtgraph
   - autopep8
   - git
-
+  - pytest
+  
   # Spotlight
   - klepto=0.2.2
   - numpy=1.23.0

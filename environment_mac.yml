@@ -9,7 +9,7 @@ dependencies:
   - tqdm
   - pip=22.1.2
   - prettytable
-  - python=3.9
+  - python
   - pandas
   - pydantic
   - seaborn
@@ -21,6 +21,7 @@ dependencies:
   - pyqtgraph
   - autopep8
   - git
+  - pytest
 
   # Spotlight
   - klepto=0.2.2

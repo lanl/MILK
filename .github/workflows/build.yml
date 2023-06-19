@@ -17,7 +17,7 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: rietveld
-          environment-file: conda-linux-64.lock
+          environment-file: environment_linux.yml
           auto-activate-base: false
       - name: setup pip and install packages
         run: |
@@ -83,7 +83,51 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: rietveld
-          environment-file: conda-osx-intel-64.lock
+          environment-file: environment_mac.yml
+          python-version: 3.9
+          auto-activate-base: false
+      - name: setup pip and install missing ocl_wrapper initialize conda
+        run: |
+          conda install ocl_icd_wrapper_apple -c conda-forge
+          python -m pip install -e ./
+          python -m pip install git+https://github.com/lanl/spotlight.git@v0.10.2
+          python -m pip install mystic==0.3.9
+          python -m pip install pyina==0.2.6
+          python -m pip install pathos==0.2.9
+      - name: download related programs and make tutorials folder for test examples
+        run: |
+          curl -JLO "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AAD4uGx8QNACWnItJ4yvfZcWa/macosx64/Maud_intel64.dmg.gz"
+          gunzip Maud_intel64.dmg.gz
+          hdiutil attach Maud_intel64.dmg
+          cp -r /Volumes/Maud .
+          cp -r ./Maud/Maud.app /Applications/Maud.app
+          git clone https://github.com/cinemascience/cinema_debye_scherrer
+      - name: config milk and run examples
+        run: |
+          milk-config /Applications/Maud.app -c ./cinema_debye_scherrer
+          conda deactivate
+          conda activate rietveld
+          echo $MAUD_PATH
+          echo $CINEMA_PATH
+          conda install pytest
+          pytest tests/workshop_examples.py
+
+
+  macos-test-python-version:
+    name: Build MILK on MacOS Intel and with Python versions ${{matrix.python-version}}
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        python-version: ["3.6","3.7","3.8","3.9","3.10"]
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: ${{matrix.python-version}}
+          environment-file: environment_mac.yml
           auto-activate-base: false
       - name: setup pip and install missing ocl_wrapper initialize conda
         run: |
