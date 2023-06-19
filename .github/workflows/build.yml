@@ -28,7 +28,6 @@ jobs:
           python -m pip install pathos==0.2.9
       - name: download related programs and make tutorials folder for test examples
         run: |
-          mkdir -p Tutorials
           wget -O Maud.tar.gz "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AABxmzMfRS2zsxfXhUNftZHCa/linux64/Maud.tar.gz?dl=1"
           tar -xvf Maud.tar.gz
           git clone https://github.com/cinemascience/cinema_debye_scherrer
@@ -39,7 +38,6 @@ jobs:
           conda activate rietveld
           echo $MAUD_PATH
           echo $CINEMA_PATH
-          cd Tutorials
           conda install pytest
           pytest tests/workshop_examples.py
           
@@ -67,12 +65,10 @@ jobs:
           Invoke-WebRequest -Uri $source -OutFile $Destination
           Expand-Archive -Path Maud.zip
           git clone https://github.com/cinemascience/cinema_debye_scherrer
-          mkdir Tutorials
       - run: milk-config D:\a\MILK\MILK\Maud\ -c D:\a\MILK\MILK\cinema_debye_scherrer\
       - run: |
           echo %MAUD_PATH%
           echo %CINEMA_PATH%
-          cd /d Tutorials
           conda install pytest
           pytest tests\workshop_examples.py
 
@@ -99,7 +95,6 @@ jobs:
           python -m pip install pathos==0.2.9
       - name: download related programs and make tutorials folder for test examples
         run: |
-          mkdir -p Tutorials
           curl -JLO "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AAD4uGx8QNACWnItJ4yvfZcWa/macosx64/Maud_intel64.dmg.gz"
           gunzip Maud_intel64.dmg.gz
           hdiutil attach Maud_intel64.dmg
@@ -113,6 +108,5 @@ jobs:
           conda activate rietveld
           echo $MAUD_PATH
           echo $CINEMA_PATH
-          cd Tutorials
           conda install pytest
           pytest tests/workshop_examples.py
