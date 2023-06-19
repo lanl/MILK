@@ -4,7 +4,7 @@ fname = os.path.join('fecu.ins')
 fID = open(fname, "w")
 
 fID.write('_maud_working_directory\n')
-fullpath = '\'' + os.getcwd() + '/\'\n'
+fullpath = r'\'' + os.getcwd() + '/\'\n'
 fID.write(fullpath)
 fID.write('\n')
 fID.write('loop_\n')
