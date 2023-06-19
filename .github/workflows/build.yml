@@ -40,9 +40,8 @@ jobs:
           echo $MAUD_PATH
           echo $CINEMA_PATH
           cd Tutorials
+          conda install pytest
           pytest tests/workshop_examples.py
-      - name: Coverage Badge
-        uses: tj-actions/coverage-badge-py@v2
           
   build-on-windows:
     name: Build MILK on Windows
@@ -74,9 +73,8 @@ jobs:
           echo %MAUD_PATH%
           echo %CINEMA_PATH%
           cd /d Tutorials
+          conda install pytest
           pytest tests\workshop_examples.py
-      - name: Coverage Badge
-        uses: tj-actions/coverage-badge-py@v2
 
   build-on-macos:
     name: Build MILK on MacOS Intel
@@ -116,6 +114,5 @@ jobs:
           echo $MAUD_PATH
           echo $CINEMA_PATH
           cd Tutorials
+          conda install pytest
           pytest tests/workshop_examples.py
-      - name: Coverage Badge
-        uses: tj-actions/coverage-badge-py@v2
