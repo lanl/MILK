@@ -13,7 +13,6 @@ from urllib import request
 import zipfile
 
 MOD_DIR = Path(__file__).parent
-CUR_DIR = Path().cwd()
 
 # def qpa(path='QPA'):
 #     """Download the qauntitative phase analysis example from MAUD website."""
@@ -22,29 +21,29 @@ CUR_DIR = Path().cwd()
 #     unzip_download(dpath, path)
 
 
-def maudBatch(path='maudbatch'):
+def maudBatch(CUR_DIR = Path().cwd(),path='maudbatch'):
     """MAUD batch analysis example updated for newer versions of MAUD."""
     # url = "http://nanoair.dii.unitn.it:8080/static/tutorial/batch.zip"
     # dpath = download_example(url, path, os.path.basename(url))
     # unzip_download(dpath, path)
-    fout = CUR_DIR / path
+    fout = Path(CUR_DIR) / path
     fin = MOD_DIR / '../../examples/maudbatch'
     shutil.copytree(fin, fout)
     shutil.copy(MOD_DIR / '../../examples/data/MAUD_batch.zip', fout)
     unzip(fout / 'MAUD_batch.zip', fout)
 
-def hippoTexture(path='HIPPO/texture'):
+def hippoTexture(CUR_DIR = Path().cwd(),path='HIPPO/texture'):
     """HIPPO two phase texture example."""
-    fout = CUR_DIR / path
+    fout = Path(CUR_DIR) / path
     fin = MOD_DIR / '../../examples/HIPPO/texture'
     shutil.copytree(fin, fout)
     shutil.copy(MOD_DIR / '../../examples/data/HIPPO_texture.zip', fout)
     unzip(fout / 'HIPPO_texture.zip', fout)
     shutil.move(fout / 'HIPPO_texture', fout / 'data')
 
-def sequentialRefinement(path='sequential_refinement'):
+def sequentialRefinement(CUR_DIR = Path().cwd(),path='sequential_refinement'):
     """Synchrotron three sequential refinement example."""
-    fout = CUR_DIR / path
+    fout = Path(CUR_DIR) / path
     shutil.copytree(
         MOD_DIR / '../../examples/Synchrotron/sequential_refinement', fout)
     shutil.copy(MOD_DIR / '../../examples/data/CHESS_insitu.zip', fout)
@@ -52,33 +51,33 @@ def sequentialRefinement(path='sequential_refinement'):
     shutil.move(fout / 'CHESS_insitu', fout / 'data')
 
 
-def GEDetector(path='CHESS-GE'):
+def GEDetector(CUR_DIR = Path().cwd(),path='CHESS-GE'):
     """CHESS: GE Detector calibration and integration example."""
-    fout = CUR_DIR / path
+    fout = Path(CUR_DIR) / path
     fin = MOD_DIR / '../../examples/Detector_Calibrations/CHESS-GE'
     shutil.copytree(fin, fout)
     unzip(fout / 'Archive.zip', fout)
 
 
-def APSHydra(path='APS-1ID-Hydra'):
+def APSHydra(CUR_DIR = Path().cwd(),path='APS-1ID-Hydra'):
     """CHESS: GE Detector calibration and integration example."""
-    fout = CUR_DIR / path
+    fout = Path(CUR_DIR) / path
     fin = MOD_DIR / '../../examples/Detector_Calibrations/APS-1ID-Hydra'
     shutil.copytree(fin, fout)
     unzip(fout / 'Archive.zip', fout)
 
 
-def SLACMEC(path='SLAC-MEC'):
+def SLACMEC(CUR_DIR = Path().cwd(),path='SLAC-MEC'):
     """CHESS: GE Detector calibration and integration example."""
-    fout = CUR_DIR / path
+    fout = Path(CUR_DIR) / path
     fin = MOD_DIR / '../../examples/Detector_Calibrations/SLAC-MEC'
     shutil.copytree(fin, fout)
     unzip(fout / 'Archive.zip', fout)
 
 
-def euXFEL(path='euXFEL-HED'):
+def euXFEL(CUR_DIR = Path().cwd(),path='euXFEL-HED'):
     """CHESS: GE Detector calibration and integration example."""
-    fout = CUR_DIR / path
+    fout = Path(CUR_DIR) / path
     fin = MOD_DIR / '../../examples/Detector_Calibrations/euXFEL-HED'
     shutil.copytree(fin, fout)
     unzip(fout / 'Archive.zip', fout)
