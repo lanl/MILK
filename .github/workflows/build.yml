@@ -1,4 +1,4 @@
-name: Build and Test [Python 3.9 on Windows, Linux, MacOS]
+name: Multi-platform and version test
 
 on:
   push:
