@@ -19,13 +19,6 @@ jobs:
           activate-environment: rietveld
           environment-file: environment_linux.yml
           auto-activate-base: false
-      - name: setup pip and install packages
-        run: |
-          python -m pip install -e ./
-          python -m pip install git+https://github.com/lanl/spotlight.git@v0.10.2
-          python -m pip install mystic==0.3.9
-          python -m pip install pyina==0.2.6
-          python -m pip install pathos==0.2.9
       - name: download related programs and make tutorials folder for test examples
         run: |
           wget -O Maud.tar.gz "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AABxmzMfRS2zsxfXhUNftZHCa/linux64/Maud.tar.gz?dl=1"
@@ -38,7 +31,6 @@ jobs:
           conda activate rietveld
           echo $MAUD_PATH
           echo $CINEMA_PATH
-          conda install pytest
           pytest tests/workshop_examples.py
           
   build-on-windows:
@@ -69,7 +61,6 @@ jobs:
       - run: |
           echo %MAUD_PATH%
           echo %CINEMA_PATH%
-          conda install pytest
           pytest tests\workshop_examples.py
 
   build-on-macos:
@@ -86,14 +77,6 @@ jobs:
           environment-file: environment_mac.yml
           python-version: 3.9
           auto-activate-base: false
-      - name: setup pip and install missing ocl_wrapper initialize conda
-        run: |
-          conda install ocl_icd_wrapper_apple -c conda-forge
-          python -m pip install -e ./
-          python -m pip install git+https://github.com/lanl/spotlight.git@v0.10.2
-          python -m pip install mystic==0.3.9
-          python -m pip install pyina==0.2.6
-          python -m pip install pathos==0.2.9
       - name: download related programs and make tutorials folder for test examples
         run: |
           curl -JLO "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AAD4uGx8QNACWnItJ4yvfZcWa/macosx64/Maud_intel64.dmg.gz"
@@ -109,7 +92,6 @@ jobs:
           conda activate rietveld
           echo $MAUD_PATH
           echo $CINEMA_PATH
-          conda install pytest
           pytest tests/workshop_examples.py
 
 
@@ -129,14 +111,6 @@ jobs:
           python-version: ${{matrix.python-version}}
           environment-file: environment_mac.yml
           auto-activate-base: false
-      - name: setup pip and install missing ocl_wrapper initialize conda
-        run: |
-          conda install ocl_icd_wrapper_apple -c conda-forge
-          python -m pip install -e ./
-          python -m pip install git+https://github.com/lanl/spotlight.git@v0.10.2
-          python -m pip install mystic==0.3.9
-          python -m pip install pyina==0.2.6
-          python -m pip install pathos==0.2.9
       - name: download related programs and make tutorials folder for test examples
         run: |
           curl -JLO "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AAD4uGx8QNACWnItJ4yvfZcWa/macosx64/Maud_intel64.dmg.gz"
@@ -152,5 +126,4 @@ jobs:
           conda activate rietveld
           echo $MAUD_PATH
           echo $CINEMA_PATH
-          conda install pytest
           pytest tests/workshop_examples.py

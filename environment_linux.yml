@@ -24,7 +24,7 @@ dependencies:
   
   # Spotlight
   - klepto=0.2.2
-  - numpy=1.23.0
+  - numpy>=1.23.0
   - openmpi
   - mpi4py
   - jupyter=1.0.0
