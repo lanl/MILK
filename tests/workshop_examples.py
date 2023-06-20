@@ -62,7 +62,7 @@ def test_maudbatch1():
             
             # fetch various system conditions for debugging
             examplefiles = [ f for f in os.listdir( os.curdir ) if os.path.isfile(f) ]
-            filesMaud = [f for f in os.listdir(os.getenv('MAUD_PATH')) if os.path.isfile(f)]
+            filesMaud = [f for f in os.listdir(os.getenv('MAUD_PATH').strip("'")) if os.path.isfile(f)]
             with open('fecu.ins') as f:
                 inslines = f.read()
 
@@ -72,7 +72,7 @@ def test_maudbatch1():
                 print(inslines)
                 print(examplefiles)
                 print(filesMaud)
-                print(os.getenv('MAUD_PATH'))
+                print(os.getenv('MAUD_PATH').strip("'"))
     else:
         with tempfile.TemporaryDirectory() as tmpdirname:
             print('created temporary directory', tmpdirname)
@@ -88,7 +88,7 @@ def test_maudbatch1():
                         "fecu.ins")
                     
                     examplefiles = [ f for f in os.listdir( os.curdir ) if os.path.isfile(f) ]
-                    filesMaud = [f for f in os.listdir(os.getenv('MAUD_PATH')) if os.path.isfile(f)]
+                    filesMaud = [f for f in os.listdir(os.getenv('MAUD_PATH').strip("'")) if os.path.isfile(f)]
                     with open('fecu.ins') as f:
                         inslines = f.read()
 
