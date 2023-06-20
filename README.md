@@ -7,7 +7,9 @@ MILK
 
 
 | Linux      | [![Python 3.9](https://github.com/lanl/MILK/actions/workflows/build_Lin39.yml/badge.svg)](https://github.com/lanl/MILK/actions/workflows/build_Lin39.yml) |
+
 | Windows    | [![Python 3.9](https://github.com/lanl/MILK/actions/workflows/build_Win39.yml/badge.svg)](https://github.com/lanl/MILK/actions/workflows/build_Win39.yml) |
+
 | MacOS      | [![Python 3.8 - 3.10](https://github.com/lanl/MILK/actions/workflows/build_MacPy38_310.yml/badge.svg)](https://github.com/lanl/MILK/actions/workflows/build_MacPy38_310.yml) |
 
 
@@ -23,8 +25,6 @@ More details and tutorials can be found in the [wiki](https://github.com/lanl/MI
 
 Installation and requirements
 =============================
-
-The wiki is currently disabled pending LANL release. Should be back available soon.
 
 See the [MILK installation wiki](https://github.com/lanl/MILK/wiki/Installation-Overview).
 

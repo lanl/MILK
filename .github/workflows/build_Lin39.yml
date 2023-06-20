@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ workflow-draft2 ]
 jobs:
-  build-on-ubuntu:
+  ubuntu-py39:
     name: Build MILK on Linux
     runs-on: ubuntu-latest
     defaults:

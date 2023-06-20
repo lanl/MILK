@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ workflow-draft2 ]
 jobs:
-  build-on-windows:
+  win-py39:
     name: Build MILK on Windows
     runs-on: windows-latest
     defaults:
