@@ -28,7 +28,7 @@ def write_ins(fname='fecu.ins'):
         if "win" in sys.platform:
             fullpath = fullpath.replace('\\', '\\\\')
 
-        fID.write(fullpath+'\n')
+        fID.write('\''fullpath+'\'\n')
         fID.write('\n')
         fID.write('loop_\n')
         fID.write('_riet_analysis_file\n')
