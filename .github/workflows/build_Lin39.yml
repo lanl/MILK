@@ -32,6 +32,4 @@ jobs:
           milk-config /home/runner/work/MILK/MILK/Maud -c /home/runner/work/MILK/MILK/cinema_debye_scherrer
           conda deactivate
           conda activate rietveld
-          echo $MAUD_PATH
-          echo $CINEMA_PATH
           pytest tests/workshop_examples.py

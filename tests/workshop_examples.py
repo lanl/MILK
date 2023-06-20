@@ -24,9 +24,10 @@ def write_ins(fname='fecu.ins'):
     with open(fname, "w") as fID:
         fID.write('_maud_working_directory\n')
 
-        fullpath = f"{os.getcwd()}{os.sep}"
+        fullpath = f"{os.getcwd()}"
         if "win" in sys.platform:
-           fullpath = fullpath[0:len(fullpath)-1].replace('\\', '\\\\')
+           fullpath = fullpath.replace('\\', '\\\\')
+        fullpath = f"{os.getcwd()}{os.sep}"
 
         fID.write('\''+fullpath+'\'\n')
         fID.write('\n')
@@ -58,12 +59,20 @@ def test_maudbatch1():
                 'False',
                 None,
                 "fecu.ins")
-            files = [ f for f in os.listdir( os.curdir ) if os.path.isfile(f) ]
-            print(files)
+            
+            # fetch various system conditions for debugging
+            examplefiles = [ f for f in os.listdir( os.curdir ) if os.path.isfile(f) ]
+            filesMaud = [f for f in os.listdir(os.getenv('MAUD_PATH')) if os.path.isfile(f)]
             with open('fecu.ins') as f:
-                lines = f.read()
-            print(lines)
-            assert 'FECU1010.par' in files
+                inslines = f.read()
+
+            try:
+                assert 'FECU1010.par' in examplefiles
+            except AssertionError as e:
+                print(inslines)
+                print(examplefiles)
+                print(filesMaud)
+                print(os.getenv('MAUD_PATH'))
     else:
         with tempfile.TemporaryDirectory() as tmpdirname:
             print('created temporary directory', tmpdirname)
@@ -77,12 +86,19 @@ def test_maudbatch1():
                         'False',
                         None,
                         "fecu.ins")
-                    files = [ f for f in os.listdir( os.curdir ) if os.path.isfile(f) ]
-                    print(files)
+                    
+                    examplefiles = [ f for f in os.listdir( os.curdir ) if os.path.isfile(f) ]
+                    filesMaud = [f for f in os.listdir(os.getenv('MAUD_PATH')) if os.path.isfile(f)]
                     with open('fecu.ins') as f:
-                        lines = f.read()
-                    print(lines)
-                    assert 'FECU1010.par' in files
+                        inslines = f.read()
+
+                    try:
+                        assert 'FECU1010.par' in examplefiles
+                    except AssertionError as e:
+                        print(inslines)
+                        print(examplefiles)
+                        print(filesMaud)
+                        print(os.getenv('MAUD_PATH'))
 
                 # with open('FECU1010.par') as f:
                 #     lines = f.readlines()

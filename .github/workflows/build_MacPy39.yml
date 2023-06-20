@@ -1,4 +1,4 @@
-name: Python 3.10
+name: Python 3.9
 
 on:
   push:
@@ -6,8 +6,8 @@ on:
   pull_request:
     branches: [ workflow-draft2 ]
 jobs:
-  macos-test-python-version:
-    name: Build MILK on IntelMac with Python 3.10
+  build-on-macos:
+    name: Build MILK on MacOS Intel
     runs-on: macos-latest
     defaults:
       run:
@@ -17,8 +17,8 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: rietveld
-          python-version: "3.10"
           environment-file: environment_mac.yml
+          python-version: 3.9
           auto-activate-base: false
           miniforge-variant: Mambaforge-pypy3
           use-mamba: true
@@ -35,6 +35,4 @@ jobs:
           milk-config /Applications/Maud.app -c ./cinema_debye_scherrer
           conda deactivate
           conda activate rietveld
-          echo $MAUD_PATH
-          echo $CINEMA_PATH
           pytest tests/workshop_examples.py
