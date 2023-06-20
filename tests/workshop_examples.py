@@ -44,25 +44,45 @@ def test_maudbatch1():
     Writes the customized .ins file for the working directory where maudbatch exists in the 
     operating system format.
     Writes the first run only to be run for test purposes.
+
+    Windows GitHub Runner has special character "runner~1" that causes issues, so not using the temporary diretory.
     """
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        print('created temporary directory', tmpdirname)
-        with cd(tmpdirname):
-            maudBatch(CUR_DIR = os.getcwd())
-            with cd("maudbatch"):
-                write_ins()
-                callMaudText.run_MAUD(
-                    os.getenv('MAUD_PATH').strip("'"),
-                    "mx8G",
-                    'False',
-                    None,
-                    "fecu.ins")
-                files = [ f for f in os.listdir( os.curdir ) if os.path.isfile(f) ]
-                print(files)
-                with open('fecu.ins') as f:
-                    lines = f.read()
-                print(lines)
-                assert 'FECU1010.par' in files
+    if "win" in sys.platform:
+        cwdDir = os.getcwd()
+        maudBatch(CUR_DIR = cwdDir)
+        with cd("maudbatch"):
+            write_ins()
+            callMaudText.run_MAUD(
+                os.getenv('MAUD_PATH').strip("'"),
+                "mx8G",
+                'False',
+                None,
+                "fecu.ins")
+            files = [ f for f in os.listdir( os.curdir ) if os.path.isfile(f) ]
+            print(files)
+            with open('fecu.ins') as f:
+                lines = f.read()
+            print(lines)
+            assert 'FECU1010.par' in files
+    else:
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            print('created temporary directory', tmpdirname)
+            with cd(tmpdirname):
+                maudBatch(CUR_DIR = os.getcwd())
+                with cd("maudbatch"):
+                    write_ins()
+                    callMaudText.run_MAUD(
+                        os.getenv('MAUD_PATH').strip("'"),
+                        "mx8G",
+                        'False',
+                        None,
+                        "fecu.ins")
+                    files = [ f for f in os.listdir( os.curdir ) if os.path.isfile(f) ]
+                    print(files)
+                    with open('fecu.ins') as f:
+                        lines = f.read()
+                    print(lines)
+                    assert 'FECU1010.par' in files
 
                 # with open('FECU1010.par') as f:
                 #     lines = f.readlines()
