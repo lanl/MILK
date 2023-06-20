@@ -25,8 +25,8 @@ def write_ins(fname='fecu.ins'):
         fID.write('_maud_working_directory\n')
 
         fullpath = f"{os.getcwd()}{os.sep}"
-        if "win" in sys.platform:
-            fullpath = fullpath.replace('\\', '\\\\')
+        #if "win" in sys.platform:
+        #    fullpath = fullpath.replace('\\', '\\\\')
 
         fID.write('\''+fullpath+'\'\n')
         fID.write('\n')
