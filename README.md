@@ -5,8 +5,6 @@ MILK
 ![](https://img.shields.io/github/repo-size/lanl/MILK)&nbsp;
 ![](https://img.shields.io/github/contributors/lanl/MILK)&nbsp;
 [![Build and Test](https://github.com/lanl/MILK/actions/workflows/build.yml/badge.svg)](https://github.com/lanl/MILK/actions/workflows/build.yml)
-[![Python 3.6](https://github.com/lanl/MILK/actions/workflows/buildPy3_6.yml/badge.svg)](https://github.com/lanl/MILK/actions/workflows/buildPy3_6.yml)
-[![Python 3.7](https://github.com/lanl/MILK/actions/workflows/buildPy3_7.yml/badge.svg)](https://github.com/lanl/MILK/actions/workflows/buildPy3_7.yml)
 [![Python 3.8](https://github.com/lanl/MILK/actions/workflows/buildPy3_8.yml/badge.svg)](https://github.com/lanl/MILK/actions/workflows/buildPy3_8.yml)
 [![Python 3.9](https://github.com/lanl/MILK/actions/workflows/buildPy3_9.yml/badge.svg)](https://github.com/lanl/MILK/actions/workflows/buildPy3_9.yml)
 [![Python 3.10](https://github.com/lanl/MILK/actions/workflows/buildPy3_10.yml/badge.svg)](https://github.com/lanl/MILK/actions/workflows/buildPy3_10.yml)

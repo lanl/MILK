@@ -1,4 +1,4 @@
-name: Ubuntu Windows MacOS Py3.6
+name: Ubuntu Windows MacOS Py3.9
 
 on:
   push:
