@@ -19,6 +19,9 @@ jobs:
           activate-environment: rietveld
           environment-file: environment_linux.yml
           auto-activate-base: false
+          miniforge-variant: Mambaforge
+          miniforge-version: 4.9.2-4
+          use-mamba: true
       - name: download related programs and make tutorials folder for test examples
         run: |
           wget -O Maud.tar.gz "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AABxmzMfRS2zsxfXhUNftZHCa/linux64/Maud.tar.gz?dl=1"
@@ -46,6 +49,8 @@ jobs:
           activate-environment: rietveld
           environment-file: environment_windows.yml
           auto-activate-base: false
+          miniforge-variant: Mambaforge
+          use-mamba: true
       - run: |
           conda info
           conda list
@@ -77,6 +82,8 @@ jobs:
           environment-file: environment_mac.yml
           python-version: 3.9
           auto-activate-base: false
+          miniforge-variant: Mambaforge-pypy3
+          use-mamba: true
       - name: download related programs and make tutorials folder for test examples
         run: |
           curl -JLO "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AAD4uGx8QNACWnItJ4yvfZcWa/macosx64/Maud_intel64.dmg.gz"
@@ -112,6 +119,8 @@ jobs:
           python-version: ${{matrix.python-version}}
           environment-file: environment_mac.yml
           auto-activate-base: false
+          miniforge-variant: Mambaforge-pypy3
+          use-mamba: true
       - name: download related programs and make tutorials folder for test examples
         run: |
           curl -JLO "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AAD4uGx8QNACWnItJ4yvfZcWa/macosx64/Maud_intel64.dmg.gz"
