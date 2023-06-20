@@ -56,8 +56,9 @@ def test_maudbatch1():
                     'False',
                     None,
                     "fecu.ins")
-                print(os.getcwd())
-                assert os.path.isfile(os.path.join(tmpdirname,'maudbatch/FECU1010.par'))
+                files = [ f for f in os.listdir( os.curdir ) if os.path.isfile(f) ]
+                print(files)
+                assert os.path.isfile(os.path.join(tmpdirname,'maudbatch\FECU1010.par'))
 
                 # with open('FECU1010.par') as f:
                 #     lines = f.readlines()
