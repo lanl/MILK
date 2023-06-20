@@ -6,6 +6,7 @@ from MILK.data.examples import maudBatch
 from MILK.MAUDText import callMaudText
 import tempfile
 from changeDirectory import cd
+from pathlib import Path
 
 # class cd:
 #     """Context manager for changing the current working directory"""
@@ -58,7 +59,10 @@ def test_maudbatch1():
                     "fecu.ins")
                 files = [ f for f in os.listdir( os.curdir ) if os.path.isfile(f) ]
                 print(files)
-                assert os.path.isfile(os.path.join(tmpdirname,'maudbatch\FECU1010.par'))
+                with open('fecu.ins') as f:
+                    lines = f.read()
+                print(lines)
+                assert 'FECU1010.par' in files
 
                 # with open('FECU1010.par') as f:
                 #     lines = f.readlines()

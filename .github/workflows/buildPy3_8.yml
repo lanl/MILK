@@ -1,0 +1,40 @@
+name: Python 3.8
+
+on:
+  push:
+    branches: [ workflow-draft2 ]
+  pull_request:
+    branches: [ workflow-draft2 ]
+jobs:
+  macos-test-python-version:
+    name: Build MILK on MacOS Intel and with Python version 3.8
+    runs-on: macos-latest
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: rietveld
+          python-version: 3.8
+          environment-file: environment_mac.yml
+          auto-activate-base: false
+          miniforge-variant: Mambaforge-pypy3
+          use-mamba: true
+      - name: download related programs and make tutorials folder for test examples
+        run: |
+          curl -JLO "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AAD4uGx8QNACWnItJ4yvfZcWa/macosx64/Maud_intel64.dmg.gz"
+          gunzip Maud_intel64.dmg.gz
+          hdiutil attach Maud_intel64.dmg
+          cp -r /Volumes/Maud .
+          cp -r ./Maud/Maud.app /Applications/Maud.app
+          git clone https://github.com/cinemascience/cinema_debye_scherrer
+      - name: config milk and run examples
+        run: |
+          milk-config /Applications/Maud.app -c ./cinema_debye_scherrer
+          conda deactivate
+          conda activate rietveld
+          echo $MAUD_PATH
+          echo $CINEMA_PATH
+          pytest tests/workshop_examples.py
