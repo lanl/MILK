@@ -18,9 +18,8 @@ jobs:
         name: Checkout
         uses: actions/checkout@v3
       - 
-        name: Build contianer
+        name: Build container
         run: docker build -f Dockerfile -t milk .
-
 
   publish-container-image:
     strategy:
