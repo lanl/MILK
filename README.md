@@ -25,6 +25,21 @@ The wiki is currently disabled pending LANL release. Should be back available so
 
 See the [MILK installation wiki](https://github.com/lanl/MILK/wiki/Installation-Overview).
 
+Using Docker
+============
+
+To build a MILK docker image, use the Dockerfile:
+```
+docker built -t milk .
+```
+
+On Linux, to run commands and mount in a directory for MILK to write output to, use:
+```
+docker run -u $(id -u):$(id -g)  -v ${PWD}/output:/output -w /output milk-image milk-examples -e 1
+```
+
+NOTE: This passes in the user and group ID so files written back out match the user on the host.
+
 Contributing
 ============
 
