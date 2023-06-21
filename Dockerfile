@@ -2,14 +2,13 @@ ARG CONDA_VERSION=23.3.1-0
 FROM continuumio/miniconda3:${CONDA_VERSION} as build
 
 ARG CONDA_ENV=milk
-ARG MILK_VERSION=v0.3
 
 ENV MAUD_PATH=/Maud
 ENV CINEMA_PATH=/cinema
 ENV PATH="${PATH}:/opt/conda/envs/${CONDA_ENV}/bin"
 
 # Fetch MILK
-RUN git clone https://github.com/lanl/MILK.git --depth 1 --branch ${MILK_VERSION}
+COPY . /MILK
 
 # Pre-requisites
 ENV DEBIAN_FRONTEND noninteractive
