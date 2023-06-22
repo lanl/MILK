@@ -28,6 +28,8 @@ See the [MILK installation wiki](https://github.com/lanl/MILK/wiki/Installation-
 Using Docker
 ============
 
+If you would like to install MILK via Docker, first you would need to download and install Docker from the official website: https://www.docker.com
+
 To build a MILK docker image, use the Dockerfile:
 ```
 docker built -t milk .
