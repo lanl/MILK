@@ -2,8 +2,7 @@ name: Build docker image for MILK
 
 on:
   push:
-    branches: 
-      - '*'
+    branches: [ workflow-draft ]
 
 jobs:
 
