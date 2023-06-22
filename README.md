@@ -12,6 +12,7 @@ MILK
 
 | MacOS      | [![Python 3.8 - 3.10](https://github.com/lanl/MILK/actions/workflows/build_MacPy38_310.yml/badge.svg)](https://github.com/lanl/MILK/actions/workflows/build_MacPy38_310.yml) |
 
+| Linux Docker | [![GitHub Docker](https://github.com/lanl/MILK/actions/workflows/build_docker_linux.yml/badge.svg)](https://github.com/lanl/MILK/actions/workflows/build_docker_linux.yml) |
 
 MAUD Interface Language Kit (MILK) is a set of Rietveld tools for automated processing of diffraction datasets. It's main features are:
 
