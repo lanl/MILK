@@ -3,8 +3,12 @@ name: Python 3.8 - 3.10
 on:
   push:
     branches: [ workflow-draft2 ]
+    paths-ignore:
+      - '**/README.md'
   pull_request:
     branches: [ workflow-draft2 ]
+    paths-ignore:
+      - '**/README.md'
 jobs:
   macos-py38:
     name: Build MILK on IntelMac with Python 3.8
