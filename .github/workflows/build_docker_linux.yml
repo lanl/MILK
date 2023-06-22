@@ -58,6 +58,6 @@ jobs:
         with:
           context: .
           push: true
-          platforms: linux/amd64, darwin
+          platforms: linux/amd64
           tags: ${{ env.REGISTRY }}/lanl/milk:${{ github.ref_name }}-${{github.sha}}
                                                
