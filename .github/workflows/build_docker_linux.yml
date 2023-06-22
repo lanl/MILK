@@ -1,17 +1,14 @@
-name: Build docker image for MILK 
+name: Build and Publish MILK Docker Image
 
 on:
   push:
     branches: [ workflow-draft2 ]
   pull_request:
     branches: [ workflow-draft2 ]
-
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-
 jobs:
-
   build-docker-image:
     strategy:
       fail-fast: false
