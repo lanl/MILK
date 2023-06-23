@@ -32,6 +32,14 @@ def maudBatch(CUR_DIR = Path().cwd(),path='maudbatch'):
     shutil.copy(MOD_DIR / '../../examples/data/MAUD_batch.zip', fout)
     unzip(fout / 'MAUD_batch.zip', fout)
 
+
+def G2vsMAUD(CUR_DIR = Path().cwd(),path='G2vsMAUD'):
+    """Comparison of G2 and MAUD overhead."""
+    fout = CUR_DIR / path
+    fin = MOD_DIR / '../../examples/misc/G2vsMAUD'
+    shutil.copytree(fin, fout)
+
+
 def hippoTexture(CUR_DIR = Path().cwd(),path='HIPPO/texture'):
     """HIPPO two phase texture example."""
     fout = Path(CUR_DIR) / path

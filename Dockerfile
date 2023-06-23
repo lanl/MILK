@@ -28,7 +28,6 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt update \
     && apt -y install \
         vim \
-    && apt -y install python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
 # Install MILK
