@@ -2,11 +2,11 @@ name: Python 3.8-3.10
 
 on:
   push:
-    branches: [ workflow-draft2 ]
+    branches: [ main ]
     paths-ignore:
       - '**/README.md'
   pull_request:
-    branches: [ workflow-draft2 ]
+    branches: [ main ]
     paths-ignore:
       - '**/README.md'
 jobs:
@@ -22,7 +22,7 @@ jobs:
         with:
           activate-environment: rietveld
           python-version: 3.8
-          environment-file: environment_mac.yml
+          environment-file: environments/environment_mac.yml
           auto-activate-base: false
           miniforge-variant: Mambaforge-pypy3
           use-mamba: true
@@ -52,7 +52,7 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: rietveld
-          environment-file: environment_mac.yml
+          environment-file: environments/environment_mac.yml
           python-version: 3.9
           auto-activate-base: false
           miniforge-variant: Mambaforge-pypy3
@@ -84,7 +84,7 @@ jobs:
         with:
           activate-environment: rietveld
           python-version: "3.10"
-          environment-file: environment_mac.yml
+          environment-file: environments/environment_mac.yml
           auto-activate-base: false
           miniforge-variant: Mambaforge-pypy3
           use-mamba: true

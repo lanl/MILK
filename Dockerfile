@@ -34,7 +34,7 @@ RUN apt update \
 RUN cd MILK \
     && conda install mamba -n base -c conda-forge \
     && mamba create -n ${CONDA_ENV} -c conda-forge openmpi mpi4py \
-    && mamba env update -n ${CONDA_ENV} -f environment_linux_docker.yml \
+    && mamba env update -n ${CONDA_ENV} -f environments/environment_linux_docker.yml \
     && echo "conda activate $CONDA_ENV" >> ~/.bashrc
 
 # Install MAUD

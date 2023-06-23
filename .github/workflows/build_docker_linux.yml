@@ -1,12 +1,12 @@
-name: Build and Publish MILK Docker Image
+name: Build and Publish Rietveld Docker Image
 
 on:
   push:
-    branches: [ workflow-draft2 ]
+    branches: [ main ]
     paths-ignore:
       - '**/README.md'
   pull_request:
-    branches: [ workflow-draft2 ]
+    branches: [ main ]
     paths-ignore:
       - '**/README.md'
 env:
@@ -26,7 +26,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Build container
-        run: docker build -f Dockerfile -t milk .
+        run: docker build -f Dockerfile -t rietveld .
 
   publish-container-image:
     strategy:
