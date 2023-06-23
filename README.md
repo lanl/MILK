@@ -37,7 +37,7 @@ If you would like to install MILK via Docker, first you would need to download a
 
 To build a MILK docker image, use the Dockerfile:
 ```
-docker built -t rietveld .
+docker build -t rietveld .
 ```
 
 On Linux and MacOS, to run commands and mount in a directory for MILK to write output to, use:
