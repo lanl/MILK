@@ -42,8 +42,14 @@ docker build -t rietveld .
 
 On Linux and MacOS, to run commands and mount in a directory for MILK to write output to, use:
 ```
-docker run -u $(id -u):$(id -g)  -v ${PWD}/output:/output -w /output rietveld-image milk-examples -e 1
+docker run -u $(id -u):$(id -g)  -v ${PWD}:/output -w /output rietveld-image milk-examples -e 1
 ```
+
+On Windows, run the following command:
+```
+docker run -v "path\to\folder":/output -w /output rietveld milk-examples -e 1
+```
+The path to the folder needs to be a full absolute path for Windows.
 
 To open the Docker container as a Virtual Machine, run:
 ```
