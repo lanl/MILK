@@ -7,13 +7,13 @@ channels:
 dependencies:
   #Base MILK
   - tqdm
-  - pip
+  - pip=22.1.2
   - prettytable
   - python=3.9
   - pandas
   - pydantic
   - seaborn
-  - pyfai
+  # - pyfai
   - matplotlib
   - pyopencl
   - opencv
@@ -21,7 +21,7 @@ dependencies:
   - autopep8
   - git
   - pytest
-
+  
   # Spotlight
   - klepto=0.2.2
   - numpy=1.23.0

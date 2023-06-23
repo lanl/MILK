@@ -1,0 +1,40 @@
+name: Python 3.9
+
+on:
+  push:
+    branches: [ workflow-draft2 ]
+    paths-ignore:
+      - '**/README.md'
+  pull_request:
+    branches: [ workflow-draft2 ]
+    paths-ignore:
+      - '**/README.md'
+jobs:
+  win-py39:
+    name: Build MILK on Windows
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: cmd /C CALL {0}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: rietveld
+          environment-file: environment_windows.yml
+          auto-activate-base: false
+          miniforge-variant: Mambaforge
+          use-mamba: true
+      - run: |
+          conda info
+          conda list
+      - shell: pwsh
+        run: |
+          $ProgressPreference = 'SilentlyContinue'
+          $Source = "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip?dl=1"
+          $Destination = ".\Maud.zip"
+          Invoke-WebRequest -Uri $source -OutFile $Destination
+          Expand-Archive -Path Maud.zip
+          git clone https://github.com/cinemascience/cinema_debye_scherrer
+      - run: milk-config D:\a\MILK\MILK\Maud\ -c D:\a\MILK\MILK\cinema_debye_scherrer\
+      - run: pytest tests\workshop_examples.py
