@@ -37,20 +37,20 @@ If you would like to install MILK via Docker, first you would need to download a
 
 To build a MILK docker image, use the Dockerfile:
 ```
-docker built -t milk .
+docker built -t rietveld .
 ```
 
 On Linux and MacOS, to run commands and mount in a directory for MILK to write output to, use:
 ```
-docker run -u $(id -u):$(id -g)  -v ${PWD}/output:/output -w /output milk-image milk-examples -e 1
+docker run -u $(id -u):$(id -g)  -v ${PWD}/output:/output -w /output rietveld-image milk-examples -e 1
 ```
 
 To open the Docker container as a Virtual Machine, run:
 ```
-docker run -v ${PWD}:/output -w /output --rm -ti rietveldtest:0.2 /bin/bash
+docker run -v ${PWD}:/output -w /output --rm -it rietveld /bin/bash
 ```
 `--rm` tells the container to erase additional files and directories when the container exits, essentially return the container to initial state.
-`-ti` tells the container to run in interactive mode, which is needed if you intend to run in bash.
+`-it` tells the container to run in interactive mode, which is needed if you intend to run in bash.
 `/bin/bash` tells the container to start in the bash shell. If this is not done, you can still switch to bash shell by simply typing `bash`.
 
 
