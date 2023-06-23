@@ -46,5 +46,18 @@ RUN wget -O Maud.tar.gz https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AABxmzMfRS2zs
 RUN mkdir -p ${CINEMA_PATH} \
     && git clone https://github.com/cinemascience/cinema_debye_scherrer.git ${CINEMA_PATH}
 
-COPY welcome.py entrypoint.sh ./
-ENTRYPOINT [ "./entrypoint.sh" ]
+RUN echo '[ ! -z "$TERM" -a -r /etc/motd ] && cat /etc/issue && cat /etc/motd' \
+    >> /etc/bash.bashrc \
+    ; echo "\
+    License \n \
+    \n \
+    C21035 MAUD Interface Tool Kit (MILK) has been acknowledged by NNSA for open source release. \n\
+    © 2022. Triad National Security, LLC. All rights reserved. This program was produced under \n\
+    U.S. Government contract 89233218CNA000001 for Los Alamos National Laboratory (LANL), which \n\
+    is operated by Triad National Security, LLC for the U.S. Department of Energy/National Nuclear \n\
+    Security Administration. All rights in the program are reserved by Triad National Security, LLC, \n\
+    and the U.S. Department of Energy/National Nuclear Security Administration. The Government is \n\
+    granted for itself and others acting on its behalf a nonexclusive, paid-up, irrevocable worldwide\n\ 
+    license in this material to reproduce, prepare derivative works, distribute copies to the public, \n\
+    perform publicly and display publicly, and to permit others to do so.\n"\
+    > /etc/motd
