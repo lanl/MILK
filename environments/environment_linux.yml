@@ -6,27 +6,27 @@ channels:
   
 dependencies:
   #Base MILK
-  - tqdm=4.65.0
+  - tqdm
   - pip=22.1.2
-  - prettytable=3.5.0
+  - prettytable
   - python=3.9
-  - pandas=1.5.3
-  - pydantic=1.10.8
-  - seaborn=0.12.2
-  - pyfai=2023.5.0
-  - matplotlib=3.7.1
-  - pyopencl=2023.1
-  - ocl_icd_wrapper_apple=1.0.0
-  - opencv=4.6.0
-  - pyqtgraph=0.13.1
-  - autopep8=1.6.0
-  - git=2.34.1
-
+  - pandas
+  - pydantic
+  - seaborn
+  - pyfai
+  - matplotlib
+  - pyopencl
+  - opencv
+  - pyqtgraph
+  - autopep8
+  - git
+  - pytest
+  
   # Spotlight
   - klepto=0.2.2
   - numpy=1.23.0
-  - openmpi=4.1.1
-  - mpi4py=3.1.4
+  - openmpi
+  - mpi4py
   - jupyter=1.0.0
   - nbsphinx=0.8.9
   - sphinx=5.0.2
@@ -37,7 +37,7 @@ dependencies:
   # pip packages
   - pip:
     #MILK github installation
-    - -e ./
+    - -e ../
     #Spotlight
     - git+https://github.com/lanl/spotlight.git@v0.10.2
     - mystic==0.3.9

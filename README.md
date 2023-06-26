@@ -4,7 +4,16 @@ MILK
 ![](https://img.shields.io/github/v/release/lanl/MILK)&nbsp;
 ![](https://img.shields.io/github/repo-size/lanl/MILK)&nbsp;
 ![](https://img.shields.io/github/contributors/lanl/MILK)&nbsp;
-![Build and Test (Python 3.9 on Windows, Linux, MacOS)](https://github.com/lanl/MILK/actions/workflows/build.yml/badge.svg)&nbsp;
+[![DOI](https://zenodo.org/badge/504997628.svg)](https://zenodo.org/badge/latestdoi/504997628)
+
+
+
+
+| Linux | [![Python 3.9](https://github.com/lanl/MILK/actions/workflows/build_Lin39.yml/badge.svg)](https://github.com/lanl/MILK/actions/workflows/build_Lin39.yml) |
+| :----------- | :----------- |
+| Windows | [![Python 3.9](https://github.com/lanl/MILK/actions/workflows/build_Win39.yml/badge.svg)](https://github.com/lanl/MILK/actions/workflows/build_Win39.yml) |
+| MacOS        | [![Python 3.8 - 3.10](https://github.com/lanl/MILK/actions/workflows/build_MacPy38_310.yml/badge.svg)](https://github.com/lanl/MILK/actions/workflows/build_MacPy38_310.yml) |
+| Linux Docker | [![GitHub Docker](https://github.com/lanl/MILK/actions/workflows/build_docker_linux.yml/badge.svg)](https://github.com/lanl/MILK/actions/workflows/build_docker_linux.yml) |
 
 MAUD Interface Language Kit (MILK) is a set of Rietveld tools for automated processing of diffraction datasets. It's main features are:
 
@@ -19,9 +28,39 @@ More details and tutorials can be found in the [wiki](https://github.com/lanl/MI
 Installation and requirements
 =============================
 
-The wiki is currently disabled pending LANL release. Should be back available soon.
-
 See the [MILK installation wiki](https://github.com/lanl/MILK/wiki/Installation-Overview).
+
+Using Docker
+============
+
+If you would like to install MILK via Docker, first you would need to download and install Docker from the official website: https://www.docker.com
+
+To build a MILK docker image, use the Dockerfile:
+```
+docker build -t rietveld .
+```
+
+On Linux and MacOS, to run commands and mount in a directory for MILK to write output to, use:
+```
+docker run -u $(id -u):$(id -g)  -v ${PWD}:/output -w /output rietveld-image milk-examples -e 1
+```
+
+On Windows, run the following command:
+```
+docker run -v "path\to\folder":/output -w /output rietveld milk-examples -e 1
+```
+The path to the folder needs to be a full absolute path for Windows.
+
+To open the Docker container as a Virtual Machine, run:
+```
+docker run -v ${PWD}:/output -w /output --rm -it rietveld /bin/bash
+```
+`--rm` tells the container to erase additional files and directories when the container exits, essentially return the container to initial state.
+`-it` tells the container to run in interactive mode, which is needed if you intend to run in bash.
+`/bin/bash` tells the container to start in the bash shell. If this is not done, you can still switch to bash shell by simply typing `bash`.
+
+
+NOTE: This passes in the user and group ID so files written back out match the user on the host.
 
 Contributing
 ============

@@ -59,10 +59,11 @@ def main():
 
     if "linux" in sys.platform or "darwin" in sys.platform:
         bash_install(args.MAUD, args.cinema)
-
+        print("milk-config on Unix systems completed without error. Now deactivate and re-activate the environment to complete initialization.")
     elif "win" in sys.platform:
         # TODO Verify the windows installation works
         bat_install(args.MAUD, args.cinema)
+        print("milk-config on Windows completed without error. Now deactivate and re-activate the environment to complete initialization.")
 
     else:
         raise OSError("Unsupported OS for automated MAUD installation")

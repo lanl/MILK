@@ -1,0 +1,38 @@
+name: rietveld
+
+platforms:
+  - win-64
+  - osx-arm64  # For Apple Silicon, e.g. M1/M2
+
+channels:
+  - defaults
+  - conda-forge
+
+dependencies:
+  #Base MILK
+  - tqdm
+  - pip
+  - prettytable
+  - python=3.9
+  - pandas
+  - pydantic
+  - seaborn
+  - pyfai
+  - matplotlib
+  - pyopencl
+  - opencv
+  - pyqtgraph
+  - autopep8
+  - git
+
+  # Spotlight
+  - klepto=0.2.2
+  - numpy=1.23.0
+  - openmpi
+  - mpi4py
+  - jupyter=1.0.0
+  - nbsphinx=0.8.9
+  - sphinx=5.0.2
+  - sphinxcontrib-programoutput=0.16
+  - scipy=1.8.1
+  - scikit-learn=1.1.2
