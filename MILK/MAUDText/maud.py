@@ -47,6 +47,7 @@ class arguments:
         self.run_dirs = None
         self.wild = None
         self.wild_range = None
+        self.zfill = None
         self.absolute_path = None  # Similar change to always work...
         self.single_file = None  # Change to another option
         self.verboseins = None
@@ -55,7 +56,7 @@ class arguments:
         self.args_compute = None
         self.maud_remove_all_datafiles = None
 
-    def parseConfig(self, config, cur_step=None):
+    def parseConfig(self, config, cur_step=None, zfill = 3):
         self.n_maud = str(config["compute"]["n_maud"])
         self.log_consol = config["compute"]["log_consol"]
         self.maud_path = config["compute"]["maud_path"]
@@ -63,10 +64,7 @@ class arguments:
         if "timeout" in config["compute"]:
             self.timeout = config["compute"]["timeout"]
         self.clean_old_step_data = config["compute"]["clean_old_step_data"]
-        if cur_step == None:
-            self.cur_step = config["compute"]["cur_step"]
-        else:
-            self.cur_step = cur_step
+        self.cur_step = config["compute"]["cur_step"] if cur_step is None else cur_step
         self.paths_absolute = False
         self.riet_analysis_file = config["ins"]["riet_analysis_file"]
         self.publ_section_title = config["ins"]["section_title"].replace(' ','_')
@@ -92,6 +90,10 @@ class arguments:
         self.run_dirs = config["folders"]["run_dirs"]
         self.wild = config["folders"]["wild"]
         self.wild_range = config["folders"]["wild_range"]
+        if "zfill" in config["folders"].keys():
+            self.zfill = config["folders"]["zfill"] if config["folders"]["zfill"] is not None else zfill
+        else:
+            self.zfill = zfill
         self.verboseins = config["ins"]["verbose"]
         self.maud_remove_all_datafiles = config["ins"]["maud_remove_all_datafiles"]
 
@@ -156,10 +158,13 @@ class arguments:
             args = args+'--wild_range '
             for wild_range in self.wild_range:
                 args = args+str(wild_range[0])+' '+str(wild_range[1])+' '
+        if self.zfill is not None:
+            args = args+'--zfill '+str(self.zfill)+' '
         if self.paths_absolute == 'True' or self.paths_absolute == 'true':
             args = args+'--paths_absolute True'+' '
         else:
             args = args+'--paths_absolute False'+' '
+        
         # if self.verboseins!=None:
         #    args=args+'--verbose '+self.verboseins+' '
 
@@ -187,6 +192,8 @@ class arguments:
             args = args+'--wild_range '
             for wild_range in self.wild_range:
                 args = args+str(wild_range[0])+' '+str(wild_range[1])+' '
+        if self.zfill is not None:
+            args = args+'--zfill '+str(self.zfill)+' '
         if self.maud_path != None and self.maud_path != '':
             args = args+'--maud_path '+self.maud_path+' '
         if self.java_opt != None and self.java_opt != '':

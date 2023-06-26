@@ -22,46 +22,27 @@ class group:
         self.args = None
         self.data_fnames = None
         self.overwrite = False
+        self.zfill = None
 
-    def parseConfig(self, config, dataset, data_fnames=None, run_dirs=None, ifile=None, ofile=None, data_dir=None, ext=None, filename='dataset.csv'):
-
-        if run_dirs is None:
-            self.run_dirs = config["folders"]["run_dirs"]
+    def parseConfig(self, config, dataset, data_fnames=None, run_dirs=None, ifile=None, ofile=None, data_dir=None, ext=None, zfill=3, filename='dataset.csv'):
+        self.run_dirs = config["folders"]["run_dirs"] if run_dirs is None else run_dirs
+        self.ifile = config["ins"]["riet_analysis_file"] if ifile is None else ifile
+        self.ofile = config["ins"]["riet_analysis_fileToSave"] if ofile is None else ofile
+        self.data_dir = dataset["data_dir"] if data_dir is None else data_dir
+        self.data_fnames = dataset["data_fnames"] if data_fnames is None else data_fnames
+        self.ext = dataset["data_ext"] if ext is None else ext
+        self.zfill = config["folders"]["zfill"] if zfill is None else zfill
+        if "zfill" in config["folders"].keys():
+            self.zfill = config["folders"]["zfill"] if config["folders"]["zfill"] is not None else zfill
         else:
-            self.run_dirs = run_dirs
-
-        if ifile is None:
-            self.ifile = config["ins"]["riet_analysis_file"]
-        else:
-            self.ifile = ifile
-
-        if ofile is None:
-            self.ofile = config["ins"]["riet_analysis_fileToSave"]
-        else:
-            self.ofile = ofile
-
-        if data_dir is None:
-            self.data_dir = dataset["data_dir"]
-        else:
-            self.data_dir = data_dir
-
-        if data_fnames is None:
-            self.data_fnames = dataset["data_fnames"]
-        else:
-            self.data_fnames = data_fnames
-
-        if ext is None:
-            self.ext = dataset["data_ext"]
-        else:
-            self.ext = ext
-
+            self.zfill = zfill
         self.filename = filename
         self.nruns = len(self.data_fnames)
 
-    def buildDataset(self, zfilnum=3):
+    def buildDataset(self):
         self.dataset = {"run":[],"data_dir":[],"folder":[],"ifile":[],"ofile":[],"data_files":[]}
         for i, data_files in enumerate(self.data_fnames):
-            folder = self.run_dirs.replace('(wild)', str(i).zfill(zfilnum))
+            folder = self.run_dirs.replace('(wild)', str(i).zfill(self.zfill))
             self.dataset["run"].append(True)
             self.dataset["data_dir"].append(self.data_dir)
             self.dataset["folder"].append(folder)

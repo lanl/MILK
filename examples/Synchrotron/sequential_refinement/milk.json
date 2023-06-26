@@ -4,7 +4,8 @@
         "run_dirs": "run(wild)",
         "sub_dir": "",
         "wild": [],  
-        "wild_range": [[0,27]]
+        "wild_range": [[0,27]],
+        "zfill": 3
     },
     "compute": {
         "maud_path": "",

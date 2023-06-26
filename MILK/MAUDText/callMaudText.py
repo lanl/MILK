@@ -69,6 +69,8 @@ def get_arguments(argsin):
                         help='Results are parameters specified by autotrace e.g. results.csv')
     parser.add_argument('--riet_append_simple_result_to', '-simple_results',
                         help='Simple results are those prechosen by MAUD i.e. biso, fit, lattice parameter etc... e.g. results_simple.csv')
+    parser.add_argument('--zfill', type=int,
+                        help='number zero padding the folders.')
     if argsin == []:
         args = parser.parse_args()
     else:
@@ -115,10 +117,10 @@ def build_paths(args):
     simple_results = []
     refinement_id = []
     for i in wild:
-        ins.append(ins_file_name.replace('(wild)', str(i).zfill(3)))
-        results.append(results_file_name.replace('(wild)', str(i).zfill(3)))
-        simple_results.append(simple_results_file_name.replace('(wild)', str(i).zfill(3)))
-        refinement_id.append(refinement_id_name.replace('(wild)', str(i).zfill(3)))
+        ins.append(ins_file_name.replace('(wild)', str(i).zfill(args.zfill)))
+        results.append(results_file_name.replace('(wild)', str(i).zfill(args.zfill)))
+        simple_results.append(simple_results_file_name.replace('(wild)', str(i).zfill(args.zfill)))
+        refinement_id.append(refinement_id_name.replace('(wild)', str(i).zfill(args.zfill)))
 
     return ins, results, simple_results, refinement_id
 

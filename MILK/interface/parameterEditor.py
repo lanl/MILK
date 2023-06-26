@@ -32,8 +32,9 @@ class arguments:
         self.lines = None
         self.max_search_hits = None
         self.reverse_search = None
+        self.zfill
         
-    def parseConfig(self, config, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None, verbose=None):
+    def parseConfig(self, config, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None, verbose=None,zfill=3):
 
         if work_dir == None:
             if config["folders"]["work_dir"] == '':
@@ -73,6 +74,11 @@ class arguments:
             self.verbose = config["ins"]["verbose"]
         else:
             self.verbose = verbose
+
+        if "zfill" in config["folders"].keys():
+            self.zfill = config["folders"]["zfill"] if config["folders"]["zfill"] is not None else zfill
+        else:
+            self.zfill = zfill
 
         #Purge wild_range
         wilds = self.wild
@@ -1065,7 +1071,7 @@ class editor(arguments):
         ifiles = []
         tmp = os.path.join(work_dir, run_dirs, ifile)
         for wild in wilds:
-            ifiles.append(tmp.replace('(wild)', str(wild).zfill(3)))
+            ifiles.append(tmp.replace('(wild)', str(wild).zfill(self.zfill)))
 
         # Main loop through files to edit
         for ind in range(0, len(ifiles)):
@@ -1558,7 +1564,8 @@ def get_arguments(argsin):
                         help='exits search_list early based on number of hits')
     parser.add_argument('--verbose', '-ver', type=int, default=0,
                         help='specifies the level of information output when modifying parameter files')
-
+    parser.add_argument('--zfill', type=int,
+                        help='number zero padding the folders.')
     if argsin == []:
         args = parser.parse_args()
     else:
@@ -1588,7 +1595,7 @@ def get_arguments(argsin):
         ifile.append(tmp)
     else:
         for wild in wilds:
-            ifile.append(tmp.replace('(wild)', str(wild).zfill(3)))
+            ifile.append(tmp.replace('(wild)', str(wild).zfill(args.zfill)))
     args.ifile = ifile
 
     # Generate the output file names

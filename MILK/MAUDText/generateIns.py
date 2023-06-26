@@ -180,13 +180,13 @@ def build_ins(args):
                     tmp2 = []
                     for j, argattrl in enumerate(argattr):
                         argattrstr = str(argattrl)
-                        tmp2.append(argattrstr.replace('(wild)', str(rid).zfill(3)))
+                        tmp2.append(argattrstr.replace('(wild)', str(rid).zfill(args.zfill)))
                     tmp.append(tmp2)
                 setattr(args, arg, tmp)
             else:
                 tmp = []
                 for i, rid in enumerate(wild):
-                    tmp2 = [argattrstr.replace('(wild)', str(rid).zfill(3))]
+                    tmp2 = [argattrstr.replace('(wild)', str(rid).zfill(args.zfill))]
                     tmp.append(tmp2)
                 setattr(args, arg, tmp)
 
@@ -244,6 +244,8 @@ def get_arguments(argsin):
                         help='specify full or relative path to cif phase file(s)')
     parser.add_argument('--paths_absolute', '-pa',
                         help='specify whether paths should be relative to work_dir')
+    parser.add_argument('--zfill', type=int,
+                        help='number zero padding the folders.')
     if argsin == []:
         args = parser.parse_args()
     else:
