@@ -142,7 +142,7 @@ def run_MAUD(maud_path, java_opt, simple_call, timeout, ins_paths):
         lib = os.path.join(maud_path, 'Contents/Java/*')
         opts = f'-{java_opt} --enable-preview -cp "{lib}"'
 
-    elif "win" in sys.platform:
+    elif "win32" in sys.platform:
         # Windows...
         #raise NotImplementedError("Windows commandline call is not implemented yet.")
         java = os.path.join(maud_path, 'jdk\\bin\\java')
@@ -164,7 +164,7 @@ def run_MAUD(maud_path, java_opt, simple_call, timeout, ins_paths):
             except sub.TimeoutExpired:
                 print(f"MAUD batch call exceeded timeout of {timeout} for {ins_paths}.")
                 exit_code=1
-                if "win" in sys.platform:
+                if "win32" in sys.platform:
                     sub.call(['taskkill', '/F', '/T', '/PID', str(p.pid)],stdout=sub.PIPE)
                 else:
                     p.kill()

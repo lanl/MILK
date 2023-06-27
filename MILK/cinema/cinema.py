@@ -69,6 +69,7 @@ def main(cinema_path: str = os.getenv('CINEMA_PATH').strip("'"),
     data = load_json(databases_path)
     data[databases_index]['name'] =  f"{databases_name}"
     data[databases_index]['directory'] =  f"{os.sep}{str(data_path.relative_to(serve_path))}"
+    data[databases_index]['filter'] = "_e|GOF|Rexp|lattice_alpha|lattice_beta|lattice_gamma|n_phases|FILE"
     write_json(databases_path,data)
 
     # Launch server, open browser, and wait
