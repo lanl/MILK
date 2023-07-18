@@ -28,7 +28,7 @@ jobs:
           use-mamba: true
       - name: download related programs and make tutorials folder for test examples
         run: |
-          curl -JLO "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AAD4uGx8QNACWnItJ4yvfZcWa/macosx64/Maud_intel64.dmg.gz"
+          curl -JLO "https://github.com/luttero/maud/releases/download/v2.999/Maud_intel64.dmg.gz"
           gunzip Maud_intel64.dmg.gz
           hdiutil attach Maud_intel64.dmg
           cp -r /Volumes/Maud .
@@ -59,7 +59,7 @@ jobs:
           use-mamba: true
       - name: download related programs and make tutorials folder for test examples
         run: |
-          curl -JLO "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AAD4uGx8QNACWnItJ4yvfZcWa/macosx64/Maud_intel64.dmg.gz"
+          curl -JLO "https://github.com/luttero/maud/releases/download/v2.999/Maud_intel64.dmg.gz"
           gunzip Maud_intel64.dmg.gz
           hdiutil attach Maud_intel64.dmg
           cp -r /Volumes/Maud .
@@ -90,7 +90,7 @@ jobs:
           use-mamba: true
       - name: download related programs and make tutorials folder for test examples
         run: |
-          curl -JLO "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AAD4uGx8QNACWnItJ4yvfZcWa/macosx64/Maud_intel64.dmg.gz"
+          curl -JLO "https://github.com/luttero/maud/releases/download/v2.999/Maud_intel64.dmg.gz"
           gunzip Maud_intel64.dmg.gz
           hdiutil attach Maud_intel64.dmg
           cp -r /Volumes/Maud .
