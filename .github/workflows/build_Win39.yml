@@ -5,10 +5,16 @@ on:
     branches: [ main ]
     paths-ignore:
       - '**/README.md'
+      - '**/.github/workflows/build_docker_linux.yml'
+      - '**/.github/workflows/build_MacPy38_310.yml'
+      - '**/.github/workflows/build_Lin39.yml'
   pull_request:
     branches: [ main ]
     paths-ignore:
       - '**/README.md'
+      - '**/.github/workflows/build_docker_linux.yml'
+      - '**/.github/workflows/build_MacPy38_310.yml'
+      - '**/.github/workflows/build_Lin39.yml'
 jobs:
   win-py39:
     name: Build MILK on Windows
@@ -31,7 +37,7 @@ jobs:
       - shell: pwsh
         run: |
           $ProgressPreference = 'SilentlyContinue'
-          $Source = "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip?dl=1"
+          $Source = "https://github.com/luttero/maud/releases/download/v2.999/Maud.zip"
           $Destination = ".\Maud.zip"
           Invoke-WebRequest -Uri $source -OutFile $Destination
           Expand-Archive -Path Maud.zip

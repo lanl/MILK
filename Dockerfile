@@ -38,7 +38,7 @@ RUN cd MILK \
     && echo "conda activate $CONDA_ENV" >> ~/.bashrc
 
 # Install MAUD
-RUN wget -O Maud.tar.gz https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AABxmzMfRS2zsxfXhUNftZHCa/linux64/Maud.tar.gz?dl=0 \
+RUN wget -O Maud.tar.gz https://github.com/luttero/maud/releases/download/v2.999/Maud.tar.gz \
     && tar -xvzf Maud.tar.gz
 
 # Install Cinema

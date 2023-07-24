@@ -5,10 +5,16 @@ on:
     branches: [ main ]
     paths-ignore:
       - '**/README.md'
+      - '**/.github/workflows/build_Lin39.yml'
+      - '**/.github/workflows/build_MacPy38_310.yml'
+      - '**/.github/workflows/build_Win39.yml'
   pull_request:
     branches: [ main ]
     paths-ignore:
       - '**/README.md'
+      - '**/.github/workflows/build_Lin39.yml'
+      - '**/.github/workflows/build_MacPy38_310.yml'
+      - '**/.github/workflows/build_Win39.yml'
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -58,6 +64,6 @@ jobs:
         with:
           context: .
           push: true
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64
           tags: ${{ env.REGISTRY }}/lanl/milk:${{ github.ref_name }}-${{github.sha}}
                                                
