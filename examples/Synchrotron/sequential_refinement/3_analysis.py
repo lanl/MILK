@@ -72,10 +72,10 @@ if __name__ == '__main__':
 
     no_beta = list(range(0, 4))
     for wild in no_beta:
-        editor.set_val(key='_pd_phase_atom_', loopid=p['alpha'],
-                       value='0.5', wild=[wild])
-        editor.set_val(key='_pd_phase_atom_', loopid=p['steel'],
-                       value='0.5', wild=[wild])
+        # editor.set_val(key='_pd_phase_atom_', loopid=p['alpha'],
+        #                value='0.5', wild=[wild])
+        # editor.set_val(key='_pd_phase_atom_', loopid=p['steel'],
+        #                value='0.5', wild=[wild])
         editor.set_val(key='_pd_phase_atom_', loopid=p['beta'],
                        value='0.0', wild=[wild])
 
@@ -83,18 +83,18 @@ if __name__ == '__main__':
     for wild in no_alpha:
         editor.set_val(key='_pd_phase_atom_', loopid=p['alpha'],
                        value='0.0', wild=[wild])
-        editor.set_val(key='_pd_phase_atom_', loopid=p['steel'],
-                       value='0.5', wild=[wild])
-        editor.set_val(key='_pd_phase_atom_', loopid=p['beta'],
-                       value='0.5', wild=[wild])
+        # editor.set_val(key='_pd_phase_atom_', loopid=p['steel'],
+        #                value='0.5', wild=[wild])
+        # editor.set_val(key='_pd_phase_atom_', loopid=p['beta'],
+        #                value='0.5', wild=[wild])
 
     # Add shared background and free 
     #===================================================#
     set_dataset_wild(dataset["run"], editor, maudText)
-    for _ in range(0, 4):
-        editor.add_loop_par(key='_riet_par_background_pol',
-                            nsobj='chi(')  # Add shared background only
-    editor.free(key='Background')
+    # for _ in range(0, 4):
+    #     editor.add_loop_par(key='_riet_par_background_pol',
+    #                         nsobj='chi(')  # Add shared background only
+    # editor.free(key='Background')
 
     # Sequential copy lattice parameters based on phase regions
     #===================================================#
@@ -141,6 +141,9 @@ if __name__ == '__main__':
     # Step 2: Consolodate results and refine step 2 in parallel
     #===============================================================#
     set_dataset_wild(dataset["run"], editor, maudText)
+    editor.free(key='_riet_par_background_peak_height')
+    editor.set_val(key='_riet_par_background_peak_hwhm',value='10.0')
+    editor.set_val(key='_riet_par_background_peak_hwhm',value='0.6')
     maudText.refinement(itr='8', ifile=editor.ifile,
                         inc_step=True, export_plots=True)
 

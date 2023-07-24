@@ -70,6 +70,7 @@ if __name__ == '__main__':
 
     # Ensure backgrounds are reset, refine intensities, and export plots
     #============================================================#
+    editor.fix_all()
     editor.free(key='Background')
     editor.free(key='_pd_proc_intensity_incident')
     maudText.refinement(itr='3', export_plots=True, ifile=editor.ifile, ofile='After_setup.par')
