@@ -32,7 +32,7 @@ class arguments:
         self.lines = None
         self.max_search_hits = None
         self.reverse_search = None
-        self.zfill
+        self.zfill = None
         
     def parseConfig(self, config, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None, verbose=None,zfill=3):
 
@@ -1564,7 +1564,7 @@ def get_arguments(argsin):
                         help='exits search_list early based on number of hits')
     parser.add_argument('--verbose', '-ver', type=int, default=0,
                         help='specifies the level of information output when modifying parameter files')
-    parser.add_argument('--zfill', type=int,
+    parser.add_argument('--zfill', type=int, default=3,
                         help='number zero padding the folders.')
     if argsin == []:
         args = parser.parse_args()
