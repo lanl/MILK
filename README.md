@@ -25,6 +25,12 @@ MAUD Interface Language Kit (MILK) is a set of Rietveld tools for automated proc
 
 More details and tutorials can be found in the [wiki](https://github.com/lanl/MILK/wiki).
 
+If you use the resources in this repository, please cite our [paper](https://doi.org/10.1107/S1600576723005472): 
+
+```
+Savage, D. J., Lutterotti, L., Biwer, C. M., McKerns, M., Bolme, C., Knezevic, M. & Vogel, S. C. (2023). MILK: a Python scripting interface to MAUD for automation of Rietveld analysis. J. Appl. Cryst. 56.
+```
+
 Installation and requirements
 =============================
 
