@@ -41,6 +41,6 @@ dependencies:
     - -e ../
     #Spotlight
     - git+https://github.com/lanl/spotlight.git@v0.10.2
-    - mystic==0.3.9
-    - pyina==0.2.6
-    - pathos==0.2.9
+    - mystic==0.4.1
+    - pyina==0.2.8
+    - pathos==0.3.1
