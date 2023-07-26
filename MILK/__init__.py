@@ -6,7 +6,7 @@ Created on Wed Jan 20 13:43:23 2021
 @author: danielsavage
 """
 
-from MILK.data import (generateGroup, prepareData, examples, lcls)
+from MILK.data import (generateGroup, prepareData, plotStackedRietveld, examples, lcls)
 from MILK.cinema import cinema
 from MILK.interface import (parameterEditor, addPhase)
 from MILK.interface.model import (texture, sizeStrain)
