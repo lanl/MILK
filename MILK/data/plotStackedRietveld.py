@@ -38,9 +38,9 @@ class Plot_Rietveld():
                  headerlinesHKL=13,columnsHKL=8,HKLFileNames=['alphaHKL.txt','steelHKL.txt','betaHKL.txt'],
                  subStepFolder='step_2',dataColumn=5,fitColumn=6,height=3.25,width=1.3,fontSize=6)
     """
-    def __init__(self,rootFolder=None,filename=None,wavelength=None,headerlines=21,columns=10,
+    def __init__(self,rootFolder=None,filename=None,wavelength=0.18,headerlines=21,columns=10,
                  HKLFileNames=None,headerlinesHKL=13,columnsHKL=8,HKLdSpacingColumn=6,
-                 subStepFolder=None,dataColumn=None,fitColumn=None,height=3.25,width=1.3,fontSize=6):
+                 subStepFolder=None,dataColumn=5,fitColumn=6,height=3.25,width=1.3,fontSize=6):
         self.rootFolder = rootFolder
         self.filename = filename
         self.wavelength = wavelength
