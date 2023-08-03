@@ -1,4 +1,4 @@
-#License
+# License
 
 # C21035 MAUD Interface Tool Kit (MILK) has been acknowledged by NNSA for open source release.
 
@@ -11,39 +11,33 @@
 # license in this material to reproduce, prepare derivative works, distribute copies to the public, 
 # perform publicly and display publicly, and to permit others to do so.
 
-ARG CONDA_VERSION=23.3.1-0
-FROM --platform=linux/amd64 continuumio/miniconda3:${CONDA_VERSION} as build
+FROM mambaorg/micromamba:1.4.9
 
-ARG CONDA_ENV=rietveld
-
+# environment variables
 ENV MAUD_PATH=/Maud
 ENV CINEMA_PATH=/cinema
-ENV PATH="${PATH}:/opt/conda/envs/${CONDA_ENV}/bin"
+ENV HOME=/home/$MAMBA_USER
 
-# Fetch MILK
-COPY . /MILK
-
-# Pre-requisites
-ENV DEBIAN_FRONTEND noninteractive
-RUN apt update \
-    && apt -y install \
-        vim \
-    && rm -rf /var/lib/apt/lists/*
+# assign folder ownership to mamba
+COPY --chown=$MAMBA_USER:$MAMBA_USER . $HOME/
+WORKDIR $HOME
 
 # Install MILK
-RUN cd MILK \
-    && conda install mamba -n base -c conda-forge \
-    && mamba create -n ${CONDA_ENV} -c conda-forge openmpi mpi4py \
-    && mamba env update -n ${CONDA_ENV} -f environments/environment_linux_docker.yml \
-    && echo "conda activate $CONDA_ENV" >> ~/.bashrc
+RUN micromamba install -v -y -n base -f "${HOME}/environments/environment_linux_docker.yml" && \
+    echo "conda activate $CONDA_ENV" >> ~/.bashrc
+
+USER root
+
+RUN apt-get update && apt-get install -y wget && apt-get install -y git
 
 # Install MAUD
 RUN wget -O Maud.tar.gz https://github.com/luttero/maud/releases/download/v2.999/Maud.tar.gz \
     && tar -xvzf Maud.tar.gz
 
 # Install Cinema
-RUN mkdir -p ${CINEMA_PATH} \
-    && git clone https://github.com/cinemascience/cinema_debye_scherrer.git ${CINEMA_PATH}
+RUN mkdir -p ${CINEMA_PATH} && \
+    git clone https://github.com/cinemascience/cinema_debye_scherrer.git ${CINEMA_PATH} && \
+    chown $MAMBA_USER:$MAMBA_USER ${CINEMA_PATH}
 
 RUN echo '[ ! -z "$TERM" -a -r /etc/motd ] && cat /etc/issue && cat /etc/motd' \
     >> /etc/bash.bashrc \

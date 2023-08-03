@@ -1,4 +1,4 @@
-name: rietveld
+name: base
 
 channels:
   - defaults
@@ -25,8 +25,8 @@ dependencies:
   # Spotlight
   - klepto=0.2.2
   - numpy=1.23.0
-  # - openmpi
-  # - mpi4py
+  - openmpi
+  - mpi4py
   - jupyter=1.0.0
   - nbsphinx=0.8.9
   - sphinx=5.0.2
@@ -41,5 +41,5 @@ dependencies:
     #Spotlight
     - git+https://github.com/lanl/spotlight.git@v0.10.2
     - mystic==0.4.1
-    - pyina==0.2.8
-    - pathos==0.3.1
+    - pyina>=0.2.8
+    - pathos>=0.3.1

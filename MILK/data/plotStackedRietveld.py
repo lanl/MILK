@@ -26,7 +26,11 @@ class Plot_Rietveld():
         - headerlinesHKL = number of header lines in the HKL files, typically 13
         - columnsHKL = number of columns of data in the HKL files, typically 8
         - HKLdSpacingColumn = the column in the HKL file that has the value of the d-spacing to be plotted, typically 6
+        - HKLtextXoffset = the distance offset to place the text that labels the phase, i.e. [0.37, 0.42, 0.37]
+        - HKLVPosition = the vertical position to place the text and the bars, i.e. [0.04, 0.12, 0.2]
+        - HKLbarHalfLength = the half length of the bar. The bars will be plotted at the full length, i.e. 0.02
         - subStepFolder = any sub-folders for finding "filename", i.e. 'step_2' for 'run001/step_2/all_spectra.cif'
+        - HKLLabel = the label of each HKL plot, raw strings allowed, i.e. HKLLabel = [r"$\alpha$","steel",r"$\beta$"]
         - dataColumn = the column in "filename" that has the values for the diffraction data, typically 5
         - fitColumn = the column in "filename" that has the values for the Rietveld fit, typically 6
         - height = height of the overall figure
@@ -34,12 +38,15 @@ class Plot_Rietveld():
         - fontsize = fontsize to be used in the figure
     Example Usage:
     import MILK
-    plotClass = MILK.plotStackedRietveld.Plot_Rietveld(rootFolder='run000',filename='all_spectra.cif',wavelength=0.1839,headerlines=21,columns=10,
-                 headerlinesHKL=13,columnsHKL=8,HKLFileNames=['alphaHKL.txt','steelHKL.txt','betaHKL.txt'],
-                 subStepFolder='step_2',dataColumn=5,fitColumn=6,height=3.25,width=1.3,fontSize=6)
+    plotClass = MILK.plotStackedRietveld.Plot_Rietveld(rootFolder=rootFolder[foldIndx][0],filename='all_spectra.cif',wavelength=0.1839,headerlines=21,columns=10,
+            headerlinesHKL=13,columnsHKL=8,HKLFileNames=['alphaHKL.txt','steelHKL.txt','betaHKL.txt'],
+            HKLdspacingColumn=6, HKLtextXoffset=[0.37,0.42,0.37], HKLVPosition=[0.04,0.12,0.2],
+            HKLbarHalfLength=0.02,HKLLabel=[r"$\alpha$","steel",r"$\beta$"],
+            subStepFolder=subStepFolder[foldIndx][0],dataColumn=5,fitColumn=6,height=3.25,width=1.3,fontSize=6)
     """
     def __init__(self,rootFolder=None,filename=None,wavelength=0.18,headerlines=21,columns=10,
                  HKLFileNames=None,headerlinesHKL=13,columnsHKL=8,HKLdSpacingColumn=6,
+                 HKLtextXoffset=None,HKLVPosition=[],HKLbarHalfLength=0.02,HKLLabel=None,
                  subStepFolder=None,dataColumn=5,fitColumn=6,height=3.25,width=1.3,fontSize=6):
         self.rootFolder = rootFolder
         self.filename = filename
@@ -51,6 +58,10 @@ class Plot_Rietveld():
         self.columnsHKL = columnsHKL
         self.HKLs = []
         self.HKLdspacingColumn = HKLdSpacingColumn
+        self.HKLtextXoffset = HKLtextXoffset
+        self.HKLVPosition = HKLVPosition
+        self.HKLbarHalfLength = HKLbarHalfLength
+        self.HKLLabel = HKLLabel
         self.subStepFolder = subStepFolder
         self.dataColumn = dataColumn
         self.fitColumn = fitColumn
@@ -116,13 +127,11 @@ class Plot_Rietveld():
         ax1.set_ylabel(r'Intensity',fontsize=6)
         ax1.legend(loc='best',fancybox=False,framealpha=0.0,fontsize=6)
 
-        ax2.text(self.dSpacing[-1]-0.37, 0.17, r'$\alpha$', fontsize=6)
-        ax2.text(self.dSpacing[-1]-0.42, 0.11, 'steel', fontsize=6)
-        ax2.text(self.dSpacing[-1]-0.37, 0.03, r'$\beta$', fontsize=6)
-        
         for i in range(len(self.HKLs)):
+            ax2.text(self.dSpacing[-1]-self.HKLtextXoffset[i], self.HKLVPosition[i], self.HKLLabel[i], fontsize=6)
             for j in range(len(self.HKLs[i])):
-                ax2.plot([self.HKLs[i][j,self.HKLdspacingColumn],self.HKLs[i][j,self.HKLdspacingColumn]], [0.18-0.08*i,0.22-0.08*i], linewidth=0.3, color='black')
+                ax2.plot([self.HKLs[i][j,self.HKLdspacingColumn],self.HKLs[i][j,self.HKLdspacingColumn]], 
+                         [self.HKLVPosition[i]-self.HKLbarHalfLength,self.HKLVPosition[i]+self.HKLbarHalfLength], linewidth=0.3, color='black')
         ax2.set_ylim([0,0.26])
 
         ax2.tick_params(left = False, bottom = False, labelbottom=False,labelleft=False)
