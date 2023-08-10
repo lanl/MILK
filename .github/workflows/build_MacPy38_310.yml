@@ -47,6 +47,9 @@ jobs:
           milk-config /Applications/Maud.app -c ./cinema_debye_scherrer
           conda deactivate
           conda activate rietveld
+      - name: run py tests
+        run: |
+          conda activate rietveld
           pytest tests/workshop_examples.py
 
   macos-py39:
@@ -78,6 +81,9 @@ jobs:
           milk-config /Applications/Maud.app -c ./cinema_debye_scherrer
           conda deactivate
           conda activate rietveld
+      - name: run py tests
+        run: |
+          conda activate rietveld
           pytest tests/workshop_examples.py
 
   macos-py310:
@@ -108,5 +114,8 @@ jobs:
         run: |
           milk-config /Applications/Maud.app -c ./cinema_debye_scherrer
           conda deactivate
+          conda activate rietveld
+      - name: run py tests
+        run: |
           conda activate rietveld
           pytest tests/workshop_examples.py

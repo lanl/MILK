@@ -45,4 +45,5 @@ jobs:
           Expand-Archive -Path Maud.zip
           git clone https://github.com/cinemascience/cinema_debye_scherrer
       - run: milk-config D:\a\MILK\MILK\Maud\ -c D:\a\MILK\MILK\cinema_debye_scherrer\
-      - run: pytest tests\workshop_examples.py
+      - name: run py tests
+        run: pytest tests\workshop_examples.py
