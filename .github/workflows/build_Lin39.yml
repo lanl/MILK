@@ -8,6 +8,7 @@ on:
       - '**/.github/workflows/build_docker_linux.yml'
       - '**/.github/workflows/build_MacPy38_310.yml'
       - '**/.github/workflows/build_Win39.yml'
+      - '**/Dockerfile'
   pull_request:
     branches: [ main ]
     paths-ignore:
@@ -15,6 +16,7 @@ on:
       - '**/.github/workflows/build_docker_linux.yml'
       - '**/.github/workflows/build_MacPy38_310.yml'
       - '**/.github/workflows/build_Win39.yml'
+      - '**/Dockerfile'
 jobs:
   ubuntu-py39:
     name: Build MILK on Linux

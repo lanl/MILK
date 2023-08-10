@@ -31,7 +31,7 @@ USER root
 RUN apt-get update && apt-get install -y wget && apt-get install -y git
 
 # Install MAUD
-RUN wget -O Maud.tar.gz https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip?dl=1 \
+RUN wget -O Maud.tar.gz https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AABxmzMfRS2zsxfXhUNftZHCa/linux64/Maud.tar.gz?dl=1 \
     && tar -xvzf Maud.tar.gz
 
 # Install Cinema
