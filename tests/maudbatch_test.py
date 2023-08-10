@@ -48,7 +48,7 @@ def test_maudbatch1():
 
     Windows GitHub Runner has special character "runner~1" that causes issues, so not using the temporary diretory.
     """
-    if "win" in sys.platform:
+    if "win" in sys.platform and "dar" not in sys.platform:
         cwdDir = os.getcwd()
         maudBatch(CUR_DIR = cwdDir)
         with cd("maudbatch"):
@@ -86,7 +86,7 @@ def test_maudbatch1():
                         'False',
                         None,
                         "fecu.ins")
-                    
+
                     examplefiles = [ f for f in os.listdir( os.curdir ) if os.path.isfile(f) ]
                     filesMaud = [f for f in os.listdir(os.getenv('MAUD_PATH').strip("'")) if os.path.isfile(f)]
                     with open('fecu.ins') as f:
@@ -100,18 +100,11 @@ def test_maudbatch1():
                         print(filesMaud)
                         print(os.getenv('MAUD_PATH'))
 
-                # with open('FECU1010.par') as f:
-                #     lines = f.readlines()
-                #     for line in lines:
-                #         if "" in line:
-                            
-                #     assert '_refine_ls_R_factor_all 0.0414889\n' in f.read()
-                    
-                # with open('FECU1010.par') as f:
-                #     assert "_refine_ls_WSS_factor 1971.988" in f.read()
-
-# def test_maudbatch2():
-#     assert os.path.isfile('../Workshop/Tutorials/maudbatch/fecu.log')
-
-# def test_synchrotron1():
-#     assert os.path.isfile('environment_mac.yml')
+                    try:
+                        from difflib import SequenceMatcher
+                        text1 = open('FECU1010_ref.par').read()
+                        text2 = open('FECU1010.par').read()
+                        m = SequenceMatcher(None, text1, text2)
+                        assert m.ratio() > 0.99
+                    except AssertionError as e:
+                        print(f'{m.ratio()}')

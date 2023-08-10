@@ -39,9 +39,12 @@ jobs:
           wget -O Maud.tar.gz "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AABxmzMfRS2zsxfXhUNftZHCa/linux64/Maud.tar.gz?dl=1"
           tar -xvf Maud.tar.gz
           git clone https://github.com/cinemascience/cinema_debye_scherrer
-      - name: config milk and run examples
+      - name: config milk
         run: |
           milk-config /home/runner/work/MILK/MILK/Maud -c /home/runner/work/MILK/MILK/cinema_debye_scherrer
           conda deactivate
+          conda activate rietveld
+      - name: run py tests
+        run: |
           conda activate rietveld
           pytest tests/workshop_examples.py
