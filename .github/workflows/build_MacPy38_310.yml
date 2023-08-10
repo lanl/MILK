@@ -50,7 +50,7 @@ jobs:
       - name: run py tests
         run: |
           conda activate rietveld
-          pytest tests/workshop_examples.py
+          pytest tests/maudbatch_test.py
 
   macos-py39:
     name: Build MILK on MacOS Intel
@@ -84,7 +84,7 @@ jobs:
       - name: run py tests
         run: |
           conda activate rietveld
-          pytest tests/workshop_examples.py
+          pytest tests/maudbatch_test.py
 
   macos-py310:
     name: Build MILK on IntelMac with Python 3.10
@@ -118,4 +118,4 @@ jobs:
       - name: run py tests
         run: |
           conda activate rietveld
-          pytest tests/workshop_examples.py
+          pytest tests/maudbatch_test.py

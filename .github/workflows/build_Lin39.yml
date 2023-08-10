@@ -47,4 +47,4 @@ jobs:
       - name: run py tests
         run: |
           conda activate rietveld
-          pytest tests/workshop_examples.py
+          pytest tests/maudbatch_test.py

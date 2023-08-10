@@ -46,4 +46,4 @@ jobs:
           git clone https://github.com/cinemascience/cinema_debye_scherrer
       - run: milk-config D:\a\MILK\MILK\Maud\ -c D:\a\MILK\MILK\cinema_debye_scherrer\
       - name: run py tests
-        run: pytest tests\workshop_examples.py
+        run: pytest tests\maudbatch_test.py
