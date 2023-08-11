@@ -142,4 +142,4 @@ if __name__ == '__main__':
     # Build the cinema database and visualize
     #============================================================#
     build_cinema_database.main()
-    MILK.cinema.main()
+    # MILK.cinema.main()

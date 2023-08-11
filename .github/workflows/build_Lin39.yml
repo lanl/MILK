@@ -48,3 +48,4 @@ jobs:
         run: |
           conda activate rietveld
           pytest tests/maudbatch_test.py
+          pytest tests/HIPPO_test.py

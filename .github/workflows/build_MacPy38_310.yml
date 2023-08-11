@@ -51,6 +51,7 @@ jobs:
         run: |
           conda activate rietveld
           pytest tests/maudbatch_test.py
+          pytest tests/HIPPO_test.py
 
   macos-py39:
     name: Build MILK on MacOS Intel
@@ -85,6 +86,7 @@ jobs:
         run: |
           conda activate rietveld
           pytest tests/maudbatch_test.py
+          pytest tests/HIPPO_test.py
 
   macos-py310:
     name: Build MILK on IntelMac with Python 3.10
@@ -119,3 +121,4 @@ jobs:
         run: |
           conda activate rietveld
           pytest tests/maudbatch_test.py
+          pytest tests/HIPPO_test.py

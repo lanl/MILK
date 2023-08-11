@@ -131,12 +131,12 @@ if __name__ == '__main__':
 
     # editor.ifile = set_dataset_starting_values(editor,dataset,config_dataset)
 
-    # # Refinement Step2
-    # bound_b_factors(editor)
-    # free_scale_parameters(editor,config_hippo)
-    # add_shared_background(2,editor)
-    # editor.free(key='Background')
-    # maudText.refinement(itr='4',  export_plots=True, ifile=editor.ifile)
+    # Refinement Step2
+    bound_b_factors(editor)
+    free_scale_parameters(editor,config_hippo)
+    add_shared_background(2,editor)
+    editor.free(key='Background')
+    maudText.refinement(itr='4',  export_plots=True, ifile=editor.ifile)
 
     # # Refinement Step3
     # editor.ifile = "step_2/Analysis02.par"
@@ -154,30 +154,30 @@ if __name__ == '__main__':
     # maudText.refinement(itr='6', export_plots=True, ifile=editor.ifile)
 
     # Refinement Step5
-    editor.ifile = "step_4/Analysis04.par"
-    maudText.cur_step = 5
-    editor.fix_all()
-    set_EWIMV(editor,resolution=10.0)
-    free_scale_parameters(editor,config_hippo)    
-    maudText.refinement(itr='4', export_PFs=True, export_plots=True,
-                        ifile=editor.ifile)
+    # editor.ifile = "step_4/Analysis04.par"
+    # maudText.cur_step = 5
+    # editor.fix_all()
+    # set_EWIMV(editor,resolution=10.0)
+    # free_scale_parameters(editor,config_hippo)    
+    # maudText.refinement(itr='4', export_PFs=True, export_plots=True,
+    #                     ifile=editor.ifile)
 
     # Refinement Step6
-    editor.ifile = "step_5/Analysis05.par"
-    maudText.cur_step = 6
-    editor.free(key='Biso')
-    editor.free(key='Background')
-    maudText.refinement(itr='4', export_PFs=True, export_plots=True,ifile=editor.ifile)
+    # editor.ifile = "step_5/Analysis05.par"
+    # maudText.cur_step = 6
+    # editor.free(key='Biso')
+    # editor.free(key='Background')
+    # maudText.refinement(itr='4', export_PFs=True, export_plots=True,ifile=editor.ifile)
 
     # Refinement Step7
-    editor.ifile = "step_6/Analysis06.par"
-    maudText.cur_step = 7
-    free_microstructure(editor)
-    free_cell(editor)
-    maudText.refinement(itr='10', export_PFs=True,
-                        export_plots=True, ofile="After_tex.par")
+    # editor.ifile = "step_6/Analysis06.par"
+    # maudText.cur_step = 7
+    # free_microstructure(editor)
+    # free_cell(editor)
+    # maudText.refinement(itr='10', export_PFs=True,
+    #                     export_plots=True, ofile="After_tex.par")
 
     # Build the cinema database and visualize
     build_cinema_database.main()
-    MILK.cinema.main()
+    # MILK.cinema.main()
 
