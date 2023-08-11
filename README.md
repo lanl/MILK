@@ -7,7 +7,10 @@ MILK
 [![DOI](https://zenodo.org/badge/504997628.svg)](https://zenodo.org/badge/latestdoi/504997628)
 
 
-
+Following GitHub Action tests include:
+- MAUD batch processing using MILK script
+- HIPPO data 2-step analysis
+- Docker container build and publishing for Linux/AMD64 arch 
 
 | Linux | [![Python 3.9](https://github.com/lanl/MILK/actions/workflows/build_Lin39.yml/badge.svg)](https://github.com/lanl/MILK/actions/workflows/build_Lin39.yml) |
 | :----------- | :----------- |
