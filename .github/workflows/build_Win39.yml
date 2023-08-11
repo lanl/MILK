@@ -39,7 +39,7 @@ jobs:
       - shell: pwsh
         run: |
           $ProgressPreference = 'SilentlyContinue'
-          $Source = "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AADjVKfGRk7g1SoQXOc1nrl3a/windows64/Maud.zip?dl=1"
+          $Source = "https://github.com/luttero/maud/releases/download/v2.9992/Maud.zip"
           $Destination = ".\Maud.zip"
           Invoke-WebRequest -Uri $source -OutFile $Destination
           Expand-Archive -Path Maud.zip

@@ -36,7 +36,7 @@ jobs:
           use-mamba: true
       - name: download related programs and make tutorials folder for test examples
         run: |
-          wget -O Maud.tar.gz "https://www.dropbox.com/sh/3l4jpjw7mkc3cfo/AABxmzMfRS2zsxfXhUNftZHCa/linux64/Maud.tar.gz?dl=1"
+          wget -O Maud.tar.gz "https://github.com/luttero/maud/releases/download/v2.9992/Maud.tar.gz"
           tar -xvf Maud.tar.gz
           git clone https://github.com/cinemascience/cinema_debye_scherrer
       - name: config milk
