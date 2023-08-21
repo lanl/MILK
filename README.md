@@ -4,7 +4,6 @@ MILK
 ![](https://img.shields.io/github/v/release/lanl/MILK)&nbsp;
 ![](https://img.shields.io/github/repo-size/lanl/MILK)&nbsp;
 ![](https://img.shields.io/github/contributors/lanl/MILK)&nbsp;
-![](https://img.shields.io/github/downloads/lanl/MILK/total)&nbsp;
 [![DOI](https://zenodo.org/badge/504997628.svg)](https://zenodo.org/badge/latestdoi/504997628)
 
 
