@@ -9,7 +9,7 @@ dependencies:
   - tqdm
   - pip=22.1.2
   - prettytable
-  - python=3.9
+  - python >= 3.8
   - pandas
   - pydantic
   - seaborn
