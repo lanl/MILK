@@ -22,3 +22,4 @@ examples/Synchrotron/sequential_refinement/groupDatasets.txt
 *.par.lst
 /examples/non-github/*
 /examples/Synchrotron/diffev/*
+/examples/HIPPO/uncertainty/*
