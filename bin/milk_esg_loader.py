@@ -281,7 +281,7 @@ def main():
             "mx8G",
             'False',
             None,
-            str(opts.maud_batch_script)
+            str(opts.cwd.absolute() / opts.maud_batch_script)
         )
 
 if __name__ == "__main__":
