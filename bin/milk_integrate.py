@@ -17,6 +17,7 @@ from pyFAI.io import DefaultAiWriter
 from matplotlib.pyplot import subplots, close
 from pyFAI.gui import jupyter
 import matplotlib
+import copy
 matplotlib.use('Agg')
 
 
@@ -669,6 +670,7 @@ def integration2d(mask, mg, data, opts, stem, formats, histogram_plot):
     else:
         sigmas = result.sigma
 
+    formats = copy.deepcopy(formats)
     # Export esg_detector format if in formats
     if "esg_detector" in formats:
         for i, g in enumerate(mg.ais):
