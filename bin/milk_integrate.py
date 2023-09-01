@@ -589,8 +589,8 @@ def integrate(detectors, output, overwrite, formats, histogram_plot, opts, image
     mask = [detector.mask for detector in detectors]
 
     # Update mask from data
-    for i, _ in enumerate(data):
-        mask[i][data[i] <= 0] = True
+    # for i, _ in enumerate(data):
+    #     mask[i][data[i] <= 0] = True
 
     # Construct integrators
     mg = initialize_integrator(detectors, opts)
