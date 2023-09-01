@@ -7,12 +7,15 @@ MILK
 [![DOI](https://zenodo.org/badge/504997628.svg)](https://zenodo.org/badge/latestdoi/504997628)
 
 
-
+Following GitHub Action tests include:
+- MAUD batch processing using MILK script
+- HIPPO data 2-step analysis
+- Docker container build and publishing for Linux/AMD64 arch 
 
 | Linux | [![Python 3.9](https://github.com/lanl/MILK/actions/workflows/build_Lin39.yml/badge.svg)](https://github.com/lanl/MILK/actions/workflows/build_Lin39.yml) |
 | :----------- | :----------- |
 | Windows | [![Python 3.9](https://github.com/lanl/MILK/actions/workflows/build_Win39.yml/badge.svg)](https://github.com/lanl/MILK/actions/workflows/build_Win39.yml) |
-| MacOS        | [![Python 3.8 - 3.10](https://github.com/lanl/MILK/actions/workflows/build_MacPy38_310.yml/badge.svg)](https://github.com/lanl/MILK/actions/workflows/build_MacPy38_310.yml) |
+| MacOS (Intel) | [![Python 3.8 - 3.10](https://github.com/lanl/MILK/actions/workflows/build_MacPy38_310.yml/badge.svg)](https://github.com/lanl/MILK/actions/workflows/build_MacPy38_310.yml) |
 | Linux Docker | [![GitHub Docker](https://github.com/lanl/MILK/actions/workflows/build_docker_linux.yml/badge.svg)](https://github.com/lanl/MILK/actions/workflows/build_docker_linux.yml) |
 
 MAUD Interface Language Kit (MILK) is a set of Rietveld tools for automated processing of diffraction datasets. It's main features are:
@@ -24,6 +27,12 @@ MAUD Interface Language Kit (MILK) is a set of Rietveld tools for automated proc
 * output formated for cinema_debye_scherrer 
 
 More details and tutorials can be found in the [wiki](https://github.com/lanl/MILK/wiki).
+
+If you use the resources in this repository, please cite our [paper](https://doi.org/10.1107/S1600576723005472): 
+
+```
+Savage, D. J., Lutterotti, L., Biwer, C. M., McKerns, M., Bolme, C., Knezevic, M. & Vogel, S. C. (2023). MILK: a Python scripting interface to MAUD for automation of Rietveld analysis. J. Appl. Cryst. 56.
+```
 
 Installation and requirements
 =============================

@@ -8,6 +8,7 @@ on:
       - '**/.github/workflows/build_docker_linux.yml'
       - '**/.github/workflows/build_MacPy38_310.yml'
       - '**/.github/workflows/build_Lin39.yml'
+      - '**/Dockerfile'
   pull_request:
     branches: [ main ]
     paths-ignore:
@@ -15,6 +16,7 @@ on:
       - '**/.github/workflows/build_docker_linux.yml'
       - '**/.github/workflows/build_MacPy38_310.yml'
       - '**/.github/workflows/build_Lin39.yml'
+      - '**/Dockerfile'
 jobs:
   win-py39:
     name: Build MILK on Windows
@@ -37,10 +39,13 @@ jobs:
       - shell: pwsh
         run: |
           $ProgressPreference = 'SilentlyContinue'
-          $Source = "https://github.com/luttero/maud/releases/download/v2.999/Maud.zip"
+          $Source = "https://github.com/luttero/maud/releases/download/v2.9992/Maud.zip"
           $Destination = ".\Maud.zip"
           Invoke-WebRequest -Uri $source -OutFile $Destination
           Expand-Archive -Path Maud.zip
           git clone https://github.com/cinemascience/cinema_debye_scherrer
       - run: milk-config D:\a\MILK\MILK\Maud\ -c D:\a\MILK\MILK\cinema_debye_scherrer\
-      - run: pytest tests\workshop_examples.py
+      - name: run py tests
+        run: |
+          pytest tests\maudbatch_test.py
+          pytest tests/HIPPO_test.py

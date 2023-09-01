@@ -8,6 +8,7 @@ on:
       - '**/.github/workflows/build_docker_linux.yml'
       - '**/.github/workflows/build_MacPy38_310.yml'
       - '**/.github/workflows/build_Win39.yml'
+      - '**/Dockerfile'
   pull_request:
     branches: [ main ]
     paths-ignore:
@@ -15,6 +16,7 @@ on:
       - '**/.github/workflows/build_docker_linux.yml'
       - '**/.github/workflows/build_MacPy38_310.yml'
       - '**/.github/workflows/build_Win39.yml'
+      - '**/Dockerfile'
 jobs:
   ubuntu-py39:
     name: Build MILK on Linux
@@ -34,12 +36,16 @@ jobs:
           use-mamba: true
       - name: download related programs and make tutorials folder for test examples
         run: |
-          wget -O Maud.tar.gz "https://github.com/luttero/maud/releases/download/v2.999/Maud.tar.gz"
+          wget -O Maud.tar.gz "https://github.com/luttero/maud/releases/download/v2.9992/Maud.tar.gz"
           tar -xvf Maud.tar.gz
           git clone https://github.com/cinemascience/cinema_debye_scherrer
-      - name: config milk and run examples
+      - name: config milk
         run: |
           milk-config /home/runner/work/MILK/MILK/Maud -c /home/runner/work/MILK/MILK/cinema_debye_scherrer
           conda deactivate
           conda activate rietveld
-          pytest tests/workshop_examples.py
+      - name: run py tests
+        run: |
+          conda activate rietveld
+          pytest tests/maudbatch_test.py
+          pytest tests/HIPPO_test.py
