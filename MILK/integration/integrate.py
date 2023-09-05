@@ -443,9 +443,12 @@ def initialize_integrator(detectors, opts):
         chi_disc=0)
 #
 
-def integrate(detectors, output, overwrite, formats, histogram_plot, opts, images):
+def integrate(detectors, output, overwrite, formats, histogram_plot, opts, prefix, images):
     """Wrapper function to 1d and 2d integrations which imports the data and calls integration schemes."""
-    stem = output / f"{Path(images[0]).stem}"
+    if prefix is None:
+        stem = output / f"{Path(images[0]).stem}"
+    else:
+        stem = output / prefix
 
     if not overwrite and list(Path().rglob(f"{stem}*")) != []:
         # Nothing to do
@@ -598,7 +601,7 @@ def validate_image_pairs(images):
     # return images_out
 
 
-def main(files, json_file, output=None, overwrite=False, poolsize=None, formats=['dat'], histogram_plot=False, quiet=False):
+def main(files, json_file, output=None, overwrite=False, poolsize=None, prefix=None, formats=['dat'], histogram_plot=False, quiet=False):
     """Build integration file set, objects, and performed integration in parallel.
 
     Args:
@@ -611,6 +614,8 @@ def main(files, json_file, output=None, overwrite=False, poolsize=None, formats=
         -overwrite (bool, optional): Overwrite previous integration results. Defaults to False.
 
         -poolsize (int, optional): Number of processors to use. Defaults to None.
+
+        -prefix (str,optional): A string to be used as the file name. If None, the code uses the file name. Defaults to None.
 
         -format (list(str), optional): Export format of integration result. options ["dat", "xy", "xye", "xy-noheader", "fxye", "esg", "esg1", "esg_detector"].
         
@@ -643,7 +648,7 @@ def main(files, json_file, output=None, overwrite=False, poolsize=None, formats=
             print("Output format esg_detector selected.")
             print("Ensuring binned detector coordinates have been generated appropriately.")
         integrate(detectors, output, overwrite, formats,
-                  histogram_plot, opts, images[0])
+                  histogram_plot, opts, prefix, images[0])
 
     # Setup the mapper
     if poolsize == 1:
@@ -655,7 +660,7 @@ def main(files, json_file, output=None, overwrite=False, poolsize=None, formats=
     # Call main function in parallel
     if quiet:
         mapper(partial(integrate, detectors, output,
-                       overwrite, formats, histogram_plot, opts), images)
+                       overwrite, formats, histogram_plot, opts, prefix), images)
     else:
         print("")
         print(f"Using {poolsize} of {os.cpu_count()} cpus.")
@@ -663,7 +668,7 @@ def main(files, json_file, output=None, overwrite=False, poolsize=None, formats=
         print(f"Output directory is {output}")
         [print(f"Exporting file formats {format}") for format in formats]
 
-        list(tqdm.tqdm(mapper(partial(integrate, detectors, output, overwrite, formats, histogram_plot, opts),
+        list(tqdm.tqdm(mapper(partial(integrate, detectors, output, overwrite, formats, histogram_plot, opts, prefix),
                               images), total=len(images)))
 
     # Use for debugging
