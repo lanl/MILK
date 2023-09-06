@@ -1,6 +1,6 @@
 import pickle
 from functools import partial
-from pathos.pools import ThreadPool as tPool
+from pathos.pools import ProcessPool as pPool
 import fabio
 import numpy as np
 from pathlib import Path
@@ -498,6 +498,7 @@ def integration1d(mask, mg, data, opts, stem, formats, histogram_plot):
                             method=opts["method"],
                             error_model=opts["error_model"],
                             correctSolidAngle=opts["do_solid_angle"])
+    
     # Export histogram plot
     if histogram_plot:
         fig, ax = subplots()
@@ -654,26 +655,26 @@ def main(files, json_file, output=None, overwrite=False, poolsize=None, prefix=N
     if poolsize == 1:
         mapper = map
     else:
-        pool = tPool(poolsize)
+        pool = pPool(poolsize)
         mapper = pool.imap
 
     # Call main function in parallel
-    if quiet:
-        mapper(partial(integrate, detectors, output,
-                       overwrite, formats, histogram_plot, opts, prefix), images)
-    else:
-        print("")
-        print(f"Using {poolsize} of {os.cpu_count()} cpus.")
-        [print(f"File inputs are {file}") for file in files]
-        print(f"Output directory is {output}")
-        [print(f"Exporting file formats {format}") for format in formats]
+    # if quiet:
+    #     mapper(partial(integrate, detectors, output,
+    #                    overwrite, formats, histogram_plot, opts, prefix), images)
+    # else:
+    #     print("")
+    #     print(f"Using {poolsize} of {os.cpu_count()} cpus.")
+    #     [print(f"File inputs are {file}") for file in files]
+    #     print(f"Output directory is {output}")
+    #     [print(f"Exporting file formats {format}") for format in formats]
 
-        list(tqdm.tqdm(mapper(partial(integrate, detectors, output, overwrite, formats, histogram_plot, opts, prefix),
-                              images), total=len(images)))
+    #     list(tqdm.tqdm(mapper(partial(integrate, detectors, output, overwrite, formats, histogram_plot, opts, prefix),
+    #                           images), total=len(images)))
 
     # Use for debugging
-    # integrate(detectors, output, overwrite, formats,
-    #           histogram_plot, opts, images[0])
+    integrate(detectors, output, overwrite, formats,
+              histogram_plot, opts, prefix,images[0])
 
     # Cleanup parallel environment if relevant
     if poolsize != 1:
