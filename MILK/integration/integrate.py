@@ -659,22 +659,22 @@ def main(files, json_file, output=None, overwrite=False, poolsize=None, prefix=N
         mapper = pool.imap
 
     # Call main function in parallel
-    # if quiet:
-    #     mapper(partial(integrate, detectors, output,
-    #                    overwrite, formats, histogram_plot, opts, prefix), images)
-    # else:
-    #     print("")
-    #     print(f"Using {poolsize} of {os.cpu_count()} cpus.")
-    #     [print(f"File inputs are {file}") for file in files]
-    #     print(f"Output directory is {output}")
-    #     [print(f"Exporting file formats {format}") for format in formats]
+    if quiet:
+        mapper(partial(integrate, detectors, output,
+                       overwrite, formats, histogram_plot, opts, prefix), images)
+    else:
+        print("")
+        print(f"Using {poolsize} of {os.cpu_count()} cpus.")
+        [print(f"File inputs are {file}") for file in files]
+        print(f"Output directory is {output}")
+        [print(f"Exporting file formats {format}") for format in formats]
 
-    #     list(tqdm.tqdm(mapper(partial(integrate, detectors, output, overwrite, formats, histogram_plot, opts, prefix),
-    #                           images), total=len(images)))
+        list(tqdm.tqdm(mapper(partial(integrate, detectors, output, overwrite, formats, histogram_plot, opts, prefix),
+                              images), total=len(images)))
 
     # Use for debugging
-    integrate(detectors, output, overwrite, formats,
-              histogram_plot, opts, prefix,images[0])
+    # integrate(detectors, output, overwrite, formats,
+    #           histogram_plot, opts, prefix,images[0])
 
     # Cleanup parallel environment if relevant
     if poolsize != 1:
