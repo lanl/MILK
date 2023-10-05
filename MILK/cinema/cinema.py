@@ -32,7 +32,7 @@ def start_server(ip,port,serve_path):
     httpd = HTTPServer(server_address, Handler)
     httpd.serve_forever()
 
-def main(cinema_path: str = os.getenv('CINEMA_PATH').strip("'"),
+def main(cinema_path: str = os.getenv('CINEMA_PATH'),
          data_path: str = Path.cwd(),
          serve_path: str = Path.cwd(),
          port: int = 8080,
@@ -44,7 +44,9 @@ def main(cinema_path: str = os.getenv('CINEMA_PATH').strip("'"),
          local_cinema: bool = True
          ):
     """Run cinema instance."""
-
+    if cinema_path is not None:
+        cinema_path = cinema_path.strip("'")
+        
     cinema_path = Path(cinema_path)
     serve_path = Path(serve_path)
     data_path = Path(data_path)
@@ -59,7 +61,9 @@ def main(cinema_path: str = os.getenv('CINEMA_PATH').strip("'"),
 
     # Configure the http link
     html_path =  cinema_path / "main.html"
-    assert html_path.is_file(), "Please specify a valid cinema path which contains main.html"
+    if not html_path.is_file():
+        html_path = cinema_path / "index.html"
+        assert html_path.is_file(), "Please specify a valid cinema path which contains main.html"
     url = f"http://{ip}:{port}/{html_path.relative_to(serve_path)}"
 
     #configure the database.json used by cinema
