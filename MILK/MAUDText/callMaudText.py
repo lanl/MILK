@@ -192,7 +192,7 @@ def run_MAUD(maud_path, java_opt, simple_call, timeout, level, max_rerun, ins_pa
             stderr_thread.join()
 
     if exit_code==1 and level < max_rerun:
-        print(f"Running {ins_paths} again for the {level}th time.")
+        print(f"Running {ins_paths} again for the {level+1} time.")
         exit_code = run_MAUD(maud_path, java_opt, simple_call, timeout, level+1, 1, ins_paths)
 
     return exit_code
