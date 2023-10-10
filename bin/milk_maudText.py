@@ -33,6 +33,8 @@ def main():
         args.java_opt,
         str(args.simple_call),
         args.timeout,
+        0,
+        1,
         args.file)
 
 
