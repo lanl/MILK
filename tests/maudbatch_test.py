@@ -82,6 +82,8 @@ def test_maudbatch():
                         "mx8G",
                         'False',
                         None,
+                        0,
+                        1,
                         "fecu.ins")
 
                     examplefiles = [ f for f in os.listdir( os.curdir ) if os.path.isfile(f) ]
