@@ -187,14 +187,10 @@ def cake2MAUD(ai, unit, result, sigmas, data, mask, id):
     def export_interpolation(result,ai,unit,fname):
         """Interpolate detector position and angles."""
         print("Regenerating can take some time (usually 2-6 minutes per detector instance depending on detector size).")
-        # Convert a generic radial unit to radial meters
-        directDist=ai.getFit2D()["directDist"]
-        tthrad = tthToRad(result.radial,unit=unit, wavelength=ai.wavelength, directDist=directDist)
-        radial = from2ThRad(tthrad,unit=units.R_M,directDist=directDist,ai=ai)
+        # Convert a generic radial unit to radial meters (Must be already in r_m for this to work)
         
         # Get azimuthal angle and meshgrid with radial
-        chi = np.deg2rad(result.azimuthal)
-        radial_bin,chi_bin = np.meshgrid(radial,chi)
+        radial_bin,chi_bin = np.meshgrid(result.radial,np.deg2rad(result.azimuthal))
 
         # Invert geometry and perform interpolation such that 
         # X_bin and Y_bin hold the detector coordinates of some 
@@ -203,9 +199,17 @@ def cake2MAUD(ai, unit, result, sigmas, data, mask, id):
         c=ai.chiArray()
         ig = InvertGeometry(r,c)
         t = ig.many(radial_bin,chi_bin,refined=True)
+
+        #TODO Need to filter t so that only the correct detector is considered and no extrapolation is done
+
+
+        # t = ig(r[0][0],c[0][0])
+        #t contain y,x. y in pyFAI is corresponds to poni1
         X_bin = 1e3*(t[:,:,1]*ai.pixel2-ai.poni2+ai.pixel2/2.0)
         Y_bin = 1e3*(t[:,:,0]*ai.pixel1-ai.poni1+ai.pixel1/2.0)
-
+        # Y_bin = 1e3*(t[:,:,1]*ai.pixel2-ai.poni2+ai.pixel2/2.0)
+        # X_bin = 1e3*(t[:,:,0]*ai.pixel1-ai.poni1+ai.pixel1/2.0)
+        
         # Store so only a one time cost
         with open(fname, 'wb') as f:
             pickle.dump(result.radial, f)
@@ -239,7 +243,7 @@ def cake2MAUD(ai, unit, result, sigmas, data, mask, id):
 
     # Create a bin level mask
     imask = np.ma.masked_invalid(X_bin).mask | np.ma.masked_invalid(
-        Y_bin).mask | np.ma.masked_invalid(result.intensity).mask #| (result.intensity == 0)
+        Y_bin).mask | np.ma.masked_invalid(result.intensity).mask | (result.intensity == 0)
     X_bin = np.ma.masked_array(X_bin, imask)
     Y_bin = np.ma.masked_array(Y_bin, imask)
     intensity = np.ma.masked_array(result.intensity, imask)
@@ -283,14 +287,23 @@ def write_esg_detector(i_2dm, x_2dm, y_2dm, weight_2dm, chi_2d, fname, distance)
     f.write("_riet_par_spec_displac_y 0\n")
     f.write("_riet_par_spec_displac_z 0\n")
     f.write("_riet_meas_datafile_calibrated false\n")
-    index = np.argsort(chi_2d)
     chi_2d[chi_2d < 0] += 360
+    index = np.argsort(chi_2d)
     for i in index:
         intensities = i_2dm[i].compressed()
-        if len(intensities) > 0:
+        imask = np.ma.masked_invalid(intensities).mask
+        intensity_masked = np.ma.masked_array(
+                intensities, imask).compressed()
+        if len(intensity_masked) > 4:
             xs = x_2dm[i].compressed()
             ys = y_2dm[i].compressed()
+            xs = np.ma.masked_array(
+                xs, imask).compressed()
+            ys = np.ma.masked_array(
+                ys, imask).compressed()
             weights = weight_2dm[i].compressed()
+            weights = np.ma.masked_array(
+                weights, imask).compressed()
             f.write("_pd_block_id noTitle|#%d\n" % (blockid))
             f.write("\n")
             f.write("_pd_meas_angle_eta %f\n" % (chi_2d[i]))
@@ -436,7 +449,7 @@ def initialize_integrator(detectors, opts):
     return multi_geometry.MultiGeometry(
         [detector.poni for detector in detectors],
         unit=opts["unit"],
-        radial_range=opts["radial_range"] if opts["do_radial_range"] else [None,None],
+        radial_range=opts["radial_range"] if opts["do_radial_range"] else [0.0,180.0],
         azimuth_range=opts["azimuth_range"] if opts["do_azimuthal_range"] else [
             0, 360],
         empty=np.nan,
@@ -528,6 +541,7 @@ def integration2d(mask, mg, data, opts, stem, formats, histogram_plot):
         opts (dict): Dictionary of azimint.json init file.
         stem (str): Stem of image for integrated file naming.
     """
+    
     result = mg.integrate2d(lst_data=data,
                             npt_rad=opts["npt_radial"],
                             npt_azim=opts["npt_azimuth"],
@@ -645,6 +659,11 @@ def main(files, json_file, output=None, overwrite=False, poolsize=None, prefix=N
     # Check for esg_detector pickled objects and ensure that the binned detector 
     # coordinates have been generated for the current integration scheme
     if 'esg_detector' in formats:
+        if opts["unit"] != "r_m":
+            opts["unit"]="r_m"
+            if not quiet:
+                print("Only unit r_m is supported when using esg_detector")
+                
         if not quiet:
             print("Output format esg_detector selected.")
             print("Ensuring binned detector coordinates have been generated appropriately.")
