@@ -1,12 +1,10 @@
 import pickle
-from functools import partial
-from pathos.pools import ProcessPool as pPool
+from MILK.parallel import parallel_map
 import fabio
 import numpy as np
 from pathlib import Path
 from pyFAI import multi_geometry
 # from pyFAI import ext
-import tqdm
 import os
 # from scipy import stats
 import json
@@ -15,8 +13,9 @@ from matplotlib.pyplot import subplots, close
 from pyFAI.gui import jupyter
 import matplotlib
 from pyFAI.ext.invert_geometry import InvertGeometry
-from pyFAI.gui.utils.unitutils import from2ThRad,tthToRad
-from pyFAI import units
+# from pyFAI.gui.utils.unitutils import from2ThRad,tthToRad
+# from pyFAI import units
+from scipy.spatial import Delaunay
 matplotlib.use('Agg')
 import copy
 
@@ -166,90 +165,204 @@ class Diffraction(object):
         return data
 
 
-def cake2MAUD(ai, unit, result, sigmas, data, mask, id):
-    """cake2MAUD converts histograms (e.g. 2theta vs intensity) to detector position vs intensity.
+# def cake2MAUD(ai, unit, result, sigmas, fname_detector):
+#     """cake2MAUD converts histograms (e.g. 2theta vs intensity) to detector position vs intensity.
 
-    Args:
-        ai (object): Integrator object.
-        result (object): pyFAI result integration objection
-        sigmas (np.array): Uncertainty in intensity.
-        data (np.array): Tiff data.
-        mask (np.array): Tiff mask.
-        id (int): Detector index.
+#     Args:
+#         ai (object): Integrator object.
+#         result (object): pyFAI 2d result integration objection
+#         sigmas (np.array): Uncertainty in intensity.
+#         fname_detector (str): Detector coordinates file name.
 
-    Returns:
-        Intensity (np.array):  Intensity.
-        X (np.array): X position on detector.
-        Y (np.array): Y position on detector.
-        Sigmas (np.array): Uncertainty in intensity.
-    """
+#     Returns:
+#         intensity (np.array):  Intensity.
+#         X (np.array): X position on detector.
+#         Y (np.array): Y position on detector.
+#         sigmas (np.array): Uncertainty in intensity.
+#     """
+#     def in_hull(p, hull):
+#         """
+#         Test if points in `p` are in `hull`
 
-    def export_interpolation(result,ai,unit,fname):
-        """Interpolate detector position and angles."""
-        print("Regenerating can take some time (usually 2-6 minutes per detector instance depending on detector size).")
-        # Convert a generic radial unit to radial meters (Must be already in r_m for this to work)
+#         `p` should be a `NxK` coordinates of `N` points in `K` dimensions
+#         `hull` is either a scipy.spatial.Delaunay object or the `MxK` array of the 
+#         coordinates of `M` points in `K`dimensions for which Delaunay triangulation
+#         will be computed
+#         """
+#         from scipy.spatial import Delaunay
+#         if not isinstance(hull,Delaunay):
+#             hull = Delaunay(hull)
+
+#         return hull.find_simplex(p)>=0
+
+#     def export_interpolation(result,ai,unit,fname):
+#         """Interpolate detector position and angles."""
+#         print("Regenerating can take some time (usually 2-6 minutes per detector instance depending on detector size).")
+#         # Convert a generic radial unit to radial meters (Must be already in r_m for this to work)
+#         # For each pixel center get the radius in meters and azimuthal angle in radians
+#         r=ai.rArray()
+#         c=ai.chiArray()
+
+#         # Its important for a multigeometry the covers most of the azimuthal range to limit the azimuthal and radial range to that relevant to the detector
+#         radial = result.radial
+#         azimuthal = np.deg2rad(result.azimuthal)
+#         radial_bin,chi_bin = np.meshgrid(radial,azimuthal)
+#         mask = (radial_bin<np.min(r)) | (radial_bin>np.max(r)) | (chi_bin<np.min(c)) | (chi_bin>np.max(c) )
+#         radial_bint = np.ma.masked_array(radial_bin, mask).compressed()
+#         chi_bint = np.ma.masked_array(chi_bin, mask).compressed()
+
+#         # Build hull and exclude points near the edge of the detector
+#         shape=ai.get_shape()
+#         x,y = np.meshgrid(np.linspace(1.5,shape[0]-1.5),np.linspace(1.5,shape[1]-1.5))
+#         ai_hull = np.column_stack((y.ravel(),x.ravel()))
+
+
+#         # Invert geometry and get the pixel coordinates
+#         ig = InvertGeometry(r,c)
+#         t = ig.many(radial_bint,chi_bint,refined=True)
+#         t[~in_hull(t, ai_hull)]=np.nan
+#         ty = np.empty(np.shape(radial_bin))
+#         ty[:] = np.nan
+#         ty[~mask] = t[:,0]
+#         tx = np.empty(np.shape(radial_bin))
+#         tx[:] = np.nan
+#         tx[~mask] = t[:,1]
+
+#         #t contain y,x. y in pyFAI is corresponds to poni1
+#         Y_bin = 1e3*(ty*ai.pixe l1-ai.poni1+ai.pixel1/2.0)
+#         X_bin = 1e3*(tx*ai.pixel2-ai.poni2+ai.pixel2/2.0)
         
-        # Get azimuthal angle and meshgrid with radial
-        radial_bin,chi_bin = np.meshgrid(result.radial,np.deg2rad(result.azimuthal))
+#         # Store so only a one time cost
+#         with open(fname, 'wb') as f:
+#             pickle.dump(result.radial, f)
+#             pickle.dump(result.azimuthal, f)
+#             pickle.dump(X_bin, f)
+#             pickle.dump(Y_bin, f)
 
-        # Invert geometry and perform interpolation such that 
-        # X_bin and Y_bin hold the detector coordinates of some 
-        # 2theta,chi bin
-        r=ai.rArray()
-        c=ai.chiArray()
-        ig = InvertGeometry(r,c)
-        t = ig.many(radial_bin,chi_bin,refined=True)
+#         return X_bin, Y_bin
 
-        #TODO Need to filter t so that only the correct detector is considered and no extrapolation is done
+#     def load_interpolation(fname):
+#         with open(fname, 'rb') as f:
+#             radial_stored = pickle.load(f)
+#             azimuthal_stored = pickle.load(f)
+#             X_bin = pickle.load(f)
+#             Y_bin = pickle.load(f)
+#         return X_bin, Y_bin, radial_stored, azimuthal_stored
+
+#     def get_bin_detector_location(result, ai, unit, fname):
+#         """Compare key metrics to see if interpolation is good."""
+#         if Path(fname).is_file():
+#             X_bin, Y_bin, radial_stored, azimuthal_stored = load_interpolation(
+#                 fname)
+#             if all(radial_stored == result.radial) and all(azimuthal_stored == result.azimuthal):
+#                 return X_bin, Y_bin
+#             return export_interpolation(result, ai, unit, fname)
+#         else:
+#             return export_interpolation(result, ai, unit, fname)
+
+#     # Using a cache for the detector, extract bin locations
+#     X_bin,Y_bin = get_bin_detector_location(result, ai, unit, fname = fname_detector)
+
+#     # Create a bin level mask
+
+#     imask = np.ma.masked_invalid(X_bin).mask | np.ma.masked_invalid(
+#         Y_bin).mask | np.ma.masked_invalid(result.intensity).mask | (result.intensity == 0)
+#     X_bin = np.ma.masked_array(X_bin, imask)
+#     Y_bin = np.ma.masked_array(Y_bin, imask)
+#     intensity = np.ma.masked_array(result.intensity, imask)
+#     sigmas = np.ma.masked_array(sigmas, imask)
+
+#     return intensity, X_bin, Y_bin, sigmas
 
 
-        # t = ig(r[0][0],c[0][0])
-        #t contain y,x. y in pyFAI is corresponds to poni1
-        X_bin = 1e3*(t[:,:,1]*ai.pixel2-ai.poni2+ai.pixel2/2.0)
-        Y_bin = 1e3*(t[:,:,0]*ai.pixel1-ai.poni1+ai.pixel1/2.0)
-        # Y_bin = 1e3*(t[:,:,1]*ai.pixel2-ai.poni2+ai.pixel2/2.0)
-        # X_bin = 1e3*(t[:,:,0]*ai.pixel1-ai.poni1+ai.pixel1/2.0)
-        
-        # Store so only a one time cost
-        with open(fname, 'wb') as f:
-            pickle.dump(result.radial, f)
-            pickle.dump(result.azimuthal, f)
-            pickle.dump(X_bin, f)
-            pickle.dump(Y_bin, f)
+# def cake2MAUD_np(mg, result, sigmas, data, mask, id):
+#     """cake2MAUD converts histograms (e.g. 2theta vs intensity) to detector position vs intensity.
 
-        return X_bin, Y_bin
+#     Args:
+#         mg (object): Integrator object.
+#         result (object): pyFAI result integration objection
+#         sigmas (np.array): Uncertainty in intensity.
+#         data (np.array): Tiff data.
+#         mask (np.array): Tiff mask.
+#         id (int): Detector index.
 
-    def load_interpolation(fname):
-        with open(fname, 'rb') as f:
-            radial_stored = pickle.load(f)
-            azimuthal_stored = pickle.load(f)
-            X_bin = pickle.load(f)
-            Y_bin = pickle.load(f)
-        return X_bin, Y_bin, radial_stored, azimuthal_stored
+#     Returns:
+#         Intensity (np.array):  Intensity.
+#         X (np.array): X position on detector.
+#         Y (np.array): Y position on detector.
+#         Sigmas (np.array): Uncertainty in intensity.
+#     """
 
-    def get_bin_detector_location(result, ai, unit, fname):
-        """Compare key metrics to see if interpolation is good."""
-        if Path(fname).is_file():
-            X_bin, Y_bin, radial_stored, azimuthal_stored = load_interpolation(
-                fname)
-            if all(radial_stored == result.radial) and all(azimuthal_stored == result.azimuthal):
-                return X_bin, Y_bin
-            return export_interpolation(result, ai, unit, fname)
-        else:
-            return export_interpolation(result, ai, unit, fname)
+#     def export_interpolation(chi, tth, radial, azimuthal, fname, shape):
+#         """Interpolate detector position and angles."""
+#         from scipy.interpolate import LinearNDInterpolator
+#         X, Y = np.meshgrid(np.arange(0, shape[1]), np.arange(0, shape[0]))
+#         fx = LinearNDInterpolator(
+#             list(zip(chi.ravel(), tth.ravel())), X.ravel())
+#         fy = LinearNDInterpolator(
+#             list(zip(chi.ravel(), tth.ravel())), Y.ravel())
 
-    # Using a cache for the detector, extract bin locations
-    X_bin,Y_bin = get_bin_detector_location(result, ai, unit, fname = f"binned_detector_coord{id}")
+#         chi_bin, tth_bin = np.meshgrid(azimuthal, radial)
+#         X_bin = fx(chi_bin, tth_bin)*mg.pixel2-mg.poni2
+#         Y_bin = fy(chi_bin, tth_bin)*mg.pixel1-mg.poni1
 
-    # Create a bin level mask
-    imask = np.ma.masked_invalid(X_bin).mask | np.ma.masked_invalid(
-        Y_bin).mask | np.ma.masked_invalid(result.intensity).mask | (result.intensity == 0)
-    X_bin = np.ma.masked_array(X_bin, imask)
-    Y_bin = np.ma.masked_array(Y_bin, imask)
-    intensity = np.ma.masked_array(result.intensity, imask)
-    sigmas = np.ma.masked_array(sigmas, imask)
+#         X_bin = np.transpose(X_bin)*1e3
+#         Y_bin = np.transpose(Y_bin)*1e3
 
-    return intensity, X_bin, Y_bin, sigmas
+#         # Store so only a one time cost
+#         with open(fname, 'wb') as f:
+#             pickle.dump(shape, f)
+#             pickle.dump(result.radial, f)
+#             pickle.dump(result.azimuthal, f)
+#             pickle.dump(X_bin, f)
+#             pickle.dump(Y_bin, f)
+
+#         return X_bin, Y_bin
+
+#     def load_interpolation(fname):
+#         with open(fname, 'rb') as f:
+#             shape_stored = pickle.load(f)
+#             radial_stored = pickle.load(f)
+#             azimuthal_stored = pickle.load(f)
+#             X_bin = pickle.load(f)
+#             Y_bin = pickle.load(f)
+#         return X_bin, Y_bin, shape_stored, radial_stored, azimuthal_stored
+
+#     def get_interpolation(chi, tth, radial, azimuthal, fname, shape):
+#         """Compare key metrics to see if interpolation is good."""
+#         if Path(fname).is_file():
+#             X_bin, Y_bin, shape_stored, radial_stored, azimuthal_stored = load_interpolation(
+#                 fname)
+#             if shape_stored == shape and all(radial_stored == radial) and all(azimuthal_stored == azimuthal):
+#                 return X_bin, Y_bin
+#             return export_interpolation(chi, tth, radial, azimuthal, fname, shape)
+#         else:
+#             return export_interpolation(chi, tth, radial, azimuthal, fname, shape)
+
+#     # Extract the chi and tth angles for each pixel and apply mask
+#     chi = np.rad2deg(mg.chia)
+#     tth = np.rad2deg(mg.ttha)
+
+#     # If detector wraps through the original put the zero at 180 to avoid bounds issues
+#     chi_steps = np.unique(np.round(sorted(chi.ravel())))
+#     azimuthal = result.azimuthal
+#     if 360 in chi_steps or 0 in chi_steps:
+#         chi[chi >= 180] = chi[chi >= 180]-360
+#         azimuthal[azimuthal >= 180] = azimuthal[azimuthal >= 180]-360
+
+#     fname = f"binned_detector_coord{id}"
+#     X_bin, Y_bin = get_interpolation(
+#         chi, tth, result.radial, azimuthal, fname, np.shape(data))
+
+#     # Create a bin level mask
+#     imask = np.ma.masked_invalid(X_bin).mask | np.ma.masked_invalid(
+#         Y_bin).mask | np.ma.masked_invalid(result.intensity).mask | (result.intensity == 0)
+#     X_bin = np.ma.masked_array(X_bin, imask)
+#     Y_bin = np.ma.masked_array(Y_bin, imask)
+#     intensity = np.ma.masked_array(result.intensity, imask)
+#     sigmas = np.ma.masked_array(sigmas, imask)
+
+#     return intensity, X_bin, Y_bin, sigmas
 
 
 def write_esg_detector(i_2dm, x_2dm, y_2dm, weight_2dm, chi_2d, fname, distance):
@@ -454,9 +567,9 @@ def initialize_integrator(detectors, opts):
             0, 360],
         empty=np.nan,
         chi_disc=0)
-#
 
-def integrate(detectors, output, overwrite, formats, histogram_plot, opts, prefix, images):
+
+def integrate(detectors, output, overwrite, formats, histogram_plot, opts, prefix, prefix_detector,images):
     """Wrapper function to 1d and 2d integrations which imports the data and calls integration schemes."""
     if prefix is None:
         stem = output / f"{Path(images[0]).stem}"
@@ -491,7 +604,7 @@ def integrate(detectors, output, overwrite, formats, histogram_plot, opts, prefi
     if opts["npt_azimuth"] == 1 and not opts["do_2D"]:
         integration1d(mask, mg, data, opts, stem, formats, histogram_plot)
     else:
-        integration2d(mask, mg, data, opts, stem, formats, histogram_plot)
+        integration2d(mask, mg, data, opts, stem, formats, histogram_plot,prefix_detector)
 
 
 def integration1d(mask, mg, data, opts, stem, formats, histogram_plot):
@@ -531,7 +644,7 @@ def integration1d(mask, mg, data, opts, stem, formats, histogram_plot):
                       sigma, stem, format, 0.0, opts)
 
 
-def integration2d(mask, mg, data, opts, stem, formats, histogram_plot):
+def integration2d(mask, mg, data, opts, stem, formats, histogram_plot,prefix_detector):
     """Perform caked integration of multigeometry diffraction image.
 
     Args:
@@ -540,6 +653,7 @@ def integration2d(mask, mg, data, opts, stem, formats, histogram_plot):
         data (numpy array): 2D numpy array of an diffraction image.
         opts (dict): Dictionary of azimint.json init file.
         stem (str): Stem of image for integrated file naming.
+        prefix_detector (str): Prefix and path for the detector geometry (only matters for esg_detector output).
     """
     
     result = mg.integrate2d(lst_data=data,
@@ -569,7 +683,7 @@ def integration2d(mask, mg, data, opts, stem, formats, histogram_plot):
     if "esg_detector" in formats:
         for i, g in enumerate(mg.ais):
             intensity_det, X_bin_det, Y_bin_det, sigmas_det = cake2MAUD(
-                g, mg.unit, result, sigmas, data[i], mask[i], i)
+                g, mg.unit, result, sigmas, data[i], mask[i], f"{prefix_detector}{i}")
             write_esg_detector(intensity_det, Y_bin_det, X_bin_det,
                                sigmas_det, result.azimuthal, f"{stem}_det{i}_2d.esg", g.get_dist()*1e3)
         formats.pop(formats.index("esg_detector"))
@@ -616,7 +730,7 @@ def validate_image_pairs(images):
     # return images_out
 
 
-def main(files, json_file, output=None, overwrite=False, poolsize=None, prefix=None, formats=['dat'], histogram_plot=False, quiet=False):
+def main(files, json_file, output=None, overwrite=False, poolsize=None, prefix=None, formats=['dat'], histogram_plot=False, quiet=False,use_glob=True,prefix_detector="binned_detector_coord"):
     """Build integration file set, objects, and performed integration in parallel.
 
     Args:
@@ -637,6 +751,10 @@ def main(files, json_file, output=None, overwrite=False, poolsize=None, prefix=N
         -histogram_plot (bool, optional): Export png histogram plots . Defaults to 'False'.
         
         -quiet (bool, optional): Turn off terminal messages. Defaults to 'False'.
+
+        -use_blog (bool, optional): If 'True' use glob list construction (expects 1x#detector array). If 'False' utilized preconstruct #casesX#detector array. Defaults to 'True'
+    
+        -prefix_detector (str, optional): Relative path to binned coordinates. Defaults to 'binned_detector_coord'
     """
     # Load integration options file
     with open(json_file, 'r') as f:
@@ -647,8 +765,11 @@ def main(files, json_file, output=None, overwrite=False, poolsize=None, prefix=N
 
     # Construct image set of size N_file_in_set x N_sets
     images = []
-    for file in files:
-        images.append(sorted([str(p) for p in Path().rglob(file)]))
+    if use_glob:
+        for file in files:
+            images.append(sorted([str(p) for p in Path().rglob(file)]))
+    else:
+        images=files
     images = validate_image_pairs(images)
 
     # Configure the output directory
@@ -668,34 +789,22 @@ def main(files, json_file, output=None, overwrite=False, poolsize=None, prefix=N
             print("Output format esg_detector selected.")
             print("Ensuring binned detector coordinates have been generated appropriately.")
         integrate(detectors, output, overwrite, formats,
-                  histogram_plot, opts, prefix, images[0])
+                  histogram_plot, opts, prefix, prefix_detector, images[0])
 
-    # Setup the mapper
-    if poolsize == 1:
-        mapper = map
-    else:
-        pool = pPool(poolsize)
-        mapper = pool.imap
 
-    # Call main function in parallel
-    if quiet:
-        mapper(partial(integrate, detectors, output,
-                       overwrite, formats, histogram_plot, opts, prefix), images)
-    else:
-        print("")
+    # Call main function
+    def print_info(files,poolsize, output, formats):
+        """Print integration run information."""
         print(f"Using {poolsize} of {os.cpu_count()} cpus.")
-        [print(f"File inputs are {file}") for file in files]
+        if len(files)>4:
+            [print(f"File inputs are {file}") for file in files[:4]]
+        else:
+            [print(f"File inputs are {file}") for file in files]
         print(f"Output directory is {output}")
         [print(f"Exporting file formats {format}") for format in formats]
 
-        list(tqdm.tqdm(mapper(partial(integrate, detectors, output, overwrite, formats, histogram_plot, opts, prefix),
-                              images), total=len(images)))
+    if not quiet: print_info(files,poolsize, output, formats)
+    out = parallel_map(integrate, poolsize, quiet, images, detectors,
+                                output, overwrite, formats, histogram_plot, opts, prefix, prefix_detector)
 
-    # Use for debugging
-    # integrate(detectors, output, overwrite, formats,
-    #           histogram_plot, opts, prefix,images[0])
-
-    # Cleanup parallel environment if relevant
-    if poolsize != 1:
-        pool.close()
 
