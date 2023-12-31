@@ -129,12 +129,13 @@ def _write_out(stream,filename):
         for line in stream:
             fID.write('%s\n' % line.strip())
 
-def run_MAUD(maud_path, java_opt, simple_call, timeout, ins_paths):
+def run_MAUD(maud_path, java_opt, simple_call, timeout, level, max_rerun, ins_paths):
 
     # This may be modified once general paths are filled out
     if "linux" in sys.platform:
         # linux
         java = os.path.join(maud_path, 'jdk/bin/java')
+        java = f"exec {java}"
         lib = os.path.join(maud_path, 'lib/*')
         opts = f'-{java_opt}  --enable-preview -cp "{lib}"'
 
@@ -189,7 +190,11 @@ def run_MAUD(maud_path, java_opt, simple_call, timeout, ins_paths):
                     p.kill()
             stdout_thread.join()
             stderr_thread.join()
-        
+
+    if exit_code==1 and level < max_rerun:
+        print(f"Running {ins_paths} again for the {level+1} time.")
+        exit_code = run_MAUD(maud_path, java_opt, simple_call, timeout, level+1, 1, ins_paths)
+
     return exit_code
 
 
@@ -321,7 +326,7 @@ def main(argsin):
                 return [run_MAUD(args.maud_path,
                                  args.java_opt,
                                  args.simple_call,
-                                 args.timeout, paths[0][0])]
+                                 args.timeout, 0, 1, paths[0][0])]
             elif args.nMAUD > os.cpu_count():
                 pool = Pool(os.cpu_count())
             else:
@@ -331,7 +336,7 @@ def main(argsin):
         out = list(map(partial(run_MAUD, args.maud_path,
                                args.java_opt,
                                args.simple_call,
-                               args.timeout), paths[0]))
+                               args.timeout, 0, 1), paths[0]))
         return out
 
     print('')
@@ -374,7 +379,9 @@ def main(argsin):
                               args.maud_path,
                               args.java_opt,
                               args.simple_call,
-                              args.timeout),
+                              args.timeout,
+                              0,
+                              1),
                       paths[0]),
             total=len(paths[0])
         )

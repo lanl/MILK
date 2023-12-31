@@ -9,7 +9,8 @@ Created on Thu Feb 18 08:29:42 2021
 from . import generateIns
 from . import callMaudText
 import shutil
-
+from IPython.display import Image
+from pathlib import Path
 
 class arguments:
     def __init__(self):
@@ -276,3 +277,15 @@ class maudText(arguments):
             self.exit_code = callMaudText.main(self.args_compute)
             if inc_step:
                 self.cur_step = str(int(self.cur_step)+1)
+
+    def ipy_plot_step(self,step:int,det_name:list[str], d1:bool=True, d2:bool=True, width:int=None, height:int=None, work_dir:Path=None):
+        """Plot MAUDText archived step in ipython notebook ."""
+        if work_dir is None:
+            work_dir = Path(self.work_dir)
+        images=[]
+        for name in det_name:
+            if d1:
+                images.append(Image(filename= work_dir / f"step_{step}" / f"plot1d_{name}.png",width=width,height=height))
+            if d2:
+                images.append(Image(filename=work_dir / f"step_{step}" / f"plot_{name}.png",width=width,height=height))
+        display(*images)

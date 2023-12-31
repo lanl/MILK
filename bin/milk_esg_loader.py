@@ -18,7 +18,7 @@ class get_arguments():
         self.interface = arg.interface
         parser = getattr(self,self.interface)()
         opts = parser.parse_args(sys.argv[3:])
-        opts.target = Path(opts.maud_output_par).parent
+        opts.output = Path(opts.maud_output_par).parent
         opts.omegas, opts.esg_files, opts.poni_files, opts.maud_detectors = self.parse_opts(opts)
         
         # remove omegas to be compatible with the python interface
@@ -126,7 +126,7 @@ def entry_point():
          maud_output_par=opts.maud_output_par,
          poni_files=opts.poni_files,
          omega=opts.omegas,
-         target=opts.target,
+         output=opts.output,
          maud_batch_script=opts.maud_batch_script,
          maud_load_script=opts.maud_load_script,
          maud_run_import=opts.maud_run_import
