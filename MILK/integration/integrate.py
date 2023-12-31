@@ -445,7 +445,7 @@ def write_esg1(radial, intensities, azimuthal, sigmas, file):
                 sigma_masked = np.ma.masked_array(sigma, imask).compressed()
                 header = f"\n_pd_block_id noTitle|#{i}\n" \
                     f"_pd_meas_angle_eta {azimuth}\n" \
-                    f"_pd_meas_angle_omega {0.0}\n\n" \
+                    f"_pd_meas_angle_omega {0.0:9.4f}\n\n" \
                     f"loop_\n" \
                     f"_pd_meas_position_x _pd_meas_intensity_total _pd_proc_intensity_weight"
                 np.savetxt(f,
