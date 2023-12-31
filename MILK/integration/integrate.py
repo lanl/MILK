@@ -618,7 +618,7 @@ def main(files, json_file, output=None, overwrite=False, poolsize=None, prefix=N
 
         -prefix (str,optional): A string to be used as the file name. If None, the code uses the file name. Defaults to None.
 
-        -format (list(str), optional): Export format of integration result. options ["dat", "xy", "xye", "xy-noheader", "fxye", "esg", "esg1", "esg_detector"].
+        -formats (list(str), optional): Export format of integration result. options ["dat", "xy", "xye", "xy-noheader", "fxye", "esg", "esg1", "esg_detector"].
         
         -histogram_plot (bool, optional): Export png histogram plots . Defaults to 'False'.
         
