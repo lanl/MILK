@@ -7,7 +7,7 @@ Created on Wed Oct  7 15:54:04 2020
 """
 import argparse
 import os
-from .model import (texture, sizeStrain)
+from .model import (texture, sizeStrain,detector)
 from pathlib import Path
 
 class arguments:
@@ -159,6 +159,11 @@ class arguments:
             args = args+'--wild_range '
             for wild_range in self.wild_range:
                 args = args+str(wild_range[0])+' '+str(wild_range[1])+' '
+        if self.postfix != None:
+            args = args + '--postfix '
+            for postfix in self.postfix:
+                args+=f"{postfix} "
+
 
         # trim at the end
         self.args = args[0:-1]
@@ -994,7 +999,7 @@ class editor(arguments):
         else:
             raise NameError('Specify a valid key: None, Arbitrary, EWIMV')
         self.sobj1 = sobj
-
+        self.postfix=None
         # combine the arguments and run if applicable
         self.parse_arguments_model()
         if run:
@@ -1029,6 +1034,7 @@ class editor(arguments):
         else:
             raise NameError('Specify a valid key: Isotropic, Anisotropic)')
         self.sobj1 = sobj
+        self.postfix=None
 
         # combine the arguments and run if applicable
         self.parse_arguments_model()
@@ -1038,7 +1044,44 @@ class editor(arguments):
         # Prevent reinitialization
         self.ifile = self.ofile
 
-            
+    def detector(self, postfix=None, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None, run=True):
+        '''
+              detector duplicates a MAUD detectors len(postfix) times and add postfix to each detector instance.
+
+              Outputs: 
+                  stores the detector_names for use elsewhere.
+        '''
+        if work_dir != None:
+            self.work_dir = work_dir
+        if ifile != None:
+            self.ifile = ifile
+        if ofile != None:
+            self.ofile = ofile
+        if run_dirs != None:
+            self.run_dirs = run_dirs
+
+        if wild != None:
+            self.wild = wild
+        if wild_range != None:
+            self.wild_range = wild_range
+        if postfix != None:
+            self.postfix = postfix
+        else:
+            raise NameError('Specify a list of postfix strings)')
+        self.key=None
+        self.sobj1=None
+
+        # combine the arguments and run if applicable
+        self.parse_arguments_model()
+        if run:
+            detector_names=detector.main(self.args)
+        else:
+            detector_names=[]
+
+        # Prevent reinitialization
+        self.ifile = self.ofile
+        return detector_names
+
     def summary(self, ifile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None):
         if ifile == None:
             ifile = self.ifile
