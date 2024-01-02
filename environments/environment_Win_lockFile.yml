@@ -24,6 +24,7 @@ dependencies:
   - pyqtgraph
   - autopep8
   - git
+  - multiprocess
 
   # Spotlight
   - klepto=0.2.2
