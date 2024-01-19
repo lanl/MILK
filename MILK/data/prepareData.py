@@ -78,7 +78,7 @@ def main(filename: str = "dataset.csv", work_dir: Path = Path.cwd(), keep_intens
         target_dir = work_dir / folder
         target_dir.mkdir(parents=True,exist_ok=True)
         for file in data_files:
-            shutil.copyfile(Path(data_dir) / file, target_dir / file)
+            shutil.copyfile(Path(data_dir) / file, target_dir / Path(file).name)
 
         # Readin the template file
         linesTfile = read_file(ifile)
