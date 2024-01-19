@@ -445,7 +445,7 @@ def write_esg1(radial, intensities, azimuthal, sigmas, file):
                 sigma_masked = np.ma.masked_array(sigma, imask).compressed()
                 header = f"\n_pd_block_id noTitle|#{i}\n" \
                     f"_pd_meas_angle_eta {azimuth}\n" \
-                    f"_pd_meas_angle_omega {0.0}\n\n" \
+                    f"_pd_meas_angle_omega {0.0:9.4f}\n\n" \
                     f"loop_\n" \
                     f"_pd_meas_position_x _pd_meas_intensity_total _pd_proc_intensity_weight"
                 np.savetxt(f,
@@ -746,7 +746,7 @@ def main(files, json_file, output=None, overwrite=False, poolsize=None, prefix=N
 
         -prefix (str,optional): A string to be used as the file name. If None, the code uses the file name. Defaults to None.
 
-        -format (list(str), optional): Export format of integration result. options ["dat", "xy", "xye", "xy-noheader", "fxye", "esg", "esg1", "esg_detector"].
+        -formats (list(str), optional): Export format of integration result. options ["dat", "xy", "xye", "xy-noheader", "fxye", "esg", "esg1", "esg_detector"].
         
         -histogram_plot (bool, optional): Export png histogram plots . Defaults to 'False'.
         

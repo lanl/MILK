@@ -3,28 +3,29 @@ name: rietveld
 channels:
   - defaults
   - conda-forge
-
+  
 dependencies:
   #Base MILK
   - tqdm
-  - pip
+  - pip=22.1.2
   - prettytable
-  - python=3.9
+  - python >= 3.8
   - pandas
   - pydantic
   - seaborn
   - pyfai
   - matplotlib
   - pyopencl
+  - ocl_icd_wrapper_apple
   - opencv
   - pyqtgraph
   - autopep8
   - git
-  - multiprocess
+  - pytest
 
   # Spotlight
   - klepto=0.2.2
-  - numpy=1.23.0
+  - numpy=1.23.1
   - openmpi
   - mpi4py
   - jupyter=1.0.0
@@ -32,4 +33,14 @@ dependencies:
   - sphinx=5.0.2
   - sphinxcontrib-programoutput=0.16
   - scipy=1.8.1
-  - scikit-learn=1.1.2
+  - scikit-learn=1.2.2
+
+  # pip packages
+  - pip:
+    #MILK github installation
+    - -e ../
+    #Spotlight
+    - git+https://github.com/lanl/spotlight.git@v0.10.2
+    - git+https://github.com/uqfoundation/mystic.git
+    - pyina==0.2.8
+    - pathos==0.3.1

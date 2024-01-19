@@ -22,6 +22,7 @@ dependencies:
   - autopep8
   - git
   - pytest
+  - multiprocess
 
   # Spotlight
   - klepto=0.2.2

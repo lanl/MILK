@@ -106,14 +106,13 @@ def update_angle_in_esg(esg_file, omega, key="_pd_meas_angle_omega"):
     Note it is assumed the first angle reference is the only reference! Done avoid reading large files
     Can also use _pd_meas_angle_omega, _pd_meas_angle_chi,_pd_meas_angle_phi
     """
- 
-    keyval = bytes(f"{key} {float(omega):.6}\n", 'utf-8')
+    #NOTE: deeply flawed. If the keyval has longer bit length then part of next line is over written! Need to adopt something like the par file import.
+    keyval = bytes(f"{key} {float(omega):9.4f}\n", 'utf-8')
     with open(esg_file, 'rb+') as f1:
         for line in f1:
-            if b'{key}' in line:
+            if key.encode('utf8') in line:
                 f1.seek(idx)
                 f1.write(keyval)
-                break
             idx = f1.tell()
 
 
@@ -219,11 +218,12 @@ def main(esg_files: list[str],
     shutil.copyfile(maud_input_par, output / maud_output_par)
 
     # Update MAUD file with poni
-    for poni_file, maud_detector in zip(poni_files, maud_detectors):
-        if poni_file is not None:
-            poni = Poni(poni_file)
-            poni.update_poni_in_par(
-                maud_detector, str(output / maud_output_par))
+    if poni_files is not None:
+        for poni_file, maud_detector in zip(poni_files, maud_detectors):
+            if poni_file is not None:
+                poni = Poni(poni_file)
+                poni.update_poni_in_par(
+                    maud_detector, str(output / maud_output_par))
     
 
     # Run import using MILK
