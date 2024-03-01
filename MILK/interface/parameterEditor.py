@@ -872,6 +872,7 @@ class editor(arguments):
                 shutil.copy(infile,outfile)
         if maudText is not None:
             maudText.cur_step = step_number+1
+            maudText.ifile=self.ofile
         self.ifile = self.ofile
 
 
