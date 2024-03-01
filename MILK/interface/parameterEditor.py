@@ -1742,6 +1742,9 @@ def get_arguments(argsin):
                 wilds.append(i)
     wilds = list(set(wilds))
 
+    #path of outfile
+    
+
     # Build input file paths
     ifile = []
     tmp = os.path.join(args.work_dir, args.run_dir, args.ifile)
@@ -1750,16 +1753,24 @@ def get_arguments(argsin):
     else:
         for wild in wilds:
             ifile.append(tmp.replace('(wild)', str(wild).zfill(args.zfill)))
-    args.ifile = ifile
 
-    # Generate the output file names
+
+    #Generate output names
+    ofile=[]
     if args.ofile == None:
-        args.ofile = args.ifile
+        args.ofile = ifile
+        args.ofile_return = args.ifile
     else:
-        ofile = []
-        for file in args.ifile:
-            ofile.append(os.path.join(os.path.dirname(file), args.ofile))
+        args.ofile_return=args.ofile
+        tmp = os.path.join(args.work_dir, args.run_dir, args.ofile)
+        if wilds==[] or '(wild)' not in tmp:
+            ofile.append(tmp)
+        else:
+            for wild in wilds:
+                ofile.append(tmp.replace('(wild)', str(wild).zfill(args.zfill)))
         args.ofile = ofile
+
+    args.ifile = ifile
 
     if args.sobj == None:
         args.sobj = [[None]]
@@ -2046,7 +2057,7 @@ def main(argsin,lines=None,do_write=True):
         if args.verbose > 0:
             getStats(linesMod, nlinesMod, ifile, args.key[0])
 
-    return ofile
+    return args.ofile_return
 
 if __name__ == '__main__':
     main([])

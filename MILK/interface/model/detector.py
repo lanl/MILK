@@ -8,7 +8,7 @@ Created on Tue Jan  5 16:35:10 2021
 
 import argparse
 import os
-
+from pathlib import Path
 def read_par(ifile):
     with open(ifile) as f:
         lines = f.readlines()
@@ -114,21 +114,29 @@ def get_arguments(argsin):
                 wilds.append(i)            
     wilds=list(set(wilds))
 
+
     #Build input file paths
     ifile=[]
-    tmp = os.path.join(args.work_dir,args.run_dir,args.sub_dir,args.ifile)        
+    tmp = os.path.join(args.work_dir,args.run_dir,args.ifile)        
     for wild in wilds:
         ifile.append(tmp.replace('(wild)',str(wild).zfill(3)))          
-    args.ifile=ifile
-
-    #Generate the output file names
-    if args.ofile==None:
-        args.ofile = args.ifile
+    
+    #Generate output names
+    ofile=[]
+    if args.ofile == None:
+        args.ofile = ifile
+        args.ofile_return = args.ifile
     else:
-        ofile=[]
-        for file in args.ifile:
-            ofile.append(os.path.join(os.path.dirname(file),args.ofile) )
-        args.ofile=ofile 
+        args.ofile_return=args.ofile
+        tmp = os.path.join(args.work_dir, args.run_dir, args.ofile)
+        if wilds==[] or '(wild)' not in tmp:
+            ofile.append(tmp)
+        else:
+            for wild in wilds:
+                ofile.append(tmp.replace('(wild)', str(wild).zfill(args.zfill)))
+        args.ofile = ofile
+
+    args.ifile = ifile
     
     return args
 
@@ -181,7 +189,7 @@ def main(argsin):
         #write back the par
         write_par(lines,args.ofile[ind])  
 
-    return detector_names,args.ofile[0]
+    return detector_names,args.ofile_return
 
 if __name__ == '__main__':
     main([])
