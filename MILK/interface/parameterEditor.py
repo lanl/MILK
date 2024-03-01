@@ -9,7 +9,7 @@ import argparse
 import os
 from .model import (texture, sizeStrain,detector)
 from pathlib import Path
-
+import shutil
 class arguments:
     def __init__(self):
         self.work_dir = None
@@ -233,7 +233,7 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            main(self.args,lines,not use_stored_par)
+            self.ofile = main(self.args,lines,not use_stored_par)
 
         # Prevent reinitialization
         self.ifile = self.ofile
@@ -287,7 +287,7 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            main(self.args,lines,not use_stored_par)
+            self.ofile = main(self.args,lines,not use_stored_par)
 
         # Prevent reinitialization
         self.ifile = self.ofile
@@ -345,7 +345,7 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            main(self.args,lines,not use_stored_par)
+            self.ofile = main(self.args,lines,not use_stored_par)
 
         # Prevent reinitialization
         self.ifile = self.ofile
@@ -546,7 +546,7 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            main(self.args,lines,not use_stored_par)
+            self.ofile = main(self.args,lines,not use_stored_par)
 
         # Prevent reinitialization
         self.ifile = self.ofile
@@ -603,7 +603,7 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            main(self.args,lines,not use_stored_par)
+            self.ofile = main(self.args,lines,not use_stored_par)
 
         # Prevent reinitialization
         self.ifile = self.ofile
@@ -656,7 +656,7 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            main(self.args,lines,not use_stored_par)
+            self.ofile = main(self.args,lines,not use_stored_par)
 
         # Prevent reinitialization
         self.ifile = self.ofile
@@ -708,7 +708,7 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            main(self.args,lines,not use_stored_par)
+            self.ofile = main(self.args,lines,not use_stored_par)
 
         # Prevent reinitialization
         self.ifile = self.ofile
@@ -760,10 +760,120 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            main(self.args,lines,not use_stored_par)
+            self.ofile = main(self.args,lines,not use_stored_par)
 
         # Prevent reinitialization
         self.ifile = self.ofile
+    def run_copy_file(self,target,dest,work_dir=None, run_dirs=None, wild=None, wild_range=None):
+        '''
+        Copy files using the run folders path generation.
+        Required Inputs: 
+            target  (str): File you wish to copy relative to work and run directories
+            dest    (str): Destination file you wish to make relative to work and run directories.
+
+        Outputs: 
+            Copies target to dest
+        '''
+        if work_dir != None:
+            self.work_dir = work_dir
+        if run_dirs != None:
+            self.run_dirs = run_dirs
+        if wild != None:
+            self.wild = wild
+        if wild_range != None:
+            self.wild_range = wild_range
+
+        # Get wild cases if any and combine range and wild
+        wilds = []
+        if self.wild != None:
+            for i in self.wild:
+                wilds.append(i)
+
+        if self.wild_range != None:
+            for pair in self.wild_range:
+                if pair !=[]:
+                    tmp_id = range(pair[0], pair[1])               
+                    for i in tmp_id:
+                        wilds.append(i)
+        wilds = list(set(wilds))
+
+        infiles = Path(self.work_dir) / self.run_dirs / target
+        outfiles = Path(self.work_dir) / self.run_dirs / dest
+        if wilds==[] or '(wild)' not in str(infiles):
+            if outfiles.exists():
+                outfiles.unlink()
+            shutil.copy(infiles,outfiles)
+        else:
+            for wild in wilds:
+                infile = str(infiles).replace('(wild)', str(wild).zfill(self.zfill))
+                outfile = str(outfiles).replace('(wild)', str(wild).zfill(self.zfill))
+                if Path(outfile).exists():
+                    Path(outfile).unlink()
+                shutil.copy(infile,outfile)
+
+    def load_archived_step(self, step_number: int, maudText=None, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None):
+        '''
+        Load a MILK archived step to the work directory and set editor and MAUDText parameters
+        Required Inputs: 
+            step_number (str): step_number
+
+        Optional Inputs: 
+            MaudText    (obj): MaudText object for step setting (default=None).
+            ifile    (str): input parameter file 
+            dir      (str): working work_dir
+        Outputs: 
+            Copies input par and editor arguments with references for the step
+        '''
+        if work_dir != None:
+            self.work_dir = work_dir
+        if run_dirs != None:
+            self.run_dirs = run_dirs
+        if wild != None:
+            self.wild = wild
+        if wild_range != None:
+            self.wild_range = wild_range
+        if ifile != None:
+            self.ifile = ifile
+        if ofile != None:
+            self.ofile = ofile
+        # Get wild cases if any and combine range and wild
+        wilds = []
+        if self.wild != None:
+            for i in self.wild:
+                wilds.append(i)
+
+        if self.wild_range != None:
+            for pair in self.wild_range:
+                if pair !=[]:
+                    tmp_id = range(pair[0], pair[1])               
+                    for i in tmp_id:
+                        wilds.append(i)
+        wilds = list(set(wilds))
+
+        infiles = Path(self.work_dir) / self.run_dirs / f"step_{step_number}" / self.ifile
+        outfiles = Path(self.work_dir) / self.run_dirs / self.ofile
+        if wilds==[] or '(wild)' not in str(infiles):
+            if outfiles.exists():
+                outfiles.unlink()
+            shutil.copy(infiles,outfiles)
+        else:
+            for wild in wilds:
+                infile = str(infiles).replace('(wild)', str(wild).zfill(self.zfill))
+                if ifile is None:
+                    pars = list(Path(infile).parent.glob("*.par"))
+                    if len(pars) >1: 
+                        print(f"Warning: More than one .par file found in {Path(infile).parent}. Using {pars[0]}")
+                    elif len(pars)==0:
+                        raise FileNotFoundError(f"No .par file was found in {Path(infile).parent}")
+                    infile = str(pars[0])
+                outfile = str(outfiles).replace('(wild)', str(wild).zfill(self.zfill))
+                if Path(outfile).exists():
+                    Path(outfile).unlink()
+                shutil.copy(infile,outfile)
+        if maudText is not None:
+            maudText.cur_step = step_number+1
+        self.ifile = self.ofile
+
 
     def reset_odf(self, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None,use_stored_par=False):
         '''
@@ -811,7 +921,7 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            main(self.args,lines,not use_stored_par)
+            self.ofile = main(self.args,lines,not use_stored_par)
 
         # Prevent reinitialization
         self.ifile = self.ofile
@@ -864,7 +974,7 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            main(self.args,lines,not use_stored_par)
+            self.ofile = main(self.args,lines,not use_stored_par)
 
         # Prevent reinitialization
         self.ifile = self.ofile
@@ -917,7 +1027,7 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            main(self.args,lines,not use_stored_par)
+            self.ofile = main(self.args,lines,not use_stored_par)
 
         # Prevent reinitialization
         self.ifile = self.ofile
@@ -968,7 +1078,7 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments()
         if run:
-            main(self.args,lines,not use_stored_par)
+            self.ofile = main(self.args,lines,not use_stored_par)
 
         # Prevent reinitialization
         self.ifile = self.ofile
@@ -1003,7 +1113,7 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments_model()
         if run:
-            texture.main(self.args)
+            self.ofile = texture.main(self.args)
 
         # Prevent reinitialization
         self.ifile = self.ofile
@@ -1039,7 +1149,7 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments_model()
         if run:
-            sizeStrain.main(self.args)
+            self.ofile = sizeStrain.main(self.args)
 
         # Prevent reinitialization
         self.ifile = self.ofile
@@ -1074,7 +1184,7 @@ class editor(arguments):
         # combine the arguments and run if applicable
         self.parse_arguments_model()
         if run:
-            detector_names=detector.main(self.args)
+            detector_names,self.ofile=detector.main(self.args)
         else:
             detector_names=[]
 
@@ -1935,6 +2045,7 @@ def main(argsin,lines=None,do_write=True):
         if args.verbose > 0:
             getStats(linesMod, nlinesMod, ifile, args.key[0])
 
+    return ofile
 
 if __name__ == '__main__':
     main([])

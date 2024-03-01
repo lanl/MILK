@@ -180,6 +180,8 @@ def main(argsin):
         #write back the par
         write_par(lines,args.ofile[ind])    
 
+    return args.ofile[0]
+    
 if __name__ == '__main__':
     main([])
        

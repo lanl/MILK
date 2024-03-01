@@ -181,7 +181,8 @@ def main(argsin):
         #write back the par
         write_par(lines,args.ofile[ind])  
 
-    return detector_names
+    return detector_names,args.ofile[0]
+
 if __name__ == '__main__':
     main([])
        

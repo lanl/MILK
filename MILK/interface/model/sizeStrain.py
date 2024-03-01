@@ -173,7 +173,9 @@ def main(argsin):
         lines=insert_tex(lines,index,args)
         
         #write back the par
-        write_par(lines,args.ofile[ind])    
+        write_par(lines,args.ofile[ind])
+
+    return args.ofile[0]    
 
 if __name__ == '__main__':
     main([])
