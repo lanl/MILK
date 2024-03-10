@@ -125,7 +125,7 @@ def get_arguments(argsin):
             ofile.append(tmp)
         else:
             for wild in wilds:
-                ofile.append(tmp.replace('(wild)', str(wild).zfill(args.zfill)))
+                ofile.append(tmp.replace('(wild)', str(wild).zfill(3)))
         args.ofile = ofile
 
     args.ifile = ifile
