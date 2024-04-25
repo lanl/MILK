@@ -1,4 +1,4 @@
-name: Python 3.8-3.10
+name: Python 3.9-3.10
 
 on:
   push:
@@ -18,41 +18,6 @@ on:
       - '**/.github/workflows/build_Lin39.yml'
       - '**/Dockerfile'
 jobs:
-  macos-py38:
-    name: Build MILK on IntelMac with Python 3.8
-    runs-on: macos-latest
-    defaults:
-      run:
-        shell: bash -el {0}
-    steps:
-      - uses: actions/checkout@v2
-      - uses: conda-incubator/setup-miniconda@v2
-        with:
-          activate-environment: rietveld
-          python-version: 3.8
-          environment-file: environments/environment_mac.yml
-          auto-activate-base: false
-          miniforge-variant: Mambaforge-pypy3
-          use-mamba: true
-      - name: download related programs and make tutorials folder for test examples
-        run: |
-          curl -JLO "https://github.com/luttero/maud/releases/download/v2.9992/Maud_intel64.dmg.gz"
-          gunzip Maud_intel64.dmg.gz
-          hdiutil attach Maud_intel64.dmg
-          cp -r /Volumes/Maud .
-          cp -r ./Maud/Maud.app /Applications/Maud.app
-          git clone https://github.com/cinemascience/cinema_debye_scherrer
-      - name: config milk and run examples
-        run: |
-          milk-config /Applications/Maud.app -c ./cinema_debye_scherrer
-          conda deactivate
-          conda activate rietveld
-      - name: run py tests
-        run: |
-          conda activate rietveld
-          pytest tests/maudbatch_test.py
-          pytest tests/HIPPO_test.py
-
   macos-py39:
     name: Build MILK on MacOS Intel
     runs-on: macos-latest
