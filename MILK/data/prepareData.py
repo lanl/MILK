@@ -66,7 +66,7 @@ def swap_datasets(lines, datasets, background=None):
         datasetsold = [datasetold for datasetold in datasetsold if datasetold not in datasetoldbk[0]]
 
     assert len(datasetsold) == len(datasets), 'The length of datasets were not the same!'
-    assert len(datasetoldbk) == 1,'Only single backgrounds are supported'
+    assert len(datasetoldbk) == 1 or datasetoldbk==[],'Only single backgrounds are supported'
 
     # Loop over the datasets and copy in the new file names
     for ind in datasetInd:
