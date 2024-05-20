@@ -42,4 +42,4 @@ def parse_spectra(file):
     return spectra
 
 def extract_spectra(files,poolsize=get_ncpus()):
-    return parallel_map(parse_spectra,poolsize,False,files)
+    return parallel_map(parse_spectra,poolsize,True,files)
