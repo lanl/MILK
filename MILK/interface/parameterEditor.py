@@ -350,6 +350,54 @@ class editor(arguments):
         # Prevent reinitialization
         self.ifile = self.ofile
 
+    def get_key(self, key, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None,use_stored_par=False):
+        '''
+        get the key value and subordinate information.
+        Required Inputs: 
+        Optional inputs:
+            sobj     (str): one or more subordinate objects to include in the scope of operation
+            nsobj    (str): one or more subordinate objects to exclude in the scope of operation
+            run     (bool): specifies whether to apply changes to parameter files
+            ifile    (str): input parameter file 
+            dir      (str): working work_dir
+
+        Outputs: 
+            Updates editor arguments and populates editor.value
+        '''
+        if work_dir != None:
+            self.work_dir = work_dir
+        if ifile != None:
+            self.ifile = ifile
+        if ofile != None:
+            self.ofile = ofile
+        if run_dirs != None:
+            self.run_dirs = run_dirs
+
+        if wild != None:
+            self.wild = wild
+        if wild_range != None:
+            self.wild_range = wild_range
+        if use_stored_par:
+            if self.lines is None:
+                self.read_par()
+            lines = self.lines
+        else:
+            lines = None
+        self.key1 = key
+        self.key2 = None
+        self.task = 'get_key'
+        self.sobj1 = sobj
+        self.sobj2 = None
+        self.nsobj1 = nsobj
+        self.nsobj2 = None
+        self.value = None
+        self.loopid = None
+
+        # combine the arguments and run if applicable
+        self.parse_arguments()
+        if run:
+            self.value = main(self.args,lines,False)
+
     def get_phases(self, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None,use_stored_par=False):
         '''
         get the phase names in .par file
@@ -1485,6 +1533,13 @@ def get_phases(lines, index):
 
     return value
 
+def get_key_value(lines, index, isloop, indloop, loopid, sobj,keyword):
+    key_value = []
+    for i, ind in enumerate(index):
+        value = get_val(lines, [ind], [isloop[i]], [indloop[i]], loopid)
+        key_value.append({"key":keyword,"sobj": [s.replace("\n","") for s in sobj[i]],"value": value})
+
+    return key_value
 
 def get_err(lines, index, isloop, indloop, loopid):
     err = []
@@ -2038,6 +2093,8 @@ def main(argsin,lines=None,do_write=True):
             tmp = untrack_all(lines)
         elif args.task == 'get_phases':
             return get_phases(lines, index[0])
+        elif args.task == 'get_key':
+            return get_key_value(lines, index[0], isloop_index[0], indloop_index[0], args.loopid, sobj_index[0],keyword)
         elif args.task == 'get_val':
             return get_val(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
         elif args.task == 'get_err':
