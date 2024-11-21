@@ -10,6 +10,7 @@ import os
 from .model import (texture, sizeStrain,detector)
 from pathlib import Path
 import shutil
+import sys
 class arguments:
     def __init__(self):
         self.work_dir = None
@@ -292,6 +293,67 @@ class editor(arguments):
         # Prevent reinitialization
         self.ifile = self.ofile
 
+    def add_SF(self, key, loopid=None, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None,use_stored_par=False):
+        '''
+        add standard function component in .par file
+        Required Inputs: 
+            keys     (str): spherical, fiber
+        Optional inputs:
+            sobj     (str): one or more subordinate objects to include in the scope of operation
+            nsobj    (str): one or more subordinate objects to exclude in the scope of operation
+            run     (bool): specifies whether to apply changes to parameter files
+            ifile    (str): input parameter file 
+            dir      (str): working work_dir
+
+        Outputs: 
+            Updates editor arguments and applies changes to parameter files if run=True(default)
+        '''
+        if work_dir != None:
+            self.work_dir = work_dir
+        if ifile != None:
+            self.ifile = ifile
+        if ofile != None:
+            self.ofile = ofile
+        if run_dirs != None:
+            self.run_dirs = run_dirs
+
+        if wild != None:
+            self.wild = wild
+        if wild_range != None:
+            self.wild_range = wild_range
+        if use_stored_par:
+            if self.lines is None:
+                self.read_par()
+            lines = self.lines
+        else:
+            lines = None
+
+        if loopid is None:
+            loopid=1
+        if key == "spherical":
+            self.task = 'add_sf_spherical'
+        elif key == "fiber":
+            self.task = 'add_sf_fiber'
+        else:
+            raise NameError('Specify a valid key: spherical or fiber')
+
+        self.key1 = "SF"
+        self.key2 = None
+        self.sobj1 = sobj
+        self.sobj2 = None
+        self.nsobj1 = nsobj
+        self.nsobj2 = None
+        self.value = None
+        self.loopid = loopid
+
+        # combine the arguments and run if applicable
+        self.parse_arguments()
+        if run:
+            self.ofile = main(self.args,lines,not use_stored_par)
+
+        # Prevent reinitialization
+        self.ifile = self.ofile
+
     def set_val(self, key, value, loopid=None, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None,use_stored_par=False):
         '''
         set parameter to a value in .par file
@@ -349,6 +411,7 @@ class editor(arguments):
 
         # Prevent reinitialization
         self.ifile = self.ofile
+
 
     def get_key(self, key, sobj=None, nsobj=None, run=True, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None,use_stored_par=False):
         '''
@@ -1132,10 +1195,11 @@ class editor(arguments):
         # Prevent reinitialization
         self.ifile = self.ofile
 
+
     def texture(self, key=None, sobj=None, ifile=None, ofile=None, work_dir=None, run_dirs=None, wild=None, wild_range=None, run=True):
         '''
               texture inserts a MAUD texture model into all phases or to particular phase using sobj
-              key options: None, Arbitrary, EWIMV
+              key options: None, Arbitrary, EWIMV, SF
 
               Outputs: 
                   Updates editor arguments and applies changes to parameter files
@@ -1153,10 +1217,10 @@ class editor(arguments):
             self.wild = wild
         if wild_range != None:
             self.wild_range = wild_range
-        if key != None and key in 'None, Arbitrary, EWIMV':
+        if key != None and key in 'None, Arbitrary, EWIMV, SF':
             self.key1 = key
         else:
-            raise NameError('Specify a valid key: None, Arbitrary, EWIMV')
+            raise NameError('Specify a valid key: None, Arbitrary, EWIMV, SF')
         self.sobj1 = sobj
         self.postfix=None
         # combine the arguments and run if applicable
@@ -1398,14 +1462,32 @@ def search_list(lines, keyword, d,max_hit=1e6):
                 sobj_cur.append(line.partition('subordinateObject')[2])
 
         if keyword in line:
+            if keyword == d['ODFValues']:
+                ind = i+1
+                line = lines[ind]
+                while '#end_custom_object_odf' not in line:
+                    index.append(ind)
+                    sobj.append(sobj_cur[:])
+                    isloop.append(True)
+                    endloop.append(False)
+                    ind = ind+1
+                    line = lines[ind]
+                if endloop != [] and not endloop[-1]:
+                    endloop[-1] = True
+            elif keyword == d['SF']:
+                index.append(i+7)
+                sobj.append(sobj_cur[:])
+                isloop.append(False)
+                endloop.append(False)
             # handle loop variables (e.g. background polynomial)
-            if 'loop_' not in lines[i-1]:
+            elif 'loop_' not in lines[i-1]:
                 index.append(i)
                 sobj.append(sobj_cur[:])
                 isloop.append(False)
                 endloop.append(False)
                 indloop.append(-1)
-            elif keyword != d['ODFValues']:
+
+            else:
                 #is loop
                 ind = i+1
                 line = lines[ind]
@@ -1428,18 +1510,7 @@ def search_list(lines, keyword, d,max_hit=1e6):
 
                 endloop[-1] = True
 
-            else:
-                ind = i+1
-                line = lines[ind]
-                while '#end_custom_object_odf' not in line:
-                    index.append(ind)
-                    sobj.append(sobj_cur[:])
-                    isloop.append(True)
-                    endloop.append(False)
-                    ind = ind+1
-                    line = lines[ind]
-                if endloop != [] and not endloop[-1]:
-                    endloop[-1] = True
+
 
             hits+=1
             if hits>max_hit:
@@ -1688,6 +1759,35 @@ def ref_par(lines, index, value, isloop, indloop, loopid):
 
     return lines, nlineMod
 
+def resource_file_path(filename):
+    for d in sys.path:
+        filepath = os.path.join(d, filename)
+        if os.path.isfile(filepath):
+            return filepath
+    return None
+
+def add_sf_component(lines,index,task,loopid):
+    if task=="add_sf_spherical":
+        filename = resource_file_path("SFSpherical.txt")
+        component_lines = read_par(filename)
+        component_lines[0] = f"#subordinateObject_ori{loopid}"
+        component_lines[2] = f"_texture_spherical_component_id 'ori{loopid}'"
+        component_lines[-2] = f"#end_subordinateObject_ori{loopid}"
+    elif task=="add_sf_fiber":
+        filename = resource_file_path("SFFiber.txt")
+        component_lines = read_par(filename)
+        component_lines[0] = f"#subordinateObject_fiber{loopid}"
+        component_lines[2] = f"_texture_fiber_component_id 'fiber{loopid}'"
+        component_lines[-2] = f"#end_subordinateObject_fiber{loopid}"
+    else: 
+        raise NameError('Unknown SF component type.')
+    
+    for i in reversed(range(0,len(index),1)):
+        for line in reversed(component_lines):
+            lines.insert(index[i]+1,line)
+
+    nlineMod=len(component_lines)*len(index)
+    return lines,nlineMod
 
 def reset_odf(lines, index):
     nlineMod = 0
@@ -1705,6 +1805,7 @@ def template_dict():
     d['Background'] = '_riet_par_background_pol'
     d['Intensity'] = '_pd_proc_intensity_incident'
     d['ODFValues'] = '_rita_wimv_odf_values'
+    d['SF'] = '#subordinateObject_Standard Functions'
     d['ODFRefine'] = '_rita_odf_refinable'
     d['MainObject'] = '#subordinateObject_'
     d['MicroStrain'] = '_riet_par_rs_microstrain'
@@ -1752,7 +1853,7 @@ def get_arguments(argsin):
     parser.add_argument('--ofile', '-o',
                         help='Define output file to save modifications e.g. "Refinement_1.par"')
     parser.add_argument('--task', '-t',
-                        help='Tasks: free_par,fix_par,set_par,fix_all,ref_par,un_ref_par,add_par,rem_par,reset_odf,track_par,untrack_par,untrack_all')
+                        help='Tasks: free_par,fix_par,set_par,fix_all,ref_par,un_ref_par,add_par,rem_par,reset_odf,add_sf_spherical,add_sf_fiber,track_par,untrack_par,untrack_all')
     parser.add_argument('--sobj', '-s', nargs='+', action='append',
                         help='Subordinate object string limits application of task to a sub section of the .par files')
     parser.add_argument('--nsobj', '-ns', nargs='+', action='append',
@@ -2099,6 +2200,8 @@ def main(argsin,lines=None,do_write=True):
             return get_val(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
         elif args.task == 'get_err':
             return get_err(lines, index[0], isloop_index[0], indloop_index[0], args.loopid)
+        elif args.task == 'add_sf_spherical' or args.task == 'add_sf_fiber':
+            tmp = add_sf_component(lines,index[0],args.task,args.loopid)
         elif args.task == 'add_datafile_bk_par':
             pass
         else:

@@ -48,12 +48,14 @@ def search_list(lines):
         if inphases:
             if '#subordinateObject_arbitrary tex' in line or \
             '#subordinateObject_none tex' in line or \
-            '#subordinateObject_E-WIMV' in line:
+            '#subordinateObject_E-WIMV' in line or \
+            '#subordinateObject_Standard Functions' in line:
                 index.append(i)
                 sobj.append(sobj_cur[:])
             elif '#end_subordinateObject_arbitrary tex' in line or \
             '#end_subordinateObject_none tex' in line or \
-            '#end_subordinateObject_E-WIMV' in line:
+            '#end_subordinateObject_E-WIMV' in line or \
+            '#end_subordinateObject_Standard Functions' in line:
                 index.append(i)
                 sobj.append(sobj_cur[:])
 
@@ -71,7 +73,7 @@ def get_arguments(argsin):
     parser.add_argument('--ofile', '-o',
                         help='A .par file name for saving')
     parser.add_argument('--key', '-k',required=True,
-                        help='The texture model to employ (options: None, Arbitrary, EWIMV)')
+                        help='The texture model to employ (options: None, Arbitrary, EWIMV, SF)')
     parser.add_argument('--sobj', '-s', nargs='+',action='append',required=True,
                         help='Subordinate object string limits application of texture model to a sub section / phase of the .par files')
     parser.add_argument('--run_dir', '-dir',
@@ -140,6 +142,8 @@ def insert_tex(lines,index,args):
         fname='NoTexture.txt'
     elif args.key=='EWIMV':
         fname='EWIMVTexture.txt'
+    elif args.key=="SF":
+        fname='SFTexture.txt'
     else:
         raise NameError('TexModel not initialized correctly')
     

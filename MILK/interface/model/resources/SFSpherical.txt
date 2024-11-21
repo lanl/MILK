@@ -1,0 +1,14 @@
+#subordinateObject_ori1
+
+_texture_spherical_component_id 'ori'
+
+_texture_spherical_component_id ?
+_texture_spherical_component_intensity 0.0 #positive #min 0.0 #max 1.0
+_texture_spherical_component_alpha 0.0 #min 0.0 #max 360.0
+_texture_spherical_component_beta 0.0 #min 0.0 #max 180.0
+_texture_spherical_component_gamma 0.0 #min 0.0 #max 360.0
+_texture_spherical_component_fwhm 10 #positive #min 0.0 #max 360.0
+_texture_spherical_component_gauss_content 1 #positive #min 0.0 #max 1.0
+
+#end_subordinateObject_ori
+

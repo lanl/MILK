@@ -1,0 +1,9 @@
+#subordinateObject_Standard Functions
+
+_pd_proc_ls_pref_orient_corr 'Standard Functions'
+
+_rita_sample_symmetry triclinic
+_rita_odf_sharpness ?
+_rita_odf_background 0.0 #min 0.0 #max 1.0
+
+#end_subordinateObject_Standard Functions
