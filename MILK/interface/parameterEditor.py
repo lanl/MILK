@@ -1479,6 +1479,7 @@ def search_list(lines, keyword, d,max_hit=1e6):
                 sobj.append(sobj_cur[:])
                 isloop.append(False)
                 endloop.append(False)
+                indloop.append(-1)
             # handle loop variables (e.g. background polynomial)
             elif 'loop_' not in lines[i-1]:
                 index.append(i)
@@ -1486,7 +1487,6 @@ def search_list(lines, keyword, d,max_hit=1e6):
                 isloop.append(False)
                 endloop.append(False)
                 indloop.append(-1)
-
             else:
                 #is loop
                 ind = i+1
