@@ -76,6 +76,8 @@ def get_arguments(argsin):
     else:
         args = parser.parse_args(argsin.split(' '))
 
+    args.java_opt = args.java_opt.replace("_"," ")
+
     if args.maud_path is None or args.maud_path == '':
         args.maud_path = maud_path_global
 
@@ -137,20 +139,20 @@ def run_MAUD(maud_path, java_opt, simple_call, timeout, level, max_rerun, ins_pa
         java = os.path.join(maud_path, 'jdk/bin/java')
         java = f"exec {java}"
         lib = os.path.join(maud_path, 'lib/*')
-        opts = f'-{java_opt}  --enable-preview -cp "{lib}"'
+        opts = f'-{java_opt}  --enable-native-access=ALL-UNNAMED --add-opens java.base/java.net=ALL-UNNAMED --enable-preview -cp "{lib}"'
 
     elif "darwin" in sys.platform:
         # OS X
         java = os.path.join(maud_path, 'Contents/PlugIns/Home/bin/java')
         lib = os.path.join(maud_path, 'Contents/Java/*')
-        opts = f'-{java_opt} --enable-preview -cp "{lib}"'
+        opts = f'-{java_opt} --enable-native-access=ALL-UNNAMED --add-opens java.base/java.net=ALL-UNNAMED --enable-preview -cp "{lib}"'
 
     elif "win32" in sys.platform:
         # Windows...
         #raise NotImplementedError("Windows commandline call is not implemented yet.")
         java = os.path.join(maud_path, 'jdk\\bin\\java')
         lib = os.path.join(maud_path, 'lib\\*')
-        opts = f"-{java_opt}  --enable-preview --add-opens java.base/java.net=ALL-UNNAMED -cp \"{lib}\""
+        opts = f"-{java_opt}  --enable-preview --enable-native-access=ALL-UNNAMED --add-opens java.base/java.net=ALL-UNNAMED -cp \"{lib}\""
 
     command = f'{java} {opts} com.radiographema.MaudText -file {ins_paths}'
     exit_code=0
