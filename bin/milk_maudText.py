@@ -28,6 +28,8 @@ def main():
                         help="Sets maximum time in seconds for MAUD to run.")
     args = parser.parse_args()
 
+    args.java_opt = args.java_opt.replace("_"," ")
+
     callMaudText.run_MAUD(
         args.maud_path,
         args.java_opt,
