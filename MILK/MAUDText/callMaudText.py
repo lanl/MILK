@@ -139,22 +139,25 @@ def run_MAUD(maud_path, java_opt, simple_call, timeout, level, max_rerun, ins_pa
         java = os.path.join(maud_path, 'jdk/bin/java')
         java = f"exec {java}"
         lib = os.path.join(maud_path, 'lib/*')
-        opts = f'-{java_opt}  --enable-native-access=ALL-UNNAMED --add-opens java.base/java.net=ALL-UNNAMED --enable-preview -cp "{lib}"'
+        opts = f'-{java_opt}  --enable-native-access=ALL-UNNAMED --add-opens java.base/java.net=ALL-UNNAMED -cp "{lib}"'
 
     elif "darwin" in sys.platform:
         # OS X
         java = os.path.join(maud_path, 'Contents/PlugIns/Home/bin/java')
         lib = os.path.join(maud_path, 'Contents/Java/*')
-        opts = f'-{java_opt} --enable-native-access=ALL-UNNAMED --add-opens java.base/java.net=ALL-UNNAMED --enable-preview -cp "{lib}"'
+        lib_path = os.path.join(maud_path, 'Contents/PlugIns/Home/lib')
+        # print(java_opt)
+        opts = f'-{java_opt} --enable-native-access=ALL-UNNAMED --add-opens java.base/java.net=ALL-UNNAMED -cp "{lib}"'
 
     elif "win32" in sys.platform:
         # Windows...
         #raise NotImplementedError("Windows commandline call is not implemented yet.")
         java = os.path.join(maud_path, 'jdk\\bin\\java')
         lib = os.path.join(maud_path, 'lib\\*')
-        opts = f"-{java_opt}  --enable-preview --enable-native-access=ALL-UNNAMED --add-opens java.base/java.net=ALL-UNNAMED -cp \"{lib}\""
+        opts = f"-{java_opt}  --enable-native-access=ALL-UNNAMED --add-opens java.base/java.net=ALL-UNNAMED -cp \"{lib}\""
 
     command = f'{java} {opts} com.radiographema.MaudText -file {ins_paths}'
+    # print(command)
     exit_code=0
     if simple_call == 'True':
         with sub.Popen(command, shell=True, stdin=sub.PIPE, stdout=sub.PIPE, stderr=sub.PIPE) as p:
