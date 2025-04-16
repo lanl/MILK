@@ -37,7 +37,7 @@ jobs:
           curl -JLO "https://github.com/luttero/maud/releases/download/v2.9998/Maud_intel64.dmg.gz"
           gunzip Maud_intel64.dmg.gz
           hdiutil attach Maud_intel64.dmg
-          cp -r /Volumes/Maud_inte64 .
+          cp -r /Volumes/Maud_intel64 .
           cp -r ./Maud_inte64/Maud.app /Applications/Maud.app
           git clone https://github.com/cinemascience/cinema_debye_scherrer
       - name: config milk and run examples
@@ -70,7 +70,7 @@ jobs:
           curl -JLO "https://github.com/luttero/maud/releases/download/v2.9998/Maud_intel64.dmg.gz"
           gunzip Maud_intel64.dmg.gz
           hdiutil attach Maud_intel64.dmg
-          cp -r /Volumes/Maud_inte64 .
+          cp -r /Volumes/Maud_intel64 .
           cp -r ./Maud_inte64/Maud.app /Applications/Maud.app
           git clone https://github.com/cinemascience/cinema_debye_scherrer
       - name: config milk and run examples
