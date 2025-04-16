@@ -145,16 +145,15 @@ def run_MAUD(maud_path, java_opt, simple_call, timeout, level, max_rerun, ins_pa
         # OS X
         java = os.path.join(maud_path, 'Contents/PlugIns/Home/bin/java')
         lib = os.path.join(maud_path, 'Contents/Java/*')
-        lib_path = os.path.join(maud_path, 'Contents/PlugIns/Home/lib')
         # print(java_opt)
-        opts = f'-{java_opt} --enable-native-access=ALL-UNNAMED --add-opens java.base/java.net=ALL-UNNAMED -cp "{lib}"'
+        opts = f'-{java_opt} --enable-preview -cp "{lib}"'
 
     elif "win32" in sys.platform:
         # Windows...
         #raise NotImplementedError("Windows commandline call is not implemented yet.")
         java = os.path.join(maud_path, 'jdk\\bin\\java')
         lib = os.path.join(maud_path, 'lib\\*')
-        opts = f"-{java_opt}  --enable-native-access=ALL-UNNAMED --add-opens java.base/java.net=ALL-UNNAMED -cp \"{lib}\""
+        opts = f"-{java_opt} --enable-preview --add-opens java.base/java.net=ALL-UNNAMED -cp \"{lib}\""
 
     command = f'{java} {opts} com.radiographema.MaudText -file {ins_paths}'
     # print(command)
