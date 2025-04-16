@@ -25,15 +25,13 @@ jobs:
       run:
         shell: bash -el {0}
     steps:
-      - uses: actions/checkout@v2
-      - uses: conda-incubator/setup-miniconda@v2
+      - uses: actions/checkout@v4
+      - uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: rietveld
           environment-file: environments/environment_mac.yml
           python-version: 3.9
           auto-activate-base: false
-          miniforge-variant: Miniforge3-pypy3
-          use-mamba: true
       - name: download related programs and make tutorials folder for test examples
         run: |
           curl -JLO "https://github.com/luttero/maud/releases/download/v2.9998/Maud_intel64.dmg.gz"
@@ -60,15 +58,13 @@ jobs:
       run:
         shell: bash -el {0}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: rietveld
           python-version: "3.10"
           environment-file: environments/environment_mac.yml
           auto-activate-base: false
-          miniforge-variant: Miniforge3-pypy3
-          use-mamba: true
       - name: download related programs and make tutorials folder for test examples
         run: |
           curl -JLO "https://github.com/luttero/maud/releases/download/v2.9998/Maud_intel64.dmg.gz"
