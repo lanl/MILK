@@ -36,7 +36,7 @@ jobs:
           use-mamba: true
       - name: download related programs and make tutorials folder for test examples
         run: |
-          curl -JLO "https://github.com/luttero/maud/releases/download/v2.9992/Maud_intel64.dmg.gz"
+          curl -JLO "https://github.com/luttero/maud/releases/download/v2.9998/Maud_intel64.dmg.gz"
           gunzip Maud_intel64.dmg.gz
           hdiutil attach Maud_intel64.dmg
           cp -r /Volumes/Maud .
@@ -71,7 +71,7 @@ jobs:
           use-mamba: true
       - name: download related programs and make tutorials folder for test examples
         run: |
-          curl -JLO "https://github.com/luttero/maud/releases/download/v2.9992/Maud_intel64.dmg.gz"
+          curl -JLO "https://github.com/luttero/maud/releases/download/v2.9998/Maud_intel64.dmg.gz"
           gunzip Maud_intel64.dmg.gz
           hdiutil attach Maud_intel64.dmg
           cp -r /Volumes/Maud .
