@@ -25,15 +25,12 @@ jobs:
       run:
         shell: bash -el {0}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: rietveld
           environment-file: environments/environment_linux.yml
           auto-activate-base: false
-          miniforge-variant: Mambaforge
-          miniforge-version: 4.9.2-4
-          use-mamba: true
       - name: download related programs and make tutorials folder for test examples
         run: |
           wget -O Maud.tar.gz "https://github.com/luttero/maud/releases/download/v2.9998/Maud.tar.gz"
