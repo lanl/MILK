@@ -38,7 +38,7 @@ jobs:
           gunzip Maud_intel64.dmg.gz
           hdiutil attach Maud_intel64.dmg
           cp -r /Volumes/Maud_intel64 .
-          cp -r ./Maud_inte64/Maud.app /Applications/Maud.app
+          cp -r ./Maud_intel64/Maud.app /Applications/Maud.app
           git clone https://github.com/cinemascience/cinema_debye_scherrer
       - name: config milk and run examples
         run: |
@@ -71,7 +71,7 @@ jobs:
           gunzip Maud_intel64.dmg.gz
           hdiutil attach Maud_intel64.dmg
           cp -r /Volumes/Maud_intel64 .
-          cp -r ./Maud_inte64/Maud.app /Applications/Maud.app
+          cp -r ./Maud_intel64/Maud.app /Applications/Maud.app
           git clone https://github.com/cinemascience/cinema_debye_scherrer
       - name: config milk and run examples
         run: |
