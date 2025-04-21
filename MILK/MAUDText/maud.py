@@ -56,6 +56,7 @@ class arguments:
         self.args_ins = None
         self.args_compute = None
         self.maud_remove_all_datafiles = None
+        self.compute_chunk_size = None
 
     def parseConfig(self, config, cur_step=None, zfill = 3):
         self.n_maud = str(config["compute"]["n_maud"])
@@ -97,7 +98,7 @@ class arguments:
             self.zfill = zfill
         self.verboseins = config["ins"]["verbose"]
         self.maud_remove_all_datafiles = config["ins"]["maud_remove_all_datafiles"]
-
+        self.compute_chunk_size = 1
         #Purge wild_range
         wilds = self.wild
         if self.wild_range!=[[]]:
@@ -210,7 +211,8 @@ class arguments:
             args = args+'--riet_append_simple_result_to '+self.riet_append_simple_result_to+' '
         if self.riet_append_result_to != None:
             args = args+'--riet_append_result_to '+self.riet_append_result_to+' '
-
+        if self.compute_chunk_size !=None:
+            args = args+'--compute_chunk_size '+str(self.compute_chunk_size)+' '
         # trim at the end
         self.args_compute = args[0:-1]
 
@@ -223,7 +225,7 @@ class maudText(arguments):
                    wild=None, wild_range=None, work_dir=None, verboseins=None,
                    verbosecompute=None, n_maud=None, run=True, export_ins=True, import_phases=False,
                    import_lcls=False, export_PFs=False, export_plots=False, inc_step=True,
-                   simple_call=False,timeout=None):
+                   simple_call=False,timeout=None,compute_chunk_size=1):
         '''
         untracking all parameter outputs and stops there value from being printed in summary document after a refinement unless basic parameter
         Optional inputs:
@@ -261,6 +263,8 @@ class maudText(arguments):
             self.n_maud = n_maud
         if timeout != None:
             self.timeout = timeout
+        if self.compute_chunk_size != None:
+            self.compute_chunk_size=compute_chunk_size
         self.import_phases = import_phases
         self.import_lcls = import_lcls
         self.export_PFs = export_PFs

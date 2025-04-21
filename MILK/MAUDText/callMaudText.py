@@ -20,6 +20,8 @@ from prettytable import (PrettyTable, from_csv)
 import errno
 import time
 from threading import Thread
+import tempfile
+from pathlib import Path
 try:
     maud_path_global = os.getenv('MAUD_PATH')
     maud_path_global = maud_path_global.strip("'")
@@ -71,6 +73,8 @@ def get_arguments(argsin):
                         help='Simple results are those prechosen by MAUD i.e. biso, fit, lattice parameter etc... e.g. results_simple.csv')
     parser.add_argument('--zfill', type=int,
                         help='number zero padding the folders.')
+    parser.add_argument('--compute_chunk_size', type=int, default=1,
+                        help='The number of refinements to include in a single call to MAUD.')
     if argsin == []:
         args = parser.parse_args()
     else:
@@ -318,11 +322,50 @@ def scrap_results(scrapeFileName, resultFileName, refinement_id):
         for line in lines:
             print(line)
 
+def append_files(file_list, output_file):
+    """
+    Appends the content of each file in file_list to output_file.
+
+    Parameters:
+    - file_list (list of str): Paths to input files.
+    - output_file (str): Path to the output file where all contents will be appended.
+    """
+    with open(output_file, 'a') as outfile:
+        for file_path in file_list:
+            try:
+                with open(file_path, 'r') as infile:
+                    contents = infile.read()
+                    outfile.write(contents)
+                    outfile.write('\n')
+                    # print(f"Appended: {file_path}")
+            except Exception as e:
+                print(f"Error reading {file_path}: {e}")
+
+def split_array(arr, n):
+    k, m = divmod(len(arr), n)
+    return [arr[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in range(n)]
+
+def build_chunks(paths,chunk_size,temp_dir):
+    run_paths = []
+    for i,path_chunk in enumerate(split_array(paths[0], round(len(paths[0])/chunk_size))):
+        run_paths.append(str(Path(temp_dir.name).absolute() / f"run{i}.ins"))
+        append_files(path_chunk, run_paths[i])
+    
+    return [run_paths]
 
 def main(argsin):
 
     args = get_arguments(argsin)
     paths = build_paths(args)
+
+    # From paths we can scrap a chunk file based on chunk size argument which we write to a tmp folder
+    # Add the working folder to the ins writer so we can append a list of ins files into a single file seemlessly 0
+    # We will want to keep the individual paths object and setup a run paths
+    if args.compute_chunk_size > 1:
+        temp_dir=tempfile.TemporaryDirectory(dir=".")
+        run_paths = build_chunks(paths,args.compute_chunk_size,temp_dir)
+    else:
+        run_paths = paths
 
     if args.simple_call == 'True':
         if args.nMAUD != None:
@@ -330,7 +373,7 @@ def main(argsin):
                 return [run_MAUD(args.maud_path,
                                  args.java_opt,
                                  args.simple_call,
-                                 args.timeout, 0, 1, paths[0][0])]
+                                 args.timeout, 0, 1, run_paths[0][0])]
             elif args.nMAUD > os.cpu_count():
                 pool = Pool(os.cpu_count())
             else:
@@ -340,7 +383,7 @@ def main(argsin):
         out = list(map(partial(run_MAUD, args.maud_path,
                                args.java_opt,
                                args.simple_call,
-                               args.timeout, 0, 1), paths[0]))
+                               args.timeout, 0, 1), run_paths[0]))
         return out
 
     print('')
@@ -386,8 +429,8 @@ def main(argsin):
                               args.timeout,
                               0,
                               1),
-                      paths[0]),
-            total=len(paths[0])
+                      run_paths[0]),
+            total=len(run_paths[0])
         )
     )
 
@@ -443,6 +486,10 @@ def main(argsin):
     except:
         print('unable to compile results from folders. This usually means a maud simulation didnt run')
     
+    # Cleanup any temporary run directory 
+    if args.compute_chunk_size > 1:
+        temp_dir.cleanup()
+
     return out
 
 if __name__ == '__main__':

@@ -80,6 +80,10 @@ def write_ins(args):
         fname = os.path.join(args.ins_file_name[i][0])
         fID = open(fname, "w")
 
+        #Write the working directory
+        
+        fID.write('\n\n_maud_working_directory\n')
+        fID.write(f"{args.work_dir[i][0]}/\n\n")
         # write cif loop header
         fID.write('loop_\n')
         for arg in vars(args):
@@ -158,7 +162,7 @@ def build_ins(args):
             for i, phase in enumerate(args.maud_import_phase):
                 args.maud_import_phase[i] = os.path.join('../', phase)
                 assert os.path.isfile(args.maud_import_phase[i].strip('../')), f'CIF file {os.path.abspath(args.maud_import_phase[i].strip("../"))} does not exist!'
-        args.riet_analysis_file = os.path.join(args.work_dir, args.riet_analysis_file)
+        args.riet_analysis_file = os.path.join(args.riet_analysis_file)
         args.riet_analysis_fileToSave = args.riet_analysis_fileToSave
         args.riet_append_result_to = args.riet_append_result_to
         args.riet_append_simple_result_to = args.riet_append_simple_result_to
